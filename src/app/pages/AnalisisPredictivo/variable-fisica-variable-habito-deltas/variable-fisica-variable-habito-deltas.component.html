@@ -1,0 +1,119 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card">
+      <h5 class="title">Análisis de Correlación</h5>
+
+      <!-- Selección de variables -->
+      <div class="flex justify-content-between form-row">
+        <div class="flex input-group">
+          <!-- Dato Corporal -->
+          <div class="input-field">
+            <p-dropdown
+              placeholder="Seleccione un Dato Corporal"
+              [options]="datosCorporales"
+              [(ngModel)]="selectedDatoCorporal"
+              optionLabel="label"
+              optionValue="value"
+              inputId="datosCorporales"
+              styleClass="custom-dropdown">
+            </p-dropdown>
+          </div>
+
+          <!-- Dato de Hábito -->
+          <div class="input-field">
+            <p-dropdown
+              placeholder="Seleccione un Dato de Hábito"
+              [options]="datosHabitos"
+              [(ngModel)]="selectedDatoHabito"
+              optionLabel="label"
+              optionValue="value"
+              inputId="datosHabitos"
+              styleClass="custom-dropdown">
+            </p-dropdown>
+          </div>
+        </div>
+
+        <!-- Tipo de correlación para X e Y -->
+        <div class="flex input-group">
+          <div class="input-field">
+            <p-dropdown
+              placeholder="Tipo de correlación (X)"
+              [options]="typesCorrelations"
+              [(ngModel)]="selectedStatusX"
+              inputId="tipoCorrelacionX"
+              styleClass="custom-dropdown">
+            </p-dropdown>
+          </div>
+          <div class="input-field">
+            <p-dropdown
+              placeholder="Tipo de correlación (Y)"
+              [options]="typesCorrelations"
+              [(ngModel)]="selectedStatusY"
+              inputId="tipoCorrelacionY"
+              styleClass="custom-dropdown">
+            </p-dropdown>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botón para realizar el análisis -->
+      <div class="btn-container">
+        <button
+          pButton
+          label="Realizar Análisis"
+          icon="pi pi-chart-line"
+          class="p-button-success analysis-btn"
+          (click)="realizarAnalisis()">
+        </button>
+      </div>
+
+      <!-- Resultados del análisis -->
+      <div *ngIf="correlationData" class="result-section mt-4">
+        <div class="card result-card">
+          <h6 class="section-title">Resultados Detallados</h6>
+
+          <div class="result-item">
+            <p><strong>Variable X:</strong> {{ correlationData.variable_x }}</p>
+            <p><strong>Variable Y:</strong> {{ correlationData.variable_y }}</p>
+          </div>
+
+          <!-- Correlaciones Iniciales -->
+          <div class="result-grid initial-correlations">
+            <h6 class="correlation-heading full-width-title">Correlaciones Iniciales</h6>
+            <div class="result-category" *ngFor="let method of ['pearson', 'spearman', 'kendall']">
+              <h6>{{ method.charAt(0).toUpperCase() + method.slice(1) }}</h6>
+              <p><strong>Correlación:</strong> {{ correlationData.correlaciones_iniciales[method].correlation }}</p>
+              <p><strong>p-Valor:</strong> {{ correlationData.correlaciones_iniciales[method].p_value }}</p>
+              <p>
+                <strong>Interpretación:</strong> 
+                {{ interpretarCorrelacion(correlationData.correlaciones_iniciales[method].correlation, correlationData.correlaciones_iniciales[method].p_value) }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Correlaciones Finales -->
+          <div class="result-grid final-correlations">
+            <h6 class="correlation-heading full-width-title">Correlaciones Finales</h6>
+            <div class="result-category" *ngFor="let method of ['pearson', 'spearman', 'kendall']">
+              <h6>{{ method.charAt(0).toUpperCase() + method.slice(1) }}</h6>
+              <p><strong>Correlación:</strong> {{ correlationData.correlaciones_finales[method].correlation }}</p>
+              <p><strong>p-Valor:</strong> {{ correlationData.correlaciones_finales[method].p_value }}</p>
+              <p>
+                <strong>Interpretación:</strong> 
+                {{ interpretarCorrelacion(correlationData.correlaciones_finales[method].correlation, correlationData.correlaciones_finales[method].p_value) }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Cambios -->
+          <div class="result-grid correlation-changes">
+            <h6 class="correlation-heading full-width-title">Cambios en la Correlación</h6>
+            <p><strong>Pearson:</strong> {{ correlationData.cambios.pearson }}</p>
+            <p><strong>Spearman:</strong> {{ correlationData.cambios.spearman }}</p>
+            <p><strong>Kendall:</strong> {{ correlationData.cambios.kendall }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

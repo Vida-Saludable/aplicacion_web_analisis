@@ -1,0 +1,65 @@
+.indicators-container {
+  max-width: 1200px; /* Aumenta el max-width para permitir varias columnas */
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.indicators-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Espacio entre las tarjetas */
+  justify-content: space-between; /* Distribuye las tarjetas uniformemente */
+}
+
+.indicator-card {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  width: calc(33.333% - 20px); /* 3 cards por fila */
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
+
+.indicator-card h2 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.indicator-detail {
+  margin-bottom: 15px;
+}
+
+.indicator-detail p {
+  font-size: 1.1rem;
+  margin: 5px 0;
+}
+
+.recommendation {
+  color: #4caf50;
+  font-weight: bold;
+}
+
+.warning {
+  color: #f44336;
+  font-weight: bold;
+}
+
+/* Ajustes para pantallas medianas */
+@media (max-width: 1024px) {
+  .indicator-card {
+    width: calc(50% - 20px); /* 2 cards por fila en pantallas medianas */
+  }
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 768px) {
+  .indicator-card {
+    width: calc(100% - 20px); /* 1 card por fila en pantallas pequeñas */
+  }
+}

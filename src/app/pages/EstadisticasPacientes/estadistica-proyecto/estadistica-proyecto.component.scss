@@ -1,0 +1,23 @@
+.bar {
+    border-radius: 5px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .status-bad {
+    background-color: red;
+  }
+  
+  .status-good {
+    background-color: yellow;
+  }
+  
+  .status-normal {
+    background-color: green;
+  }
+  

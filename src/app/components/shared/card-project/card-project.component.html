@@ -1,0 +1,22 @@
+<div class="" (click)="onchangeProject(project.id)">
+  <div class="card m-1 border-1 surface-border">
+    <div class="flex flex-wrap gap-2 align-items-center justify-content-between mb-2">
+      <div class="flex align-items-center">
+        <span class="p-ml-2">
+          <i class="pi pi-calendar"></i> 
+          {{ project.fecha_inicio | date: 'yyyy-MM-dd' }}
+        </span>
+      </div>
+    </div>
+    <div class="flex flex-column align-items-center text-center mb-3">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSY9nTkblK-U2Wvn28GnJB6S6BQRNBTmv518A&s" 
+           [alt]="project.nombre" class="w-7 shadow-2 my-2 mx-0" />
+      <div class="text-lg font-bold">{{ project.nombre }}</div>
+      <div class="mb-3">{{ project.descripcion }}</div>
+    </div>
+    <div class="flex align-items-center justify-content-between">
+      <p-inputSwitch [(ngModel)]="project.estado"></p-inputSwitch>
+      <span class="p-ml-2"><i class="pi pi-thumbs-up"></i> {{ project.fecha_fin }}</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+<div class="chart-container">
+    <p-chart type="bar" [data]="data" [options]="options" style="height: 400px;"></p-chart>
+  </div>
+
+<div class="container">
+    <h2 class="text-center">Estadísticas de Salud del Usuario</h2>
+    
+    <p-table [value]="indicatorHealthReport" class="report-table">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Indicador</th>
+          <th>Estado</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-report>
+        <tr>
+          <td>{{ report }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  
+ 
+  </div>
+  

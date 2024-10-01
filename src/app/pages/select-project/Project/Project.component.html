@@ -1,0 +1,30 @@
+<div class="container">
+  <h1 class="title">VIDA SALUDABLE</h1>
+  
+  <!-- Barra de búsqueda -->
+  <div class="search-container">
+    <div class="search-input">
+      <i class="pi pi-search"></i>
+      <input pInputText type="text" placeholder="Buscar..." (input)="onSearch($event)" />
+    </div>
+    <div class="date-filter-container">
+      <input type="date" (change)="onStartDateChange($event)" placeholder="Fecha inicio" class="date-input"/>
+      <input type="date" (change)="onEndDateChange($event)" placeholder="Fecha fin" class="date-input"/>
+      <button pButton type="button" label="Buscar por fechas" icon="pi pi-calendar" (click)="applyFilters()"></button>
+    </div>
+  </div>
+  
+  <!-- Contenedor de cards -->
+  <div class="cards-container">
+    <div *ngFor="let project of paginatedCards" class="card-wrapper">
+      <app-card-project [project]="project" ></app-card-project>
+    </div>
+  </div>
+  
+  <!-- Paginador -->
+  <p-paginator
+    [rows]="rows"
+    [totalRecords]="filteredCards.length"
+    (onPageChange)="paginate($event)">
+  </p-paginator>
+</div>
