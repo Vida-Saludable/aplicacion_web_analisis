@@ -1,9 +1,12 @@
+<p-toast></p-toast> <!-- Componente de PrimeNG para mostrar mensajes de advertencia o error -->
+
 <div class="card">
   <div class="flex justify-content-between flex-column sm:flex-row">
     <div class="flex gap-4 flex-wrap"> <!-- Espaciado entre fechas -->
       <div class="flex-auto">
         <label for="startDate" class="font-bold block mb-2">Fecha Inicio</label>
-        <p-calendar [(ngModel)]="startDate" [minDate]="minDate" [maxDate]="maxDate" (ngModelChange)="onDateChange()" [showIcon]="true" >
+        <p-calendar [(ngModel)]="startDate" [minDate]="minDate" [maxDate]="maxDate" 
+                    [disabled]="!fechasCargadas" (ngModelChange)="onDateChange()" [showIcon]="true">
           <ng-template pTemplate="date" let-date>
             <span [ngClass]="{'highlight-date': isDateWithinRange(date)}">{{date.day}}</span>
           </ng-template>
@@ -11,7 +14,8 @@
       </div>
       <div class="flex-auto">
         <label for="endDate" class="font-bold block mb-2">Fecha Fin</label>
-        <p-calendar [(ngModel)]="endDate" [minDate]="minDate" [maxDate]="maxDate" (ngModelChange)="onDateChange()" [showIcon]="true">
+        <p-calendar [(ngModel)]="endDate" [minDate]="minDate" [maxDate]="maxDate" 
+                    [disabled]="!fechasCargadas" (ngModelChange)="onDateChange()" [showIcon]="true">
           <ng-template pTemplate="date" let-date>
             <span [ngClass]="{'highlight-date': isDateWithinRange(date)}">{{date.day}}</span>
           </ng-template>
@@ -26,7 +30,11 @@
 
 <!-- Gráfico de radar -->
 <div class="card flex justify-content-center">
-  <p-chart type="radar" [data]="data" [options]="options"></p-chart>
+  <p-chart type="radar" [data]="data" [options]="options" style="height: 600px; width: 600px;"></p-chart>
 </div>
 
-
+<div *ngIf="startDate && endDate">
+  <h5>Fechas seleccionadas:</h5>
+  <p>Fecha de inicio: {{ startDate | date:'yyyy-MM-dd' }}</p>
+  <p>Fecha de fin: {{ endDate | date:'yyyy-MM-dd' }}</p>
+</div>

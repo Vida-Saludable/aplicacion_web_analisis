@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EstadisticasPacientesRoutingModule } from './estadisticas-pacientes-routing.module';
-import { TableDemoRoutingModule } from 'src/app/demo/components/uikit/table/tabledemo-routing.module';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { RatingModule } from 'primeng/rating';
@@ -39,7 +38,6 @@ import { CardModule } from 'primeng/card';
 	ChartModule,
     CommonModule,
     EstadisticasPacientesRoutingModule,
-    TableDemoRoutingModule,
 	CalendarModule,
 		FormsModule,
 		TableModule,

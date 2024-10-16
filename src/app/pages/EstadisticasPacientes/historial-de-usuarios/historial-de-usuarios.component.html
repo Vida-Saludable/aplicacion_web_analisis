@@ -1,0 +1,30 @@
+<div *ngFor="let habit of historyHabits; let i = index" class="card mb-4">
+    <!-- Título del hábito -->
+    <h5>{{ habit.habito | titlecase }}</h5>
+
+    <!-- Gráfico de barras -->
+    <p-chart type="bar" [data]="chartData[i]" [options]="chartOptions"></p-chart>
+
+    <!-- Información adicional -->
+    <div class="mt-3">
+        <p><strong>Tendencia:</strong> {{ habit.tendencia }}</p>
+        <p><strong>Promedio:</strong> {{ habit.promedio }}</p>
+        <p><strong>Comparación con normas:</strong> {{ habit.comparacion_normas }}</p>
+
+        <!-- Recomendaciones -->
+        <div *ngIf="habit.recomendaciones.length > 0">
+            <p><strong>Recomendaciones:</strong></p>
+            <ul>
+                <li *ngFor="let rec of habit.recomendaciones">{{ rec }}</li>
+            </ul>
+        </div>
+
+        <!-- Alertas -->
+        <div *ngIf="habit.alertas.length > 0">
+            <p><strong>Alertas:</strong></p>
+            <ul>
+                <li *ngFor="let alert of habit.alertas">{{ alert }}</li>
+            </ul>
+        </div>
+    </div>
+</div>

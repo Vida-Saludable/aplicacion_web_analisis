@@ -10,12 +10,21 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { AvatarModule } from 'primeng/avatar';
 import { DropdownModule } from 'primeng/dropdown';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
+import { ControlProjectsComponent } from './control-projects/control-projects.component';
+import { AddEditProjectComponent } from './add-edit-project/add-edit-project.component';
+import { AddEditUserComponent } from './add-edit-user/add-edit-user.component';
+import { MessagesModule } from 'primeng/messages';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @NgModule({
   declarations: [
-    ControlUsuariosComponent
+    ControlUsuariosComponent,
+    ControlProjectsComponent,
+    AddEditProjectComponent,
+    AddEditUserComponent
+    
   ],
   imports: [
     CommonModule,
@@ -29,6 +38,10 @@ import { MessageService } from 'primeng/api';
     AvatarModule,
     DropdownModule,
     FormsModule,
+    ReactiveFormsModule,
+    ButtonModule,
+    MessagesModule,
+    ConfirmDialogModule 
 
 
   ],

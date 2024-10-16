@@ -12,28 +12,52 @@ import { AuthGuard } from './core/auth.guard';
             },
             { path: 'select-project',
                 canActivate: [AuthGuard],
+                data: { roles: ['Admin', 'SupProy', 'RespSeg', 'TomDatos', 'Paciente'] },
                 loadChildren: () => import('./pages/select-project/project.module').then(m => m.ProjectModule) },
             {
                 path: 'dashboard', component: AppLayoutComponent, canActivate: [AuthGuard],
+                data: { roles: ['Admin', 'SupProy', 'RespSeg', 'TomDatos', 'Paciente'] },
                 children: [
-                    { path: 'Analisis', loadChildren: () => import('./pages/AnalisisPredictivo/analisis-predictivo.module').then(m => m.AnalisisPredictivoModule) },
-                    { path: 'Configuracion', loadChildren: () => import('./pages/configuracion/configuracion..module').then(m => m.ConfiguracionModule) },
-                    { path: 'ControlUsuarios', loadChildren: () => import('./pages/control-usuarios/control-usuarios.module').then(m => m.ControlUsuariosModule) },
-                    { path: 'Estadisticas', loadChildren: () => import('./pages/EstadisticasPacientes/estadisticas-pacientes.module').then(m => m.EstadisticasPacientesModule) },
-                    { path: '', loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule) },
-                    { path: 'Investigaciones', loadChildren: () => import('./pages/investigaciones/investigaciones.module').then(m => m.InvestigacionesComponentModule) },
-                    { path: 'Reglas', loadChildren: () => import('./pages/reglas-dinamica/reglas-dinamica.module').then(m => m.ReglasDinamicaModule) },
-                    { path: 'SeguimientoPacientes', loadChildren: () => import('./pages/Pacientes/patients.module').then(m => m.PatientsModule) },
-                    { path: '', loadChildren: () => import('./demo/components/dashboard/dashboard.module').then(m => m.DashboardModule) },
-                    { path: 'uikit', loadChildren: () => import('./demo/components/uikit/uikit.module').then(m => m.UIkitModule) },
-                    { path: 'utilities', loadChildren: () => import('./demo/components/utilities/utilities.module').then(m => m.UtilitiesModule) },
-                    { path: 'documentation', loadChildren: () => import('./demo/components/documentation/documentation.module').then(m => m.DocumentationModule) },
-                    { path: 'blocks', loadChildren: () => import('./demo/components/primeblocks/primeblocks.module').then(m => m.PrimeBlocksModule) },
-                    { path: 'pages', loadChildren: () => import('./demo/components/pages/pages.module').then(m => m.PagesModule) }
+                    {
+                        canActivate: [AuthGuard],
+                        data: { roles: ['Admin', 'SupProy', 'RespSeg', 'TomDatos', 'Paciente'] },
+                         path: 'Analisis', loadChildren: () => import('./pages/AnalisisPredictivo/analisis-predictivo.module').then(m => m.AnalisisPredictivoModule) },
+                    { 
+                        canActivate: [AuthGuard],
+                        data: { roles: ['Admin', 'SupProy', 'RespSeg', 'TomDatos', 'Paciente'] },
+                        path: 'Configuracion', loadChildren: () => import('./pages/configuracion/configuracion..module').then(m => m.ConfiguracionModule) },
+                    { 
+                        canActivate: [AuthGuard],
+                        data: { roles: ['Admin', 'SupProy', 'RespSeg', 'TomDatos', 'Paciente'] },
+                        path: 'controlUsuarios', loadChildren: () => import('./pages/control-usuarios/control-usuarios.module').then(m => m.ControlUsuariosModule) },
+                    { 
+                        canActivate: [AuthGuard],
+                        data: { roles: ['Admin', 'SupProy', 'RespSeg', 'TomDatos', 'Paciente'] },
+                        path: 'Estadisticas', loadChildren: () => import('./pages/EstadisticasPacientes/estadisticas-pacientes.module').then(m => m.EstadisticasPacientesModule) },
+                    { 
+                        canActivate: [AuthGuard],
+                        data: { roles: ['Admin', 'SupProy', 'RespSeg', 'TomDatos', 'Paciente'] },
+                        path: '', loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule) },
+                    { 
+                        canActivate: [AuthGuard],
+                        data: { roles: ['Admin', 'SupProy', 'RespSeg', 'TomDatos', 'Paciente'] },
+                        path: 'Investigaciones', loadChildren: () => import('./pages/investigaciones/investigaciones.module').then(m => m.InvestigacionesComponentModule) },
+                    { 
+                        canActivate: [AuthGuard],
+                        data: { roles: ['Admin', 'SupProy', 'RespSeg', 'TomDatos', 'Paciente'] },
+                        path: 'Reglas', loadChildren: () => import('./pages/reglas-dinamica/reglas-dinamica.module').then(m => m.ReglasDinamicaModule) },
+                    { 
+                        canActivate: [AuthGuard],
+                        data: { roles: ['Admin', 'SupProy', 'RespSeg', 'TomDatos', 'Paciente'] },
+                        path: 'seguimientoPacientes', loadChildren: () => import('./pages/Pacientes/patients.module').then(m => m.PatientsModule) },
+
+                    { 
+                        canActivate: [AuthGuard],
+                        data: { roles: ['Admin', 'SupProy', 'RespSeg', 'TomDatos', 'Paciente'] },
+                        path: 'habitos', loadChildren: () => import('./pages/Habits/habits.module').then(m => m.HabitsModule) },
                 ]
             },
             { path: 'auth', loadChildren: () => import('./core/auth/auth.module').then(m => m.AuthModule) },
-            { path: 'landing', loadChildren: () => import('./demo/components/landing/landing.module').then(m => m.LandingModule) },
             { path: 'notfound', component: NotfoundComponent },
             { path: '**', redirectTo: '/notfound' }  // Redireccionar a una página 404 para rutas no existentes
         ], 

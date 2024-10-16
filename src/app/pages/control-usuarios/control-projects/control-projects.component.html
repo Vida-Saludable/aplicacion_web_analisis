@@ -1,0 +1,65 @@
+<p-confirmDialog header="Confirmación" icon="pi pi-exclamation-triangle" acceptLabel="Sí" rejectLabel="No"></p-confirmDialog>
+
+<div class="grid">
+  <div class="col-12">
+    <div class="card">
+      <h5>Proyectos</h5>
+
+      <p-table #dt [value]="projects" dataKey="id" [rows]="10" [paginator]="true" [loading]="loading" responsiveLayout="scroll">
+        
+        <ng-template pTemplate="caption">
+          <div class="flex justify-content-between flex-column sm:flex-row">
+            <div class="flex items-center mb-2">
+              <span class="p-input-icon-left w-full">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar por palabra clave" class="w-full" />
+              </span>
+            </div>
+            <p-button label="Crear Proyecto" icon="pi pi-plus" styleClass="p-button-info" (onClick)="createProject()"></p-button>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Fecha Inicio</th>
+            <th>Fecha Fin</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-project>
+          <tr>
+            <td>{{ project.nombre }}</td>
+            <td>{{ project.descripcion }}</td>
+            <td>{{ project.fecha_inicio | date:'dd/MM/yyyy' }}</td>
+            <td>{{ project.fecha_fin | date:'dd/MM/yyyy' }}</td>
+            <td>{{ project.estado === 1 ? 'Activo' : 'Inactivo' }}</td>
+            <td>
+              <p-button icon="pi pi-pencil" styleClass="p-button-info" (onClick)="editProject(project.id)"></p-button>
+              <p-button icon="pi pi-trash" styleClass="p-button-danger" (onClick)="confirmDelete(project.id)"></p-button>
+    
+
+
+
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="6">No se encontraron proyectos</td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="loadingbody">
+          <tr>
+            <td colspan="6">Cargando datos de proyectos. Por favor espera.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>

@@ -1,21 +1,21 @@
 <div class="grid">
   <div class="col-12">
     <div class="card">
-      <h5>Pacientes</h5>
+      <h5>Usuarios</h5>
+
       <p-table #dt [value]="userslist" dataKey="id" [rows]="10" [paginator]="true" [loading]="loading" responsiveLayout="scroll">
-        
         <ng-template pTemplate="caption">
           <div class="flex justify-content-between flex-column sm:flex-row">
             <div class="flex items-center mb-2">
               <span class="p-input-icon-left w-full">
                 <i class="pi pi-search"></i>
-                <input pInputText type="text" #globalFilter (input)="onGlobalFilter(dt, $event)" placeholder="Buscar por palabra clave" class="w-full"/>
+                <input pInputText type="text" #globalFilter (input)="onGlobalFilter(dt, $event)" placeholder="Buscar por palabra clave" class="w-full" />
               </span>
             </div>
-            <p-button label="Crear Usuario" icon="pi pi-user-plus" (onClick)="showDialog(false)" styleClass="p-button-success" />
+            <p-button label="Crear Usuario" icon="pi pi-user-plus" [routerLink]="['/dashboard/controlUsuarios/usuarios/new']" styleClass="p-button-info"></p-button>
           </div>
         </ng-template>
-        
+
         <ng-template pTemplate="header">
           <tr>
             <th>Nombre</th>
@@ -24,25 +24,25 @@
             <th>Acciones</th>
           </tr>
         </ng-template>
-        
+
         <ng-template pTemplate="body" let-user>
           <tr>
             <td>{{ user.nombre }}</td>
             <td>{{ user.correo }}</td>
-            <td>{{ getRoleName(user.role) }}</td>  <!-- Muestra el nombre del rol -->
+            <td>{{ getRoleName(user.role) }}</td>
             <td>
-              <p-button icon="pi pi-pencil" (onClick)="showDialog(true, user)" styleClass="p-button-info" />
-              <p-button icon="pi pi-trash" (onClick)="deleteUser(user.id)" styleClass="p-button-danger" />
+              <p-button icon="pi pi-pencil" [routerLink]="['/dashboard/controlUsuarios/usuarios', user.id]" styleClass="p-button-info"></p-button>
+              <p-button icon="pi pi-trash" (onClick)="confirmDelete(user.id)" styleClass="p-button-danger"></p-button>
             </td>
           </tr>
         </ng-template>
-        
+
         <ng-template pTemplate="emptymessage">
           <tr>
             <td colspan="4">No se encontraron usuarios.</td>
           </tr>
         </ng-template>
-        
+
         <ng-template pTemplate="loadingbody">
           <tr>
             <td colspan="4">Cargando datos de usuarios. Por favor espera.</td>
@@ -51,49 +51,7 @@
       </p-table>
     </div>
   </div>
+
+  <!-- Confirmación de eliminación -->
+  <p-confirmDialog header="Confirmar Eliminación" icon="pi pi-exclamation-triangle" acceptLabel="Eliminar" rejectLabel="Cancelar"></p-confirmDialog>
 </div>
-
-<p-dialog header="Detalles del Usuario" [(visible)]="visible" [modal]="true" [style]="{ width: '35rem', borderRadius: '12px', padding: '1rem' }" [draggable]="false" [resizable]="false">
-  <ng-template pTemplate="header">
-    <div class="inline-flex align-items-center justify-content-center gap-2">
-      <i class="pi pi-user-md" style="color: #007bff; font-size: 1.5rem;"></i>
-      <span style="font-weight: bold; font-size: 1.2rem; color: #007bff;">
-        {{ isEdit ? 'Editar Usuario del Sistema de Salud' : 'Agregar Usuario al Sistema de Salud' }}
-      </span>
-    </div>
-  </ng-template>
-
-  <div class="p-fluid">
-    <div class="p-field">
-      <label for="nombre" style="font-weight: bold;">Nombre Completo</label>
-      <input pInputText id="nombre" [(ngModel)]="user.nombre" placeholder="Ingrese el nombre completo" style="border-radius: 8px;" />
-    </div>
-
-    <div class="p-field">
-      <label for="correo" style="font-weight: bold;">Correo Electrónico</label>
-      <input pInputText id="correo" [(ngModel)]="user.correo" placeholder="Ingrese el correo" style="border-radius: 8px;" />
-    </div>
-
-    <!-- Contraseña solo visible si está creando un nuevo usuario -->
-    <div *ngIf="!isEdit" class="p-field">
-      <label for="contrasenia" style="font-weight: bold;">Contraseña</label>
-      <input pInputText id="contrasenia" [(ngModel)]="user.contrasenia" placeholder="Ingrese la contraseña" style="border-radius: 8px;" />
-    </div>
-
-    <!-- Dropdown de roles, mostrando el nombre en lugar del ID -->
-    <div class="p-field">
-      <label for="role" style="font-weight: bold;">Rol</label>
-      <p-dropdown [options]="roles" 
-      [(ngModel)]="selectedRole" 
-      optionLabel="name" optionValue="id" 
-      placeholder="Seleccione un rol" 
-      appendTo="body"
-      style="border-radius: 8px;">
-      </p-dropdown>
-    </div>
-
-    <div class="p-field">
-      <p-button (onClick)="registrer()" [label]="isEdit ? 'Actualizar' : 'Registrar'" styleClass="p-button-rounded p-button-success p-button-block" />
-    </div>
-  </div>
-</p-dialog>

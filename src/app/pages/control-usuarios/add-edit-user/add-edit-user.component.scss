@@ -1,0 +1,57 @@
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: left;
+  
+    .header {
+      text-align: left;
+      margin-bottom: 20px;
+  
+      h1 {
+        font-size: 2rem;
+        color: #333;
+        font-weight: bold;
+      }
+    }
+  
+    .form-group {
+      margin-bottom: 20px;
+  
+      label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 8px;
+      }
+  
+      input, p-dropdown {
+        width: 100%;
+        padding: 10px;
+        font-size: 1rem;
+      }
+  
+      .p-error {
+        color: red;
+        font-size: 0.9rem;
+        margin-top: 5px;
+      }
+    }
+  
+    .action-buttons {
+      margin-top: 30px;
+      text-align: right;
+  
+      button {
+        margin-left: 10px;
+        padding: 10px 20px;
+        font-size: 1rem;
+      }
+  
+      .p-button-secondary {
+        background-color: #999;
+        border-color: #999;
+        color: white;
+      }
+    }
+  }
+  

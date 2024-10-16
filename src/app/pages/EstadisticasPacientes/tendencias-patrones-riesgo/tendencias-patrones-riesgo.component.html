@@ -9,7 +9,7 @@
             <div class="flex items-center mb-2">
               <span class="p-input-icon-left w-full">
                 <i class="pi pi-search"></i>
-                <input pInputText type="text" #globalFilter (input)="onGlobalFilter(dt, $event)" placeholder="Buscar por palabra clave" class="w-full"/>
+                <input pInputText type="text" #globalFilter (input)="onGlobalFilter(dt, $event)" placeholder="Buscar por usuario" class="w-full"/>
               </span>
             </div>
           </div>
@@ -20,25 +20,21 @@
             <th>
               <div class="flex justify-content-between align-items-center">
                 Nombre
-                <p-columnFilter type="text" field="datos_personales.nombres_apellidos" display="menu" placeholder="Buscar por nombre"></p-columnFilter>
               </div>
             </th>
             <th>
               <div class="flex justify-content-between align-items-center">
                 Teléfono
-                <p-columnFilter type="text" field="datos_personales.telefono" display="menu" placeholder="Buscar por teléfono"></p-columnFilter>
               </div>
             </th>
             <th>
               <div class="flex justify-content-between align-items-center">
                 Correo
-                <p-columnFilter type="text" field="correo" display="menu" placeholder="Buscar por correo"></p-columnFilter>
               </div>
             </th>
             <th>
               <div class="flex justify-content-between align-items-center">
                 Rol
-                <p-columnFilter type="text" field="role_name" display="menu" placeholder="Buscar por rol"></p-columnFilter>
               </div>
             </th>
           </tr>

@@ -1,0 +1,78 @@
+.title {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: rgb(18, 122, 219);
+  }
+  
+  .metric-card {
+    text-align: center;
+    width: 15rem;
+    height: 12rem;
+    // padding: 1.5rem;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+    .metric-title {
+      font-size: 1.2rem;
+      color: #666;
+      margin-bottom: 0.5rem;
+    }
+  
+    .metric-value {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+  
+    .metric-change {
+      font-size: 1rem;
+  
+      &.positive {
+        color: green;
+      }
+  
+      &.negative {
+        color: red;
+      }
+    }
+  
+    &.metric-sales {
+      background-color: #e3f2fd;
+    }
+  
+    &.metric-revenue {
+      background-color: #fff3e0;
+    }
+  
+    &.metric-visitors {
+      background-color: #fce4ec;
+    }
+  
+    &.metric-stock {
+      background-color: #e8f5e9;
+    }
+  }
+  
+  .card {
+    margin-bottom: 2rem;
+  }
+  
+  .grid {
+    padding: 0 1rem;
+  }
+  
+  .metrics-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  
+  @media (max-width: 768px) {
+    .metrics-row {
+      flex-direction: column;
+    }
+  }
+  
+  

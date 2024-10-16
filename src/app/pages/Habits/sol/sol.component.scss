@@ -1,0 +1,150 @@
+.container {
+    // max-width: 1200px;
+    // margin: 0 auto;
+    // padding: 20px;
+    text-align: center;
+  
+    .title {
+      font-size: 2.5rem;
+      color: #4A90E2;
+      margin-bottom: 40px;
+    }
+
+    form {
+        .row {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 20px;
+          
+          .input-group {
+          //   flex: 1;
+            margin: 10px;
+    
+            label {
+              display: block;
+              font-weight: bold;
+              margin-bottom: 10px;
+            }
+           
+    
+            p-dropdown, p-calendar, input {
+              width: 100%;
+            }
+          }
+        }
+        .search{
+          display: flex;
+          flex-direction: column;
+         label {
+              font-weight: bold;
+          }
+          // background-color: red;
+        }
+        .buttons {
+          display: flex;
+          justify-content: flex-end;
+          gap: 10px;
+          
+          .btn-search {
+            // width: 2rem;
+            height: 2.5rem;
+
+            background-color: #4A90E2;
+            color: white;
+          }
+          
+          .btn-print {
+            height: 2.5rem;
+
+            background-color: #4A90E2;
+            color: white;
+          }
+      
+          button {
+            padding: 10px 20px;
+            font-size: 1.2rem;
+          }
+        }
+      }
+  
+    .filters-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: space-between;
+  
+      .input-group {
+        flex: 1 1 45%;
+        margin-bottom: 20px;
+  
+        label {
+          font-weight: bold;
+          display: block;
+          margin-bottom: 10px;
+        }
+  
+        p-dropdown, p-calendar {
+          width: 100%;
+        }
+      }
+    }
+  
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+  
+      .btn-search {
+        background-color: #4A90E2;
+        color: white;
+      }
+  
+      .btn-print {
+        background-color: #FF6347;
+        color: white;
+      }
+  
+      button {
+        padding: 10px 20px;
+        font-size: 1.2rem;
+      }
+    }
+  
+    .table-container {
+      margin-top: 30px;
+  
+      p-table {
+        width: 100%;
+  
+        th {
+          font-weight: bold;
+        }
+  
+        td, th {
+          text-align: left;
+          padding: 10px;
+        }
+      }
+    }
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .filters-grid {
+      flex-direction: column;
+  
+      .input-group {
+        flex: 1 1 100%;
+      }
+    }
+  
+    .buttons {
+      flex-direction: column;
+  
+      button {
+        width: 100%;
+      }
+    }
+  }
+  

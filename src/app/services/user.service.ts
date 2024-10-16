@@ -37,6 +37,6 @@ export class UserService {
   }
 
   updateUser(userId: number, user: Partial<User>): Observable<User> {
-    return this.http.put<User>(`${this.apiUlr}usuarios/${userId}`, user);
+    return this.http.put<User>(`${this.apiUlr}usuarios/${userId}/`, user);
   }
 }

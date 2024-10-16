@@ -21,7 +21,7 @@ import { AuthInterceptor } from '../auth.interceptor';
     imports: [
         CommonModule,
         AuthRoutingModule,
-        CommonModule,
+      
         ButtonModule,
         CheckboxModule,
         InputTextModule,

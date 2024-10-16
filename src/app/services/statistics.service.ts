@@ -6,7 +6,7 @@ import { IndicatorByProject } from '../models/indicatorByProyect.model';
 
 import { HabitsByDates } from '../models/Habit.model';
 import { DatesStartEnd } from '../models/DatesStartEnd.model';
-import { HealthStatistics } from '../models/indicatorByUser.model';
+import { IndicatorsByPatient } from '../models/indicatorByUser.model';
 
 
 @Injectable({
@@ -25,8 +25,8 @@ export class StatisticsService {
 
 
 
-  getUserHealthIndicators(userId: number): Observable<HealthStatistics> {
-    return this.http.get<HealthStatistics>(`${this.apiUlr}indicadores-salud-por-usuario/${userId}`);
+  getUserHealthIndicators(userId: number): Observable<IndicatorsByPatient> {
+    return this.http.get<IndicatorsByPatient>(`${this.apiUlr}indicadores-salud-por-usuario/${userId}`);
   }
 
 

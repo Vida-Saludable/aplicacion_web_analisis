@@ -1,1 +1,63 @@
-<p>home works!</p>
+<div class="grid">
+    <div class="col-12">
+      <div class="card">
+        <h1 class="title">Dashboard - Vida Saludable</h1>
+  
+        <!-- Row for the metrics (Supervisores, Resp. Seguimiento, Tomadores de Datos, Pacientes, Proyectos) -->
+        <div class="row metrics-row">
+          <div class="p-col-12 p-md-3">
+            <div class="card metric-card metric-sales">
+              <div class="metric-title">Supervisores de Proyecto</div>
+              <div class="metric-value">{{ supervisorCount }}</div>
+            </div>
+          </div>
+  
+          <div class="p-col-12 p-md-3">
+            <div class="card metric-card metric-revenue">
+              <div class="metric-title">Responsables de Seguimiento</div>
+              <div class="metric-value">{{ respSegCount }}</div>
+            </div>
+          </div>
+  
+          <div class="p-col-12 p-md-3">
+            <div class="card metric-card metric-visitors">
+              <div class="metric-title">Tomadores de Datos</div>
+              <div class="metric-value">{{ tomDatosCount }}</div>
+            </div>
+          </div>
+  
+          <div class="p-col-12 p-md-3">
+            <div class="card metric-card metric-stock">
+              <div class="metric-title">Pacientes</div>
+              <div class="metric-value">{{ pacienteCount }}</div>
+            </div>
+          </div>
+  
+          <div class="p-col-12 p-md-3">
+            <div class="card metric-card metric-sales">
+              <div class="metric-title">Proyectos</div>
+              <div class="metric-value">{{ projectCount }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Charts Row -->
+  <div class="grid p-fluid">
+    <div class="col-12 lg:col-6">
+      <div class="card flex flex-column align-items-center">
+        <h5 class="text-left w-full">Usuarios por Rol</h5>
+        <p-chart type="pie" [data]="pieData" [options]="pieOptions"></p-chart>
+      </div>
+    </div>
+  
+    <div class="col-12 lg:col-6">
+      <div class="card">
+        <h5>Proyectos</h5>
+        <p-chart type="bar" [data]="barData" [options]="barOptions"></p-chart>
+      </div>
+    </div>
+  </div>
+  

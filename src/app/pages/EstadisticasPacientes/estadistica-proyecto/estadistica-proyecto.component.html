@@ -1,8 +1,28 @@
-<div class="card">
-    <p-chart type="bar" [data]="data" [options]="options"></p-chart>
+<div class="card-container">
+  <p-chart type="bar" [data]="data" [options]="options"></p-chart>
 </div>
 
-<div class="report">
-    <h2>Reporte de Salud del Usuario</h2>
-    <p *ngFor="let item of indicatorhealthReport">{{ item }}</p>
+<div *ngIf="indicatorhealthReport.length > 0" class="result-section mt-4">
+  <div class="card result-card">
+      <h6 class="section-title">Reporte de Salud Detallado</h6>
+    
+      <div class="result-grid">
+          <!-- Tarjetas de Resultados por Indicador -->
+          <div *ngFor="let item of indicatorhealthReport; let i = index" class="result-category">
+              <h6 class="category-title">{{ getCardTitle(i) }}</h6>
+              <p>{{ item }}</p>
+          </div>
+      </div>
+  </div>
+</div>
+<!-- Resumen de colores -->
+<div class="color-summary">
+  <h4>Resumen del estado de los indicadores:</h4>
+
+  <p><strong>{{ colorSummary.green }} indicadores</strong> esta muy bien (verde).</p>
+  <p><strong>{{ colorSummary.lightGreen }} indicadores</strong> esta bien (verde claro).</p>
+  <p><strong>{{ colorSummary.yellow }} indicadores</strong> esta en un estado aceptable (amarillo).</p>
+  <p><strong>{{ colorSummary.orange }} indicadores</strong> indican niveles elevados o bajos (naranja).</p>
+  <p><strong>{{ colorSummary.red }} indicadores</strong> esta en mal estado (rojo).</p>
+  <p><strong>{{ colorSummary.darkRed }} indicadores</strong> esta en muy mal estado (rojo oscuro).</p>
 </div>

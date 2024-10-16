@@ -6,6 +6,8 @@ import { TendenciasPatronesRiesgoComponent } from './tendencias-patrones-riesgo/
 import { EstadisticaProyectoComponent } from './estadistica-proyecto/estadistica-proyecto.component';
 import { EstadisticaUsuarioComponent } from './estadistica-usuario/estadistica-usuario.component';
 import { TendenciasHabitosUsuarioComponent } from './tendencias-habitos-usuario/tendencias-habitos-usuario.component';
+import { PatientsHistoryComponent } from './patients-history/patients-history.component';
+import { HistorialDeUsuariosComponent } from './historial-de-usuarios/historial-de-usuarios.component';
 
 
 @NgModule({
@@ -39,6 +41,9 @@ import { TendenciasHabitosUsuarioComponent } from './tendencias-habitos-usuario/
             path: 'tendenciaUsuario/:id',
             component: TendenciasHabitosUsuarioComponent
          },
+         { path: 'historialHábitos', component: PatientsHistoryComponent },
+         { path: 'historialHábitos/:id', component: HistorialDeUsuariosComponent },
+
 	])],
 	exports: [RouterModule]
 })

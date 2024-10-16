@@ -1,22 +1,26 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MessageService } from 'primeng/api';  // Importar servicio para mostrar mensajes
 import { HabitsByDates } from 'src/app/models/Habit.model';
 import { StatisticsService } from 'src/app/services/statistics.service';
 
 @Component({
   selector: 'app-tendencias-habitos-usuario',
   templateUrl: './tendencias-habitos-usuario.component.html',
-  styleUrls: ['./tendencias-habitos-usuario.component.scss']
+  styleUrls: ['./tendencias-habitos-usuario.component.scss'],
+  providers: [MessageService]  // Añadir el servicio en los proveedores
 })
 export class TendenciasHabitosUsuarioComponent implements OnInit {
   private router = inject(Router);
   private activateRoute = inject(ActivatedRoute);
   private indicatorByUserService = inject(StatisticsService);
+  private messageService = inject(MessageService);  // Inyectar el servicio de mensajes
 
   public startDate: Date | null = null;
   public endDate: Date | null = null;
   public minDate: Date | null = null;
   public maxDate: Date | null = null;
+  public fechasCargadas = false; // Nueva bandera para controlar si se reciben las fechas
 
   indicatorHabitsByUser: HabitsByDates;
   public userId: number | null = null;
@@ -24,19 +28,16 @@ export class TendenciasHabitosUsuarioComponent implements OnInit {
   public options: any;
 
   constructor() {
+    this.userId = Number(this.activateRoute.snapshot.paramMap.get('id'));
     if (this.userId) {
       this.getDateRangeByUser(this.userId);
     }
-    this.userId = Number(this.activateRoute.snapshot.paramMap.get('id'));
-
   }
 
   ngOnInit(): void {
-
     if (this.userId) {
       this.getDateRangeByUser(this.userId);
     }
-
     this.initializeChart();
   }
 
@@ -77,7 +78,7 @@ export class TendenciasHabitosUsuarioComponent implements OnInit {
             color: textColorSecondary
           },
           min: 0,
-          max: 100 // Cada hábito será evaluado sobre 100
+          max: 100  // Cada hábito será evaluado sobre 100
         }
       }
     };
@@ -89,11 +90,11 @@ export class TendenciasHabitosUsuarioComponent implements OnInit {
       (response: { primera_fecha: Date, ultima_fecha: Date }) => {
         this.minDate = new Date(response.primera_fecha);
         this.maxDate = new Date(response.ultima_fecha);
-
-        console.log(response)
+        this.fechasCargadas = true; // Se establecen las fechas, permitir uso de calendario
       },
       error => {
         console.error("Error al obtener el rango de fechas", error);
+        this.fechasCargadas = false; // Si falla, deshabilitar los calendarios
       }
     );
   }
@@ -105,7 +106,6 @@ export class TendenciasHabitosUsuarioComponent implements OnInit {
   
     this.indicatorByUserService.getUsersHabitsByDates(userId, start, end).subscribe(
       response => {
-        console.log('Datos recibidos:', response);  // Verificar los datos recibidos
         this.indicatorHabitsByUser = response;
         this.updateChart(response);
       },
@@ -144,12 +144,19 @@ export class TendenciasHabitosUsuarioComponent implements OnInit {
   }
 
   onDateChange() {
-    if (this.startDate && this.endDate && this.userId) {
-      console.log('Fechas seleccionadas:', this.startDate, this.endDate);  // Verificar las fechas
-      this.getIndicatorByUser(this.userId, this.startDate, this.endDate);
+    if (this.startDate && this.endDate) {
+      // Validación: fecha de inicio no puede ser mayor a la fecha de fin
+      if (this.startDate > this.endDate) {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error en las fechas',
+          detail: 'La fecha de inicio no puede ser mayor que la fecha de fin.'
+        });
+      } else if (this.userId) {
+        this.getIndicatorByUser(this.userId, this.startDate, this.endDate);
+      }
     } else {
       console.warn("Fechas incompletas o userId no válido");
     }
   }
-  
 }

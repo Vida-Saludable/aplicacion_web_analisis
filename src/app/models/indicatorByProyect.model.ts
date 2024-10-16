@@ -1,35 +1,54 @@
 export interface IndicatorByProject {
-    peso:                                       Altura;
-    altura:                                     Altura;
-    imc:                                        Altura;
-    presion_sistolica:                          Altura;
-    presion_diastolica:                         Altura;
-    radio_abdominal:                            ColesterolHDL;
-    grasa_corporal:                             ColesterolHDL;
-    grasa_visceral:                             Altura;
-    frecuencia_cardiaca:                        Altura;
-    frecuencia_respiratoria:                    Altura;
-    colesterol_total:                           Altura;
-    colesterol_hdl:                             ColesterolHDL;
-    colesterol_ldl:                             Altura;
-    trigliceridos:                              Altura;
-    glucosa:                                    Altura;
-    temperatura:                                Altura;
-    saturacion_oxigeno:                         Altura;
-    porcentaje_musculo:                         ColesterolHDL;
-    glicemia_basal:                             Altura;
-    frecuencia_cardiaca_en_reposo:              Altura;
-    frecuencia_cardiaca_despues_de_45_segundos: Altura;
-    frecuencia_cardiaca_1_minuto_despues:       Altura;
-    resultado_test_ruffier:                     Altura;
+    peso:                                       Indicator;
+    altura:                                     Indicator;
+    imc:                                        Indicator;
+    radio_abdominal:                            GenderProject;
+    porcentaje_musculo:                         GenderProject;
+    grasa_corporal:                             GenderProject;
+    grasa_visceral:                             Indicator;
+    colesterol_total:                           Indicator;
+    colesterol_hdl:                             GenderProject;
+    colesterol_ldl:                             Indicator;
+    trigliceridos:                              Indicator;
+    glucosa:                                    Indicator;
+    presion_sistolica:                          Indicator;
+    presion_diastolica:                         Indicator;
+    frecuencia_cardiaca:                        Indicator;
+    frecuencia_respiratoria:                    Indicator;
+    saturacion_oxigeno:                         Indicator;
+    glicemia_basal:                             Indicator;
+    temperatura:                                Indicator;
+    frecuencia_cardiaca_en_reposo:              Indicator;
+    frecuencia_cardiaca_despues_de_45_segundos: Indicator;
+    frecuencia_cardiaca_1_minuto_despues:       Indicator;
+    resultado_test_ruffier:                     Indicator;
 }
 
-export interface Altura {
-    promedio: number | null;
-    status:   null | string;
+export interface Indicator {
+    promedio: number;
+    data:     Data;
 }
 
-export interface ColesterolHDL {
-    M: Altura;
-    F: Altura;
+export interface Data {
+    status: string;
+    color:  Color;
+}
+
+export enum Color {
+    Ff4C4C = "#FF4C4C",
+    Ffa500 = "#FFA500",
+    Ffd700 = "#FFD700",
+    The00Ff00 = "#00FF00",
+    The32Cd32 = "#32CD32",
+    FF0000='#FF0000'
+}
+
+export interface GenderProject {
+    M: F;
+    F: F;
+}
+
+export interface F {
+    promedio: number;
+    status:   Data;
 }

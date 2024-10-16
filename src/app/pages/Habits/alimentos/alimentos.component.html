@@ -1,0 +1,191 @@
+
+    <!-- Mensaje de alerta para fechas inválidas -->
+    <p-messages [(value)]="messages" [enableService]="false"></p-messages>
+
+
+    <div class="container">
+      <h1 class="title">Análisis de Consumo de Alimentos</h1>
+    
+      <form [formGroup]="filtersForm" (ngSubmit)="buscarUsuarios()">
+        <div class="filters-grid">
+          <!-- Dropdown para "desayuno_hora" -->
+          <div class="input-group">
+            <label for="desayuno_hora">Hora Desayuno</label>
+            <p-dropdown 
+              [options]="desayunoHoras" 
+              formControlName="desayuno_hora" 
+              placeholder="Selecciona hora del desayuno"
+              (onChange)="onDropdownChange($event, 'desayuno_hora')">
+            </p-dropdown>
+          </div>
+    
+          <!-- Dropdown para "almuerzo_hora" -->
+          <div class="input-group">
+            <label for="almuerzo_hora">Hora Almuerzo</label>
+            <p-dropdown 
+              [options]="almuerzoHoras" 
+              formControlName="almuerzo_hora" 
+              placeholder="Selecciona hora del almuerzo"
+              (onChange)="onDropdownChange($event, 'almuerzo_hora')">
+            </p-dropdown>
+          </div>
+    
+          <!-- Dropdown para "cena_hora" -->
+          <div class="input-group">
+            <label for="cena_hora">Hora Cena</label>
+            <p-dropdown 
+              [options]="cenaHoras" 
+              formControlName="cena_hora" 
+              placeholder="Selecciona hora de la cena"
+              (onChange)="onDropdownChange($event, 'cena_hora')">
+            </p-dropdown>
+          </div>
+    
+          <!-- Dropdown para "desayuno" -->
+          <div class="input-group">
+            <label for="desayuno">Desayuno</label>
+            <p-dropdown 
+              [options]="desayunoOptions" 
+              formControlName="desayuno" 
+              placeholder="Selecciona si hubo desayuno"
+              (onChange)="onDropdownChange($event, 'desayuno')">
+            </p-dropdown>
+          </div>
+    
+          <!-- Dropdown para "almuerzo" -->
+          <div class="input-group">
+            <label for="almuerzo">Almuerzo</label>
+            <p-dropdown 
+              [options]="almuerzoOptions" 
+              formControlName="almuerzo" 
+              placeholder="Selecciona si hubo almuerzo"
+              (onChange)="onDropdownChange($event, 'almuerzo')">
+            </p-dropdown>
+          </div>
+    
+          <!-- Dropdown para "cena" -->
+          <div class="input-group">
+            <label for="cena">Cena</label>
+            <p-dropdown 
+              [options]="cenaOptions" 
+              formControlName="cena" 
+              placeholder="Selecciona si hubo cena"
+              (onChange)="onDropdownChange($event, 'cena')">
+            </p-dropdown>
+          </div>
+    
+          <!-- Dropdown para "desayuno_saludable" -->
+          <div class="input-group">
+            <label for="desayuno_saludable">Desayuno Saludable</label>
+            <p-dropdown 
+              [options]="desayunoSaludableOptions" 
+              formControlName="desayuno_saludable" 
+              placeholder="¿Fue un desayuno saludable?"
+              (onChange)="onDropdownChange($event, 'desayuno_saludable')">
+            </p-dropdown>
+          </div>
+    
+          <!-- Dropdown para "almuerzo_saludable" -->
+          <div class="input-group">
+            <label for="almuerzo_saludable">Almuerzo Saludable</label>
+            <p-dropdown 
+              [options]="almuerzoSaludableOptions" 
+              formControlName="almuerzo_saludable" 
+              placeholder="¿Fue un almuerzo saludable?"
+              (onChange)="onDropdownChange($event, 'almuerzo_saludable')">
+            </p-dropdown>
+          </div>
+    
+          <!-- Dropdown para "cena_saludable" -->
+          <div class="input-group">
+            <label for="cena_saludable">Cena Saludable</label>
+            <p-dropdown 
+              [options]="cenaSaludableOptions" 
+              formControlName="cena_saludable" 
+              placeholder="¿Fue una cena saludable?"
+              (onChange)="onDropdownChange($event, 'cena_saludable')">
+            </p-dropdown>
+          </div>
+    
+          <!-- Selector de Fecha Inicio -->
+        
+        </div>
+    
+        <div class="row">
+          <div class="input search">
+            <label for="nombre">Buscar por nombre</label>
+            <input 
+            type="text" 
+            pInputText 
+            formControlName="nombre" 
+            placeholder="Buscar por nombre" 
+            (input)="filtrarUsuarios($event)">
+          </div>
+          <div class="flex">
+            <div class="input-group">
+              <label for="fecha_inicio">Fecha Inicio</label>
+              <p-calendar 
+                formControlName="fecha_inicio" 
+                [minDate]="fechaMinima" 
+                [maxDate]="fechaMaxima" 
+                dateFormat="yy-mm-dd">
+              </p-calendar>
+            </div>
+      
+            <!-- Selector de Fecha Fin -->
+            <div class="input-group">
+              <label for="fecha_fin">Fecha Fin</label>
+              <p-calendar 
+                formControlName="fecha_fin" 
+                [minDate]="fechaMinima" 
+                [maxDate]="fechaMaxima" 
+                dateFormat="yy-mm-dd">
+              </p-calendar>
+            </div>
+          </div>
+    
+          <div class="buttons">
+            <button pButton type="submit" label="Buscar" class="btn-search"></button>
+            <button pButton icon="pi pi-file-excel" label="Exportar Excel" class="btn-print" (click)="exportarExcel()"></button>
+          </div>
+        </div>
+      </form>
+    
+      <!-- Tabla de Usuarios -->
+      <div class="table-container">
+        <p-table [value]="usuariosFiltrados" [value]="usuarios" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]" responsiveLayout="scroll">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Nombres</th>
+              <th>Sexo</th>
+              <th>Edad</th>
+              <th>Estado Civil</th>
+              <th>Fecha de Nacimiento</th>
+              <th>Teléfono</th>
+              <th>Grado de Instrucción</th>
+              <th>Correo</th>
+            </tr>
+          </ng-template>
+    
+          <ng-template pTemplate="body" let-usuario>
+            <tr>
+              <td>{{ usuario.nombres_apellidos }}</td>
+              <td>{{ usuario.sexo }}</td>
+              <td>{{ usuario.edad }}</td>
+              <td>{{ usuario.estado_civil }}</td>
+              <td>{{ usuario.fecha_nacimiento }}</td>
+              <td>{{ usuario.telefono }}</td>
+              <td>{{ usuario.grado_instruccion }}</td>
+              <td>{{ usuario.correo }}</td>
+            </tr>
+          </ng-template>
+    
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="8">No se encontraron usuarios.</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+    

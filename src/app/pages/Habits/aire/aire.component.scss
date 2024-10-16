@@ -1,0 +1,149 @@
+.container {
+  // max-width: 1200px;
+  // margin: 0 auto;
+  // padding: 20px;
+  text-align: center;
+
+  .title {
+    font-size: 2.5rem;
+    color: #4A90E2;
+    margin-bottom: 40px;
+  }
+
+  form {
+    .row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      
+      .input-group {
+      //   flex: 1;
+        margin: 10px;
+
+        label {
+          display: block;
+          font-weight: bold;
+          margin-bottom: 10px;
+        }
+       
+
+        p-dropdown, p-calendar, input {
+          width: 100%;
+        }
+      }
+    }
+    .search{
+      display: flex;
+      flex-direction: column;
+     label {
+          font-weight: bold;
+      }
+      // background-color: red;
+    }
+    .buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      
+      .btn-search {
+        background-color: #4A90E2;
+        color: white;
+        height: 2.5rem;
+      }
+      
+      .btn-print {
+        background-color: #4A90E2;
+        color: white;
+        height: 2.5rem;
+      }
+  
+      button {
+        padding: 10px 20px;
+        font-size: 1.2rem;
+      }
+    }
+  }
+
+  .filters-grid {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+
+    .input-group {
+      flex: 1 1 45%;
+      label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 10px;
+      }
+      p-dropdown, p-calendar {
+        width: 100%;
+      }
+    }
+  }
+
+  .bottom-grid {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+
+    .input-group {
+      flex: 1;
+      margin-right: 20px;
+      label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 10px;
+      }
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      
+      .btn-search {
+        background-color: #4A90E2;
+        color: white;
+      }
+      .btn-print {
+        background-color: #FF6347;
+        color: white;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 1.2rem;
+      }
+    }
+  }
+
+  .table-container {
+    margin-top: 30px;
+    p-table {
+      width: 100%;
+      th {
+        font-weight: bold;
+      }
+      td, th {
+        text-align: left;
+        padding: 10px;
+      }
+    }
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .filters-grid, .bottom-grid {
+    flex-direction: column;
+
+    .input-group, .button-group {
+      flex: 1 1 100%;
+    }
+  }
+
+  .button-group {
+    button {
+      width: 100%;
+    }
+  }
+}

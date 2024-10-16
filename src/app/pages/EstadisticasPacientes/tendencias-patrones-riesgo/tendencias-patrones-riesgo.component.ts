@@ -17,7 +17,7 @@ export class TendenciasPatronesRiesgoComponent implements OnInit {
 
   userslist: Patient[] = [];
   loading: boolean = true;  // Añadimos una variable para el estado de carga
-  proyectoId = 1;
+  proyectoId = 2;
   public userId: number | null = null;  // Permitir que userId sea opcional (null)
 
   constructor() {}

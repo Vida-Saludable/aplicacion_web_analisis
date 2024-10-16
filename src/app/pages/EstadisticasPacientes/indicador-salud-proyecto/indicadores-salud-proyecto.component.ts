@@ -12,7 +12,7 @@ export class IndicadoresSaludProyectoComponent implements OnInit {
 
   userslist: Patient[] = [];
   loading: boolean = true;  // Añadimos una variable para el estado de carga
-  proyectoId = 1;
+  proyectoId = 2;
 
   ngOnInit(): void {
     this.getUsersbyProject(this.proyectoId);

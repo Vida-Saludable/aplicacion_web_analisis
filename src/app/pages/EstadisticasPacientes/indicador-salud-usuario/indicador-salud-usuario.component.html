@@ -6,10 +6,9 @@
         
         <ng-template pTemplate="caption">
           <div class="flex justify-content-between flex-column sm:flex-row">
-            <button pButton label="Clear" class="p-button-outlined mb-2" icon="pi pi-filter-slash" (click)="clear(dt)"></button>
             <span class="p-input-icon-left mb-2">
               <i class="pi pi-search"></i>
-              <input pInputText type="text" #globalFilter (input)="onGlobalFilter(dt, $event)" placeholder="Search Keyword" class="w-full"/>
+              <input pInputText type="text" #globalFilter (input)="onGlobalFilter(dt, $event)" placeholder="Buscar Usuario" class="w-full"/>
             </span>
           </div>
         </ng-template>
@@ -19,25 +18,21 @@
             <th>
               <div class="flex justify-content-between align-items-center">
                 Nombre
-                <p-columnFilter type="text" field="datos_personales.nombres_apellidos" display="menu" placeholder="Search by name"></p-columnFilter>
               </div>
             </th>
             <th>
               <div class="flex justify-content-between align-items-center">
                 Correo
-                <p-columnFilter type="text" field="correo" display="menu" placeholder="Search by email"></p-columnFilter>
               </div>
             </th>
             <th>
               <div class="flex justify-content-between align-items-center">
                 Celular
-                <p-columnFilter type="text" field="datos_personales.telefono" display="menu" placeholder="Search by phone"></p-columnFilter>
               </div>
             </th>
             <th>
               <div class="flex justify-content-between align-items-center">
                 Rol
-                <p-columnFilter type="text" field="role_name" display="menu" placeholder="Search by role"></p-columnFilter>
               </div>
             </th>
           </tr>

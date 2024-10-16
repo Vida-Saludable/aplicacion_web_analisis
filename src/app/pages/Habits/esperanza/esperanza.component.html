@@ -1,0 +1,98 @@
+<p-messages [(value)]="messages" [enableService]="false"></p-messages>
+
+<div class="container">
+  <h2 class="title">ANÁLISIS DE ESPERANZA</h2>
+
+  <form [formGroup]="filtersForm" (ngSubmit)="buscarUsuarios()">
+    <div class="row">
+      <!-- Dropdown para "tipo_practica" -->
+      <div class="input-group">
+        <label for="tipo_practica">Tipo de Práctica</label>
+        <p-dropdown 
+          [options]="tipoPracticaOptions" 
+          formControlName="tipo_practica" 
+          placeholder="Selecciona tipo de práctica"
+          (onChange)="onDropdownChange($event, 'tipo_practica')">
+        </p-dropdown>
+      </div>
+
+   <div class="flex">
+       <!-- Selector de Fecha Inicio -->
+       <div class="input-group">
+        <label for="fecha_inicio">Fecha Inicio</label>
+        <p-calendar 
+          formControlName="fecha_inicio" 
+          [minDate]="fechaMinima" 
+          [maxDate]="fechaMaxima" 
+          dateFormat="yy-mm-dd">
+        </p-calendar>
+      </div>
+
+      <!-- Selector de Fecha Fin -->
+      <div class="input-group">
+        <label for="fecha_fin">Fecha Fin</label>
+        <p-calendar 
+          formControlName="fecha_fin" 
+          [minDate]="fechaMinima" 
+          [maxDate]="fechaMaxima" 
+          dateFormat="yy-mm-dd">
+        </p-calendar>
+      </div>
+   </div>
+    </div>
+
+    <div class="row">
+      <div class="input search">
+        <label for="nombre">Buscar por nombre</label>
+        <input 
+        type="text" 
+        pInputText 
+        formControlName="nombre" 
+        placeholder="Buscar por nombre" 
+        (input)="filtrarUsuarios($event)">
+      </div>
+
+      <div class="buttons">
+        <button pButton type="submit" label="Buscar" class="btn-search"></button>
+        <button pButton icon="pi pi-file-excel" label="Exportar Excel" class="btn-print" (click)="exportarExcel()"></button>
+      </div>
+    </div>
+  </form>
+
+  <!-- Tabla de Usuarios -->
+  <div class="table-container">
+    <p-table [value]="usuariosFiltrados" [value]="usuarios" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]" responsiveLayout="scroll">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Nombres</th>
+          <th>Sexo</th>
+          <th>Edad</th>
+          <th>Estado Civil</th>
+          <th>Fecha de Nacimiento</th>
+          <th>Teléfono</th>
+          <th>Grado de Instrucción</th>
+          <th>Correo</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-usuario>
+        <tr>
+          <td>{{ usuario.nombres_apellidos }}</td>
+          <td>{{ usuario.sexo }}</td>
+          <td>{{ usuario.edad }}</td>
+          <td>{{ usuario.estado_civil }}</td>
+          <td>{{ usuario.fecha_nacimiento }}</td>
+          <td>{{ usuario.telefono }}</td>
+          <td>{{ usuario.grado_instruccion }}</td>
+          <td>{{ usuario.correo }}</td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="8">No se encontraron usuarios.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

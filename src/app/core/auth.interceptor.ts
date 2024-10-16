@@ -11,10 +11,12 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(private authService: AuthService, private router: Router) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const authToken = this.authService.getToken();
+    // Obtener el token de acceso desde sessionStorage
+    const authToken = sessionStorage.getItem('accessToken'); 
 
     let authReq = req;
     if (authToken) {
+      // Si el token existe, clonar la solicitud e incluir el token en el encabezado
       authReq = req.clone({
         setHeaders: {
           Authorization: `Bearer ${authToken}`
@@ -25,9 +27,10 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(authReq).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
+          // Redirigir al login si el usuario no está autorizado
           this.router.navigate(['/auth/']);
         }
-        return throwError(error);
+        return throwError(error);  // Propagar el error
       })
     );
   }

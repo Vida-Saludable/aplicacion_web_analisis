@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TableDemoRoutingModule } from 'src/app/demo/components/uikit/table/tabledemo-routing.module';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { RatingModule } from 'primeng/rating';
@@ -13,24 +12,26 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { DropdownModule } from 'primeng/dropdown';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { RippleModule } from 'primeng/ripple';
-import { ChartsDemoRoutingModule } from 'src/app/demo/components/uikit/charts/chartsdemo-routing.module';
 import { ChartModule } from 'primeng/chart';
 import { PatientsRoutingModule } from './patients-routing.module';
 import { PatientsComponent } from './pacientes/patients.component';
 import { InitialVsEndIndicatorsComponent } from './initial-vs-end-indicators/initial-vs-end-indicators.component';
+import { PatientsHistoryComponent } from '../EstadisticasPacientes/patients-history/patients-history.component';
+import { HistorialDeUsuariosComponent } from '../EstadisticasPacientes/historial-de-usuarios/historial-de-usuarios.component';
 
 
 
 @NgModule({
   declarations: [
 	PatientsComponent,
-	InitialVsEndIndicatorsComponent
+	InitialVsEndIndicatorsComponent,
+	PatientsHistoryComponent,
+	HistorialDeUsuariosComponent
 
 ],
   imports: [
     CommonModule,
     PatientsRoutingModule,
-    TableDemoRoutingModule,
 		FormsModule,
 		TableModule,
 		RatingModule,
@@ -43,7 +44,6 @@ import { InitialVsEndIndicatorsComponent } from './initial-vs-end-indicators/ini
 		DropdownModule,
 		ProgressBarModule,
 		ToastModule,
-    ChartsDemoRoutingModule,
 		ChartModule
   ]
 

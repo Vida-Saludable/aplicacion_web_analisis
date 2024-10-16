@@ -1,32 +1,44 @@
-// health-indicator.model.ts
-export interface HealthIndicator {
-    promedio: number;
-    status: string;
-  }
-  
-  export interface HealthStatistics {
-    peso: HealthIndicator;
-    altura: HealthIndicator;
-    imc: HealthIndicator;
-    radio_abdominal: HealthIndicator;
-    porcentaje_musculo: HealthIndicator;
-    grasa_corporal: HealthIndicator;
-    grasa_visceral: HealthIndicator;
-    colesterol_total: HealthIndicator;
-    colesterol_hdl: HealthIndicator;
-    colesterol_ldl: HealthIndicator;
-    trigliceridos: HealthIndicator;
-    glucosa: HealthIndicator;
-    presion_sistolica: HealthIndicator;
-    presion_diastolica: HealthIndicator;
-    frecuencia_cardiaca: HealthIndicator;
-    frecuencia_respiratoria: HealthIndicator;
-    saturacion_oxigeno: HealthIndicator;
-    glicemia_basal: HealthIndicator;
-    temperatura: HealthIndicator;
-    frecuencia_cardiaca_en_reposo: HealthIndicator;
-    frecuencia_cardiaca_despues_de_45_segundos: HealthIndicator;
-    frecuencia_cardiaca_1_minuto_despues: HealthIndicator;
-    resultado_test_ruffier: HealthIndicator;
-  }
-  
+export interface IndicatorsByPatient {
+  peso: Indicator;
+  altura: Indicator;
+  imc: Indicator;
+  radio_abdominal: Indicator;
+  porcentaje_musculo: Indicator;
+  grasa_corporal: Indicator;
+  grasa_visceral: Indicator;
+  colesterol_total: Indicator;
+  colesterol_hdl: Indicator;
+  colesterol_ldl: Indicator;
+  trigliceridos: Indicator;
+  glucosa: Indicator;
+  presion_sistolica: Indicator;
+  presion_diastolica: Indicator;
+  frecuencia_cardiaca: Indicator;
+  frecuencia_respiratoria: Indicator;
+  saturacion_oxigeno: Indicator;
+  glicemia_basal: Indicator;
+  temperatura: Indicator;
+  frecuencia_cardiaca_en_reposo: Indicator;
+  frecuencia_cardiaca_despues_de_45_segundos: Indicator;
+  frecuencia_cardiaca_1_minuto_despues: Indicator;
+  resultado_test_ruffier: Indicator;
+}
+
+export interface Indicator {
+  promedio: number;
+  data: Data;
+}
+
+export interface Data {
+  status: string;
+  color: Color;
+}
+
+export enum Color {
+  Ff4C4C = "#FF4C4C",
+  Ffa500 = "#FFA500",
+  Ffd700 = "#FFD700",
+  The00Ff00 = "#00FF00",
+  The32Cd32 = "#32CD32",
+  FF0000='#FF0000'
+}
