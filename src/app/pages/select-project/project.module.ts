@@ -38,6 +38,9 @@ import { ProjectRoutingModule } from './project-routing.module';
     InputSwitchModule,
     ProjectRoutingModule
     
+  ],
+  exports: [
+    ProjectComponent
   ]
 })
 export class ProjectModule { }
