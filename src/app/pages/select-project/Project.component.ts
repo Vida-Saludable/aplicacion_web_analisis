@@ -6,7 +6,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { ProjectService } from 'src/app/services/project.service';
 import { RolesService } from 'src/app/services/roles.service';
 import { UserService, UsuarioPersonal } from 'src/app/services/user.service';
-import { User } from '../../../models/user.model';
+import { User } from '../../models/user.model';
 import { Patient } from 'src/app/models/patient.model';
 
 @Component({

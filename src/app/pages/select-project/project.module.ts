@@ -12,7 +12,7 @@ import { PaginatorModule } from 'primeng/paginator';
 import { CardProjectComponent } from '../../components/shared/card-project/card-project.component';
 import { CardModule } from 'primeng/card';
 import { InputSwitchModule } from 'primeng/inputswitch';
-import { ProjectComponent } from './Project/Project.component';
+import { ProjectComponent } from './Project.component';
 import { ProjectRoutingModule } from './project-routing.module';
 
 
