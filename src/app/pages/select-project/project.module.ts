@@ -13,7 +13,7 @@ import { CardProjectComponent } from '../../components/shared/card-project/card-
 import { CardModule } from 'primeng/card';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { ProjectRoutingModule } from './project-routing.module';
-import { ProjecUabComponent } from './Project-aub.component';
+import { ProjecUabComponent } from './project-aub.component';
 
 
 

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { ProjecUabComponent } from './Project-aub.component';
+import { ProjecUabComponent } from './project-aub.component';
+
 
 
 
