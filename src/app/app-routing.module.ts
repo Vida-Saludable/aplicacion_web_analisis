@@ -15,7 +15,7 @@ import { UnauthorizedPageComponent } from './helpers/components/unauthorized-pag
             { path: 'select-project',
                 canActivate: [AuthGuard],
                 data: { roles: ['Admin', 'SupProy', 'RespSeg', 'TomDatos', 'Paciente'] },
-                loadChildren: () => import('./pages/select-project/project.module').then(m => m.ProjectModule) },
+                loadChildren: () => import('./pages/Project/project.module').then(m => m.ProjectModule) },
             {
                 path: 'dashboard', component: AppLayoutComponent, canActivate: [AuthGuard],
                 data: { roles: ['Admin', 'SupProy', 'RespSeg', 'TomDatos', 'Paciente'] },
