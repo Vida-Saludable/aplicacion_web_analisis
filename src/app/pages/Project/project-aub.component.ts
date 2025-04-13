@@ -62,7 +62,7 @@ export class ProjecUabComponent implements OnInit {
    
     this.project$.getAllProjects().subscribe(response=> {
       console.log(response)
-      if(this.userRole=="Admin"){
+      if(this.userRole=="Administrador"){
         console.log("LLega aqui")
         this.projects=response
         this.filteredCards = [...this.projects];

@@ -136,7 +136,7 @@ export class AppMenuComponent implements OnInit {
         ];
 
          // Solo agregar el ítem "Control del sistema" si el rol es Admin
-    if (this.userRole === 'Admin') {
+    if (this.userRole === 'Administrador') {
         this.model.push({
             label: 'Control del sistema',
             items: [
