@@ -11,10 +11,10 @@ import { Patient } from 'src/app/models/patient.model';
 
 @Component({
   selector: 'app-home',
-  templateUrl: './project.component.html',
-  styleUrls: ['./project.component.scss']
+  templateUrl: './project-uab.component.html',
+  styleUrls: ['./project-uab.component.scss']
 })
-export class ProjectComponent implements OnInit {
+export class ProjecUabComponent implements OnInit {
   projects: Project[] = [];
   filteredCards: Project[] = [];
   paginatedCards: Project[] = [];

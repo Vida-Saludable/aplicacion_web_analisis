@@ -12,14 +12,14 @@ import { PaginatorModule } from 'primeng/paginator';
 import { CardProjectComponent } from '../../components/shared/card-project/card-project.component';
 import { CardModule } from 'primeng/card';
 import { InputSwitchModule } from 'primeng/inputswitch';
-import { ProjectComponent } from './Project.component';
 import { ProjectRoutingModule } from './project-routing.module';
+import { ProjecUabComponent } from './Project-aub.component';
 
 
 
 @NgModule({
   declarations: [
-    ProjectComponent,
+    ProjecUabComponent,
     CardProjectComponent
 
   ],
@@ -40,7 +40,7 @@ import { ProjectRoutingModule } from './project-routing.module';
     
   ],
   exports: [
-    ProjectComponent
+    ProjecUabComponent
   ]
 })
 export class ProjectModule { }

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { ProjectComponent } from './Project.component';
+import { ProjecUabComponent } from './Project-aub.component';
 
 
 
@@ -8,12 +8,12 @@ import { ProjectComponent } from './Project.component';
 	imports: [RouterModule.forChild([
 		{
             path: '',
-            component: ProjectComponent
+            component: ProjecUabComponent
          },
 
          {
             path: 'Projects',
-            component: ProjectComponent
+            component: ProjecUabComponent
          }
 	])],
 	exports: [RouterModule]
