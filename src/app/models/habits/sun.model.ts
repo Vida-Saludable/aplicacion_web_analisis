@@ -4,22 +4,3 @@ export interface SunUnique{
     fecha_minima : Date   
     fecha_maxima   : Date   
   }
-
-  export interface ClasificationSunUsers {
-    nombres_apellidos: string;
-    sexo: string;
-    edad: number;
-    estado_civil: string;
-    fecha_nacimiento: string;
-    telefono: string;
-    grado_instruccion: string;
-    procedencia: string;
-    religion: string;
-    correo: string;
-  }
-  
-  export interface ClasificationSun {
-    total_usuarios: number;                       // Número total de usuarios
-    usuarios: ClasificationSunUsers[];          // Lista de usuarios que cumplen con los filtros
-  }
-  

@@ -9,7 +9,7 @@ import { StatisticsService } from 'src/app/services/statistics.service';
 })
 export class EstadisticaProyectoComponent implements OnInit {
   private indicatorByProjectService = inject(StatisticsService);
-  public projectId: number = 4;
+  public projectId: number;
   indicatorByProject: IndicatorByProject;
   indicatorhealthReport: string[] = [];
   // projectData: string[] = [];
@@ -19,21 +19,42 @@ export class EstadisticaProyectoComponent implements OnInit {
   options: any;
 
   ngOnInit() {
+    this.getProjectFromLocalStorage();
     this.getIndicatorByProject(this.projectId);
+
+    
 
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--text-color');
     const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 
     this.data = {
-      labels: [
-        'Peso', 'Altura', 'IMC', 'Radio Abdominal', 'Grasa Corporal', 'Grasa Visceral', 'Porcentaje de Músculo',
-        'Colesterol Total', 'Colesterol HDL', 'Colesterol LDL', 'Triglicéridos', 'Glicemia Basal',
-        'Presión Sistólica', 'Presión Diastólica', 'Frecuencia Cardíaca', 'Frecuencia Respiratoria', 
-        'Temperatura', 'Saturación de Oxígeno', 'Frecuencia Cardíaca en Reposo', 
-        'Frecuencia Cardíaca Después de 45 Segundos', 'Frecuencia Cardíaca 1 Minuto Después', 
-        'Resultado del Test de Ruffier'
-      ],
+      labels :[
+        'Peso',
+        // 'Altura',
+        'IMC',
+        'Radio abdominal (M)',
+        'Radio abdominal (F)',
+        'Porcentaje de músculo (M)',
+        'Porcentaje de músculo (F)',
+        'Grasa corporal (M)',
+        'Grasa corporal (F)',
+        'Grasa visceral',
+        'Colesterol total',
+        'Colesterol HDL (M)',
+        'Colesterol HDL (F)',
+        'Colesterol LDL',
+        'Triglicéridos',
+        'Glucosa',
+        'Presión sistólica',
+        'Presión diastólica',
+        'Frecuencia cardíaca',
+        'Frecuencia respiratoria',
+        'Saturación de oxígeno',
+        'Glicemia basal',
+        'Temperatura',
+    ],
+    
       datasets: [
         {
           type: 'bar',
@@ -132,6 +153,15 @@ export class EstadisticaProyectoComponent implements OnInit {
       }
     };
   }
+  getProjectFromLocalStorage():void{
+    // Obtenemos el proyecto desde el local storage
+    const proyecto = localStorage.getItem('projectId');
+    if(proyecto){
+      this.projectId = parseInt(proyecto);
+    } else {
+      console.error('No hay proyecto seleccionado');
+    }
+  }
 
   getIndicatorByProject(projectId: number) {
     this.indicatorByProjectService.getProjectHealthIndicators(projectId).subscribe(
@@ -141,54 +171,59 @@ export class EstadisticaProyectoComponent implements OnInit {
         this.countColors(this.indicatorByProject);
         this.data.datasets[0].data = [
           response.peso.promedio,
-          response.altura.promedio,
+          // response.altura.promedio,
           response.imc.promedio,
-          response.radio_abdominal.F.promedio || response.radio_abdominal.M.promedio, // Handling gender case
-          response.grasa_corporal.F.promedio || response.grasa_corporal.M.promedio,   // Handling gender case
+          response.radio_abdominal.M.promedio, // Radio abdominal (M)
+          response.radio_abdominal.F.promedio, // Radio abdominal (F)
+          response.porcentaje_musculo.M.promedio, // Porcentaje de músculo (M)
+          response.porcentaje_musculo.F.promedio, // Porcentaje de músculo (F)
+          response.grasa_corporal.M.promedio, // Grasa corporal (M)
+          response.grasa_corporal.F.promedio, // Grasa corporal (F)
           response.grasa_visceral.promedio,
-          response.porcentaje_musculo.F.promedio || response.porcentaje_musculo.M.promedio,  // Handling gender case
           response.colesterol_total.promedio,
-          response.colesterol_hdl.F.promedio || response.colesterol_hdl.M.promedio,  // Handling gender case
+          response.colesterol_hdl.M.promedio, // Colesterol HDL (M)
+          response.colesterol_hdl.F.promedio, // Colesterol HDL (F)
           response.colesterol_ldl.promedio,
           response.trigliceridos.promedio,
-          response.glicemia_basal.promedio,
+          response.glucosa.promedio,
           response.presion_sistolica.promedio,
           response.presion_diastolica.promedio,
           response.frecuencia_cardiaca.promedio,
           response.frecuencia_respiratoria.promedio,
-          response.temperatura.promedio,
           response.saturacion_oxigeno.promedio,
-          response.frecuencia_cardiaca_en_reposo.promedio,
-          response.frecuencia_cardiaca_despues_de_45_segundos.promedio,
-          response.frecuencia_cardiaca_1_minuto_despues.promedio,
-          response.resultado_test_ruffier.promedio
-        ];
+          response.glicemia_basal.promedio,
+          response.temperatura.promedio,
+      ];
+      
 
         // Populate the colors from the response
-        this.data.datasets[0].backgroundColor = [
-          response.peso.data.color,
-          response.altura.data.color,
-          response.imc.data.color,
-          response.radio_abdominal.F.status.color || response.radio_abdominal.M.status.color, // Gender handling
-          response.grasa_corporal.F.status.color || response.grasa_corporal.M.status.color,   // Gender handling
-          response.grasa_visceral.data.color,
-          response.porcentaje_musculo.F.status.color || response.porcentaje_musculo.M.status.color,  // Gender handling
-          response.colesterol_total.data.color,
-          response.colesterol_hdl.F.status.color || response.colesterol_hdl.M.status.color,   // Gender handling
-          response.colesterol_ldl.data.color,
-          response.trigliceridos.data.color,
-          response.glicemia_basal.data?.color,
-          response.presion_sistolica.data.color,
-          response.presion_diastolica.data.color,
-          response.frecuencia_cardiaca.data.color,
-          response.frecuencia_respiratoria.data.color,
-          response.temperatura.data.color,
-          response.saturacion_oxigeno.data.color,
-          response.frecuencia_cardiaca_en_reposo.data.color,
-          response.frecuencia_cardiaca_despues_de_45_segundos.data.color,
-          response.frecuencia_cardiaca_1_minuto_despues.data.color,
-          response.resultado_test_ruffier.data.color
-        ];
+      // Populate the colors from the response
+this.data.datasets[0].backgroundColor = [
+  response.peso.data.color,
+  // response.altura.data.color,
+  response.imc.data.color,
+  response.radio_abdominal.M.status.color, // Radio abdominal (M)
+  response.radio_abdominal.F.status.color, // Radio abdominal (F)
+  response.porcentaje_musculo.M.status.color, // Porcentaje de músculo (M)
+  response.porcentaje_musculo.F.status.color, // Porcentaje de músculo (F)
+  response.grasa_corporal.M.status.color, // Grasa corporal (M)
+  response.grasa_corporal.F.status.color, // Grasa corporal (F)
+  response.grasa_visceral.data.color,
+  response.colesterol_total.data.color,
+  response.colesterol_hdl.M.status.color, // Colesterol HDL (M)
+  response.colesterol_hdl.F.status.color, // Colesterol HDL (F)
+  response.colesterol_ldl.data.color,
+  response.trigliceridos.data.color,
+  response.glucosa.data.color,
+  response.presion_sistolica.data.color,
+  response.presion_diastolica.data.color,
+  response.frecuencia_cardiaca.data.color,
+  response.frecuencia_respiratoria.data.color,
+  response.saturacion_oxigeno.data.color,
+  response.glicemia_basal.data.color,
+  response.temperatura.data.color,
+];
+
         
 
         // Update chart
@@ -204,33 +239,31 @@ export class EstadisticaProyectoComponent implements OnInit {
   // Función para contar los colores
   countColors(indicators: IndicatorByProject) {
     const allColors = [
-      indicators.peso.data.color,
-      indicators.altura.data.color,
-      indicators.imc.data.color,
-      indicators.radio_abdominal.M.status.color,
-      indicators.radio_abdominal.F.status.color,
-      indicators.grasa_corporal.M.status.color,
-      indicators.grasa_corporal.F.status.color,
-      indicators.grasa_visceral.data.color,
-      indicators.colesterol_total.data.color,
-      indicators.colesterol_hdl.M.status.color,
-      indicators.colesterol_hdl.F.status.color,
-      indicators.colesterol_ldl.data.color,
-      indicators.trigliceridos.data.color,
-      indicators.glucosa.data.color,
-      indicators.presion_sistolica.data.color,
-      indicators.presion_diastolica.data.color,
-      indicators.frecuencia_cardiaca.data.color,
-      indicators.frecuencia_respiratoria.data.color,
-      indicators.saturacion_oxigeno.data.color,
-      indicators.glicemia_basal.data.color,
-      indicators.temperatura.data.color,
-      indicators.frecuencia_cardiaca_en_reposo.data.color,
-      indicators.frecuencia_cardiaca_despues_de_45_segundos.data.color,
-      indicators.frecuencia_cardiaca_1_minuto_despues.data.color,
-      indicators.resultado_test_ruffier.data.color
-    ];
-
+      indicators.peso.data.color,                        // Peso
+      // indicators.altura.data.color,                     // Altura
+      indicators.imc.data.color,                        // IMC
+      indicators.radio_abdominal.M.status.color,        // Radio abdominal (M)
+      indicators.radio_abdominal.F.status.color,        // Radio abdominal (F)
+      indicators.porcentaje_musculo.M.status.color,     // Porcentaje músculo (M)
+      indicators.porcentaje_musculo.F.status.color,     // Porcentaje músculo (F)
+      indicators.grasa_corporal.M.status.color,         // Grasa corporal (M)
+      indicators.grasa_corporal.F.status.color,         // Grasa corporal (F)
+      indicators.grasa_visceral.data.color,             // Grasa visceral
+      indicators.colesterol_total.data.color,           // Colesterol total
+      indicators.colesterol_hdl.M.status.color,         // Colesterol HDL (M)
+      indicators.colesterol_hdl.F.status.color,         // Colesterol HDL (F)
+      indicators.colesterol_ldl.data.color,             // Colesterol LDL
+      indicators.trigliceridos.data.color,              // Triglicéridos
+      indicators.glucosa.data.color,                    // Glucosa
+      indicators.presion_sistolica.data.color,          // Presión sistólica
+      indicators.presion_diastolica.data.color,         // Presión diastólica
+      indicators.frecuencia_cardiaca.data.color,        // Frecuencia cardíaca
+      indicators.frecuencia_respiratoria.data.color,    // Frecuencia respiratoria
+      indicators.saturacion_oxigeno.data.color,         // Saturación de oxígeno
+      indicators.glicemia_basal.data.color,             // Glicemia basal
+      indicators.temperatura.data.color                 // Temperatura
+  ];
+  
     this.colorSummary = { 
       darkRed:0, lightGreen:0, green: 0,  yellow: 0, orange: 0, red: 0 };
 
@@ -266,39 +299,36 @@ export class EstadisticaProyectoComponent implements OnInit {
   generateHealthReport(userData: IndicatorByProject) {
     this.indicatorhealthReport = [
       `Peso: Actualmente su peso es de ${userData.peso.promedio} kg, lo cual está considerado como ${userData.peso.data.status}.`,
-      `Altura: Su altura de ${userData.altura.promedio} m está ${userData.altura.data.status}.`,
-      `IMC: Su índice de masa corporal (IMC) es ${userData.imc.promedio}, lo que indica que se encuentra en ${userData.imc.data.status}.`,
-      `Radio Abdominal: El radio abdominal es de ${userData.radio_abdominal.F.promedio} cm para mujeres y ${userData.radio_abdominal.M.promedio} cm para hombres, lo cual está ${userData.radio_abdominal.F.status.status} para mujeres y ${userData.radio_abdominal.M.status.status} para hombres.`,
-      `Grasa Corporal: Tiene un promedio de grasa corporal de ${userData.grasa_corporal.F.promedio}% para mujeres (${userData.grasa_corporal.F.status.status}) y ${userData.grasa_corporal.M.promedio}% para hombres (${userData.grasa_corporal.M.status.status}).`,
-      `Grasa Visceral: Su grasa visceral es ${userData.grasa_visceral.promedio}, lo cual está ${userData.grasa_visceral.data.status}.`,
-      `Porcentaje de Músculo: El porcentaje de músculo es de ${userData.porcentaje_musculo.F.promedio}% para mujeres y ${userData.porcentaje_musculo.M.promedio}% para hombres, lo cual está ${userData.porcentaje_musculo.F.status.status} para mujeres y ${userData.porcentaje_musculo.M.status.status} para hombres.`,
-      `Colesterol Total: Su nivel de colesterol total es ${userData.colesterol_total.promedio} mg/dl, lo cual está ${userData.colesterol_total.data.status}.`,
-      `Colesterol HDL: Sus niveles de colesterol HDL son ${userData.colesterol_hdl.F.promedio} mg/dl para mujeres (${userData.colesterol_hdl.F.status.status}) y ${userData.colesterol_hdl.M.promedio} mg/dl para hombres (${userData.colesterol_hdl.M.status.status}).`,
-      `Colesterol LDL: Su nivel de colesterol LDL es ${userData.colesterol_ldl.promedio} mg/dl, lo cual está ${userData.colesterol_ldl.data.status}.`,
-      `Triglicéridos: Sus triglicéridos están en ${userData.trigliceridos.promedio} mg/dl, lo cual está ${userData.trigliceridos.data.status}.`,
-      `Glicemia Basal: Sus niveles de glicemia basal son ${userData.glicemia_basal.promedio} mg/dl, lo cual está ${userData.glicemia_basal.data?.status || 'no disponible'}.`,
-      `Presión Sistólica: Su presión sistólica es de ${userData.presion_sistolica.promedio} mmHg, y está considerada como ${userData.presion_sistolica.data.status}.`,
-      `Presión Diastólica: Su presión diastólica es de ${userData.presion_diastolica.promedio} mmHg, lo cual está ${userData.presion_diastolica.data.status}.`,
-      `Frecuencia Cardíaca: Su frecuencia cardiaca en reposo es de ${userData.frecuencia_cardiaca.promedio} latidos por minuto, lo cual está ${userData.frecuencia_cardiaca.data.status}.`,
-      `Frecuencia Respiratoria: Tiene una frecuencia respiratoria de ${userData.frecuencia_respiratoria.promedio} respiraciones por minuto, lo cual está ${userData.frecuencia_respiratoria.data.status}.`,
-      `Temperatura: Su temperatura corporal es de ${userData.temperatura.promedio}°C, lo cual está ${userData.temperatura.data.status}.`,
-      `Saturación de Oxígeno: Su saturación de oxígeno es ${userData.saturacion_oxigeno.promedio}%, lo cual está ${userData.saturacion_oxigeno.data.status}.`,
-      `Frecuencia Cardíaca en Reposo: Su frecuencia cardiaca en reposo es de ${userData.frecuencia_cardiaca_en_reposo.promedio} latidos por minuto, lo cual está ${userData.frecuencia_cardiaca_en_reposo.data.status}.`,
-      `Frecuencia Cardíaca Después de 45 Segundos: Es de ${userData.frecuencia_cardiaca_despues_de_45_segundos.promedio} latidos por minuto, lo cual está ${userData.frecuencia_cardiaca_despues_de_45_segundos.data.status}.`,
-      `Frecuencia Cardíaca 1 Minuto Después: Es de ${userData.frecuencia_cardiaca_1_minuto_despues.promedio} latidos por minuto, lo cual está ${userData.frecuencia_cardiaca_1_minuto_despues.data.status}.`,
-      `Resultado del Test de Ruffier: El resultado del test de Ruffier es ${userData.resultado_test_ruffier.promedio}, lo que indica un estado de salud ${userData.resultado_test_ruffier.data.status}.`
+      // `Altura: Su altura de ${userData.altura.promedio} cm está ${userData.altura.data.status}.`,
+      `IMC: Su índice de masa corporal (IMC) es ${userData.imc.promedio} kg/m², lo que indica que se encuentra en ${userData.imc.data.status}.`,
+      `Radio Abdominal: Para mujeres es de ${userData.radio_abdominal.F.promedio} cm (${userData.radio_abdominal.F.status.status}), y para hombres es de ${userData.radio_abdominal.M.promedio} cm (${userData.radio_abdominal.M.status.status}).`,
+      `Porcentaje de Músculo: Para mujeres es ${userData.porcentaje_musculo.F.promedio}% (${userData.porcentaje_musculo.F.status.status}), y para hombres es ${userData.porcentaje_musculo.M.promedio}% (${userData.porcentaje_musculo.M.status.status}).`,
+      `Grasa Corporal: Para mujeres es ${userData.grasa_corporal.F.promedio}% (${userData.grasa_corporal.F.status.status}), y para hombres es ${userData.grasa_corporal.M.promedio}% (${userData.grasa_corporal.M.status.status}).`,
+      `Grasa Visceral: Su nivel de grasa visceral es ${userData.grasa_visceral.promedio}%, lo cual está ${userData.grasa_visceral.data.status}.`,
+      `Colesterol Total: Su nivel de colesterol total es ${userData.colesterol_total.promedio} mg/dl (${userData.colesterol_total.data.status}).`,
+      `Colesterol HDL: Para mujeres es ${userData.colesterol_hdl.F.promedio} mg/dl (${userData.colesterol_hdl.F.status.status}), y para hombres es ${userData.colesterol_hdl.M.promedio} mg/dl (${userData.colesterol_hdl.M.status.status}).`,
+      `Colesterol LDL: Su nivel de colesterol LDL es ${userData.colesterol_ldl.promedio} mg/dl (${userData.colesterol_ldl.data.status}).`,
+      `Triglicéridos: Sus triglicéridos están en ${userData.trigliceridos.promedio} mg/dl (${userData.trigliceridos.data.status}).`,
+      `Glucosa: Sus niveles de glucosa son ${userData.glucosa.promedio} mg/dl (${userData.glucosa.data.status}).`,
+      `Presión Sistólica: Su presión sistólica es de ${userData.presion_sistolica.promedio} mmHg (${userData.presion_sistolica.data.status}).`,
+      `Presión Diastólica: Su presión diastólica es de ${userData.presion_diastolica.promedio} mmHg (${userData.presion_diastolica.data.status}).`,
+      `Frecuencia Cardíaca: Su frecuencia cardiaca en reposo es de ${userData.frecuencia_cardiaca.promedio} latidos por minuto (${userData.frecuencia_cardiaca.data.status}).`,
+      `Frecuencia Respiratoria: Su frecuencia respiratoria es de ${userData.frecuencia_respiratoria.promedio} respiraciones por minuto (${userData.frecuencia_respiratoria.data.status}).`,
+      `Temperatura: Su temperatura corporal es de ${userData.temperatura.promedio}°C (${userData.temperatura.data.status}).`,
+      `Saturación de Oxígeno: Su saturación de oxígeno es ${userData.saturacion_oxigeno.promedio}% (${userData.saturacion_oxigeno.data.status}).`,
     ];
+    
   }
   
 
 getCardTitle(index: number): string {
   const titles = [
-    'Peso', 'Altura', 'IMC', 'Radio Abdominal', 'Grasa Corporal', 'Grasa Visceral', 'Porcentaje de Músculo',
-        'Colesterol Total', 'Colesterol HDL', 'Colesterol LDL', 'Triglicéridos', 'Glicemia Basal',
-        'Presión Sistólica', 'Presión Diastólica', 'Frecuencia Cardíaca', 'Frecuencia Respiratoria', 
-        'Temperatura', 'Saturación de Oxígeno', 'Frecuencia Cardíaca en Reposo', 
-        'Frecuencia Cardíaca Después de 45 Segundos', 'Frecuencia Cardíaca 1 Minuto Después', 
-        'Resultado del Test de Ruffier'
+    'Peso', 
+    // 'Altura', 
+    'IMC', 'Radio abdominal', 'Grasa corporal', 'Grasa visceral', 'Porcentaje de músculo',
+        'Colesterol total', 'Colesterol HDL', 'Colesterol LDL', 'Triglicéridos', 'Glicemia basal',
+        'Presión Sistólica', 'Presión diastólica', 'Frecuencia cardíaca', 'Frecuencia respiratoria', 
+        'Temperatura', 'Saturación de oxígeno'
   ];
   return titles[index];
 }

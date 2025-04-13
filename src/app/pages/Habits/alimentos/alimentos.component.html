@@ -11,35 +11,37 @@
           <!-- Dropdown para "desayuno_hora" -->
           <div class="input-group">
             <label for="desayuno_hora">Hora Desayuno</label>
-            <p-dropdown 
-              [options]="desayunoHoras" 
-              formControlName="desayuno_hora" 
-              placeholder="Selecciona hora del desayuno"
-              (onChange)="onDropdownChange($event, 'desayuno_hora')">
-            </p-dropdown>
+            <p-autoComplete
+              [suggestions]="filteredDesayunoHoras"
+              (completeMethod)="filterDesayunoHoras($event)"
+              formControlName="desayuno_hora"
+              placeholder="ingrese hora del desayuno"
+              field="label">
+            </p-autoComplete>
           </div>
-    
-          <!-- Dropdown para "almuerzo_hora" -->
+          
           <div class="input-group">
             <label for="almuerzo_hora">Hora Almuerzo</label>
-            <p-dropdown 
-              [options]="almuerzoHoras" 
-              formControlName="almuerzo_hora" 
-              placeholder="Selecciona hora del almuerzo"
-              (onChange)="onDropdownChange($event, 'almuerzo_hora')">
-            </p-dropdown>
+            <p-autoComplete
+              [suggestions]="filteredAlmuerzoHoras"
+              (completeMethod)="filterAlmuerzoHoras($event)"
+              formControlName="almuerzo_hora"
+              placeholder="ingrese hora del almuerzo"
+              field="label">
+            </p-autoComplete>
           </div>
-    
-          <!-- Dropdown para "cena_hora" -->
+          
           <div class="input-group">
             <label for="cena_hora">Hora Cena</label>
-            <p-dropdown 
-              [options]="cenaHoras" 
-              formControlName="cena_hora" 
-              placeholder="Selecciona hora de la cena"
-              (onChange)="onDropdownChange($event, 'cena_hora')">
-            </p-dropdown>
+            <p-autoComplete
+              [suggestions]="filteredCenaHoras"
+              (completeMethod)="filterCenaHoras($event)"
+              formControlName="cena_hora"
+              placeholder="ingrese hora de la cena"
+              field="label">
+            </p-autoComplete>
           </div>
+          
     
           <!-- Dropdown para "desayuno" -->
           <div class="input-group">
@@ -153,7 +155,18 @@
     
       <!-- Tabla de Usuarios -->
       <div class="table-container">
-        <p-table [value]="usuariosFiltrados" [value]="usuarios" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]" responsiveLayout="scroll">
+        <p-table 
+        [value]="usuariosFiltrados"
+      [paginator]="true" 
+      [rows]="pageSize" 
+      [totalRecords]="totalItems" 
+      [first]="(currentPage - 1) * pageSize"
+      [rowHover]="true"
+      [loading]="loading"
+      [rowsPerPageOptions]="[5, 10, 15]" 
+      responsiveLayout="scroll" 
+      (onPage)="onPageChange($event)"
+         >
           <ng-template pTemplate="header">
             <tr>
               <th>Nombres</th>
@@ -162,7 +175,7 @@
               <th>Estado Civil</th>
               <th>Fecha de Nacimiento</th>
               <th>Teléfono</th>
-              <th>Grado de Instrucción</th>
+              <th>Ocupación</th>
               <th>Correo</th>
             </tr>
           </ng-template>
@@ -175,14 +188,22 @@
               <td>{{ usuario.estado_civil }}</td>
               <td>{{ usuario.fecha_nacimiento }}</td>
               <td>{{ usuario.telefono }}</td>
-              <td>{{ usuario.grado_instruccion }}</td>
+              <td>{{ usuario.ocupacion }}</td>
               <td>{{ usuario.correo }}</td>
             </tr>
           </ng-template>
     
           <ng-template pTemplate="emptymessage">
             <tr>
-              <td colspan="8">No se encontraron usuarios.</td>
+              <td colspan="5">No se encontraron usuarios.</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="loadingbody">
+            <tr>
+              <td colspan="5">
+                <p-progressSpinner></p-progressSpinner>
+                Cargando datos de usuarios. Por favor espera.
+              </td>
             </tr>
           </ng-template>
         </p-table>

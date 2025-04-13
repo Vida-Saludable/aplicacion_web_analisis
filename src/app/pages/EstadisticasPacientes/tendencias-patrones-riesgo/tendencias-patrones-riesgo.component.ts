@@ -16,14 +16,20 @@ export class TendenciasPatronesRiesgoComponent implements OnInit {
   private indicatorByUserService = inject(StatisticsService);
 
   userslist: Patient[] = [];
-  loading: boolean = true;  // Añadimos una variable para el estado de carga
-  proyectoId = 2;
-  public userId: number | null = null;  // Permitir que userId sea opcional (null)
+  loading: boolean = true;
+  projectId: number;
+  public userId: number | null = null;
+
+  // Variables para la paginación
+  totalItems: number = 0;
+  pageSize: number = 10;
+  currentPage: number = 1;
 
   constructor() {}
 
   ngOnInit(): void {
-    this.getUsersbyProject(this.proyectoId);
+    this.getProjectFromLocalStorage();
+    this.getUsersbyProject(this.projectId, this.currentPage, this.pageSize);
 
     // Obtener los queryParams y reconstruir el objeto user
     this.activateRoute.queryParams.subscribe(params => {
@@ -35,18 +41,39 @@ export class TendenciasPatronesRiesgoComponent implements OnInit {
     });
   }
 
-  getUsersbyProject(projectId: number) {
-    this.userService.getPatients(projectId).subscribe(
-      (data: Patient[]) => {
-        this.userslist = data;
-        this.loading = false;  // Cambiamos el estado de carga cuando los datos son recibidos
+  getProjectFromLocalStorage(): void {
+    const proyecto = localStorage.getItem('projectId');
+    if (proyecto) {
+      this.projectId = parseInt(proyecto);
+    } else {
+      console.error('No hay proyecto seleccionado');
+    }
+  }
+
+  getUsersbyProject(projectId: number, page: number, pageSize: number) {
+    this.loading = true;
+    this.userService.getPatients(projectId, page, pageSize).subscribe(
+      response => {
+        this.userslist = response.data;
+        this.totalItems = response.totalItems;
+        this.pageSize = response.pageSize;
+        this.currentPage = response.page;
+        this.loading = false;
       },
       error => {
         console.error('Error fetching users', error);
-        this.loading = false;  // Cambiamos el estado de carga incluso si ocurre un error
+        this.loading = false;
       }
     );
   }
+  
+
+  onPageChange(event: any): void {
+    this.currentPage = event.page + 1; // PrimeNG usa índice basado en 0, por eso sumamos 1
+    this.pageSize = event.rows; // Actualizamos el tamaño de la página con el valor seleccionado
+    this.getUsersbyProject(this.projectId, this.currentPage, this.pageSize);
+  }
+  
 
   navigateToUserStatistics(user: Patient) {
     const targetUrl = `/dashboard/Estadisticas/tendenciaUsuario/${user.id}`;
@@ -57,10 +84,6 @@ export class TendenciasPatronesRiesgoComponent implements OnInit {
         console.log('Fallo en la navegación');
       }
     });
-  }
-
-  clear(dt: any) {
-    dt.clear();  // Limpiamos los filtros
   }
 
   onGlobalFilter(table: any, event: Event) {

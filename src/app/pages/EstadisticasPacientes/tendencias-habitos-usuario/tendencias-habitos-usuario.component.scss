@@ -4,3 +4,26 @@
     border-radius: 50%;
   }
   
+
+
+  .paciente-info {
+    display: flex;
+    justify-content: flex-start;
+  }
+  
+  .paciente-card {
+    background-color: #eaf3ff;
+    padding: 1rem 1.5rem;
+    border-left: 6px solid #007bff; /* borde azul */
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+    min-width: 250px;
+  }
+  
+  
+  .paciente-card h4 {
+    margin-bottom: 0.5rem;
+  }

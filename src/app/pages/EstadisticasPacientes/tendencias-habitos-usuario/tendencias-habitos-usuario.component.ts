@@ -1,8 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';  // Importar servicio para mostrar mensajes
+import { localeES } from 'src/app/helpers/objectsCorrelations.ts/calendary';
 import { HabitsByDates } from 'src/app/models/Habit.model';
 import { StatisticsService } from 'src/app/services/statistics.service';
+import { UserService, UsuarioPersonal } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-tendencias-habitos-usuario',
@@ -11,9 +13,12 @@ import { StatisticsService } from 'src/app/services/statistics.service';
   providers: [MessageService]  // Añadir el servicio en los proveedores
 })
 export class TendenciasHabitosUsuarioComponent implements OnInit {
+  public locale = localeES; // Usar la configuración compartida
+  public messages: any[] = []; // Agrega esta línea para inicializar messages
   private router = inject(Router);
   private activateRoute = inject(ActivatedRoute);
   private indicatorByUserService = inject(StatisticsService);
+  private userService = inject(UserService);
   private messageService = inject(MessageService);  // Inyectar el servicio de mensajes
 
   public startDate: Date | null = null;
@@ -26,6 +31,7 @@ export class TendenciasHabitosUsuarioComponent implements OnInit {
   public userId: number | null = null;
   public data: any;
   public options: any;
+  usuario:UsuarioPersonal 
 
   constructor() {
     this.userId = Number(this.activateRoute.snapshot.paramMap.get('id'));
@@ -39,8 +45,17 @@ export class TendenciasHabitosUsuarioComponent implements OnInit {
       this.getDateRangeByUser(this.userId);
     }
     this.initializeChart();
+    this.obtenerdatosDelUsuario()
   }
 
+  obtenerdatosDelUsuario(){
+    this.userService.getUsuarioPersonal(this.userId).subscribe(user=>{
+      console.log("El usuario es",user)
+
+        this.usuario=user
+        console.log("El usuario es",this.usuario)
+    })
+  }
   initializeChart() {
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--text-color');
@@ -145,13 +160,13 @@ export class TendenciasHabitosUsuarioComponent implements OnInit {
 
   onDateChange() {
     if (this.startDate && this.endDate) {
-      // Validación: fecha de inicio no puede ser mayor a la fecha de fin
       if (this.startDate > this.endDate) {
-        this.messageService.add({
+        this.messages.push({
           severity: 'error',
           summary: 'Error en las fechas',
           detail: 'La fecha de inicio no puede ser mayor que la fecha de fin.'
         });
+        this.messageService.add(this.messages[this.messages.length - 1]); // Muestra el mensaje
       } else if (this.userId) {
         this.getIndicatorByUser(this.userId, this.startDate, this.endDate);
       }
@@ -159,4 +174,6 @@ export class TendenciasHabitosUsuarioComponent implements OnInit {
       console.warn("Fechas incompletas o userId no válido");
     }
   }
+  
+  
 }

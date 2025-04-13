@@ -1,7 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ClasificationExercise, ExerciseUnique } from 'src/app/models/habits/exercise.model';
+import {  ExerciseUnique } from 'src/app/models/habits/exercise.model';
+import { PaginatedResponse } from 'src/app/models/pager/pager'; // Importar la interfaz de paginación
+import { ProfileUser } from 'src/app/models/profileUser';
 import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
@@ -28,15 +30,17 @@ export class ExerciseService {
     return this.http.get<ExerciseUnique>(`${this.baseUrl}ejercicio-unicos`);
   }
 
-  // Obtener clasificación de usuarios de ejercicio con filtros opcionales
+  // Obtener clasificación de usuarios de ejercicio con filtros opcionales y paginación
   getClasificationExercise(filtros: {
     tipo?: string;
     tiempo?: number;
     fecha_inicio?: string;
     fecha_fin?: string;
-  }): Observable<ClasificationExercise> {
+    page?: number;
+    pageSize?: number;
+  }): Observable<PaginatedResponse<ProfileUser>> { // Usar la interfaz PaginatedResponse para el tipo de respuesta
     const params = this.buildParams(filtros);
-    return this.http.get<ClasificationExercise>(`${this.baseUrl}clasificacion-ejercicio-usuarios`, { params });
+    return this.http.get<PaginatedResponse<ProfileUser>>(`${this.baseUrl}clasificacion-ejercicio-usuarios`, { params });
   }
 
   // Exportar clasificación de usuarios de ejercicio a Excel

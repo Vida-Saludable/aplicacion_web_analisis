@@ -13,6 +13,7 @@ import { PanelModule } from 'primeng/panel';
 import { MessageService } from 'primeng/api';
 import { VariableFisicaVariableHabitoDeltasComponent } from './variable-fisica-variable-habito-deltas/variable-fisica-variable-habito-deltas.component';
 import { VariableFisicaVariableHabitoComponent } from './variable-fisica-variable-habito/variable-fisica-variable-habito.component';
+import { MessagesModule } from 'primeng/messages';
 
 
 
@@ -32,7 +33,8 @@ import { VariableFisicaVariableHabitoComponent } from './variable-fisica-variabl
     ButtonModule,
     FieldsetModule,
     ToastModule,
-    PanelModule
+    PanelModule,
+    MessagesModule
 
   ],
   providers: [MessageService], // Asegúrate de agregar el servicio aquí

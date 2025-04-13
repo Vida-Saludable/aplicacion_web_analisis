@@ -22,6 +22,7 @@ import { ChartModule } from 'primeng/chart';
 import { CalendarModule } from 'primeng/calendar';
 import { TendenciasHabitosUsuarioComponent } from './tendencias-habitos-usuario/tendencias-habitos-usuario.component';
 import { CardModule } from 'primeng/card';
+import { MessagesModule } from 'primeng/messages';
 
 
 
@@ -51,7 +52,8 @@ import { CardModule } from 'primeng/card';
 		DropdownModule,
 		ProgressBarModule,
 		ToastModule,
-		CardModule
+		CardModule,
+		MessagesModule
 		
 		
   ]

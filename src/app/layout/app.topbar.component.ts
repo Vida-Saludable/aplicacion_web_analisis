@@ -46,13 +46,18 @@ export class AppTopBarComponent {
 
     // Método para cerrar sesión
     logout() {
-        this.authService.logout().subscribe({
-            next: () => {
+        // this.authService.logout().subscribe({
+        //     next: () => {
+        //         this.router.navigate(['/auth']);  // Redirige al login después de cerrar sesión
+        //     },
+        //     error: (err) => {
+        //         console.error('Error al cerrar sesión', err);
+        //     }
+        // });
+
+      
                 this.router.navigate(['/auth']);  // Redirige al login después de cerrar sesión
-            },
-            error: (err) => {
-                console.error('Error al cerrar sesión', err);
-            }
-        });
+            
+        
     }
 }

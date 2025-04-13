@@ -1,8 +1,10 @@
 import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { NotfoundComponent } from './demo/components/notfound/notfound.component';
+// import { NotfoundComponent } from './demo/components/notfound/notfound.component';
 import { AppLayoutComponent } from "./layout/app.layout.component";
 import { AuthGuard } from './core/auth.guard';
+import { PagesNotFoundComponent } from './helpers/components/pages-not-found/pages-not-found.component';
+import { UnauthorizedPageComponent } from './helpers/components/unauthorized-page/unauthorized-page.component';
 
 @NgModule({
     imports: [
@@ -58,7 +60,9 @@ import { AuthGuard } from './core/auth.guard';
                 ]
             },
             { path: 'auth', loadChildren: () => import('./core/auth/auth.module').then(m => m.AuthModule) },
-            { path: 'notfound', component: NotfoundComponent },
+            { path: 'notfound', component: PagesNotFoundComponent },
+            { path: 'unauthorizedPageComponent', component: UnauthorizedPageComponent },
+
             { path: '**', redirectTo: '/notfound' }  // Redireccionar a una página 404 para rutas no existentes
         ], 
         { 

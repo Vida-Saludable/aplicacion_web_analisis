@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { SleepUnique, ClasificationSleep, ClasificationSleepUsers } from 'src/app/models/habits/sleep.model'; 
+import { SleepUnique } from 'src/app/models/habits/sleep.model'; 
 import { MessageService } from 'primeng/api';
 import { SleepService } from 'src/app/services/habits/sleep.service';
+import { ProfileUser } from 'src/app/models/profileUser';
+import { PaginatedResponse } from 'src/app/models/pager/pager';
 
 @Component({
   selector: 'app-dormir',
@@ -11,11 +13,16 @@ import { SleepService } from 'src/app/services/habits/sleep.service';
 })
 export class DormirComponent implements OnInit {
   filtersForm: FormGroup;
-  horasDormir: { label: string, value: string }[] = [];  
+  horasDormir: { label: string, value: string }[] = [];
+  filteredHorasDormir: { label: string, value: string }[] = [];
   fechaMinima!: Date;
   fechaMaxima!: Date;
-  usuarios: ClasificationSleepUsers[] = [];
-  usuariosFiltrados: ClasificationSleepUsers[] = [];
+  usuarios: ProfileUser[] = [];
+  usuariosFiltrados: ProfileUser[] = [];
+  totalItems: number = 0;
+  pageSize: number = 10;
+  currentPage: number = 1;
+  loading: boolean = false;
   messages: any[] = [];
 
   constructor(private fb: FormBuilder, private sleepService: SleepService, private messageService: MessageService) {
@@ -35,27 +42,45 @@ export class DormirComponent implements OnInit {
     });
   }
 
+  filterHorasDormir(event: any): void {
+    const query = event.query.toLowerCase();
+    this.filteredHorasDormir = this.horasDormir.filter(option =>
+      option.label.toLowerCase().includes(query)
+    );
+  }
   // Método para buscar los usuarios según los filtros aplicados
-  buscarUsuarios(): void {
+ buscarUsuarios(): void {
     const filtros = this.filtersForm.value;
 
     if (new Date(filtros.fecha_inicio) > new Date(filtros.fecha_fin)) {
-      // Mostrar alerta si la fecha de inicio es mayor que la fecha de fin
-      this.messages = [
-        { severity: 'warn', summary: 'Advertencia', detail: 'La fecha de inicio no puede ser mayor a la fecha de fin.' }
-      ];
+      this.messages = [{ severity: 'warn', summary: 'Advertencia', detail: 'La fecha de inicio no puede ser mayor a la fecha de fin.' }];
       return;
     }
 
+    this.loading = true;
     this.sleepService.getClasificationSleep({
-      hora: filtros.hora,
+      hora: filtros.hora.value,
       fecha_inicio: filtros.fecha_inicio ? this.formatDate(filtros.fecha_inicio) : undefined,
       fecha_fin: filtros.fecha_fin ? this.formatDate(filtros.fecha_fin) : undefined,
-    }).subscribe((data: ClasificationSleep) => {
-      this.usuarios = data.usuarios;
-      this.usuariosFiltrados = this.usuarios; 
-      this.messages = []; // Limpiamos los mensajes cuando la búsqueda es exitosa
+      page: this.currentPage,
+      pageSize: this.pageSize,
+    }).subscribe((response: PaginatedResponse<ProfileUser>) => {
+      this.usuarios = response.data;
+      this.totalItems = response.totalItems;
+      this.pageSize = response.pageSize;
+      this.currentPage = response.page;
+      this.usuariosFiltrados = this.usuarios;
+      this.loading = false;
+      this.messages = [];
     });
+  }
+  // Manejar el cambio de página
+  onPageChange(event: any): void {
+    if (event.page !== undefined && event.rows !== undefined) {
+      this.currentPage = event.page + 1;
+      this.pageSize = event.rows;
+      this.buscarUsuarios();
+    }
   }
 
 
@@ -63,7 +88,7 @@ export class DormirComponent implements OnInit {
     const filtros = this.filtersForm.value;
 
     this.sleepService.exportClasificationSleepExcel({
-      hora: filtros.hora,
+      hora: filtros.hora.value,
       fecha_inicio: filtros.fecha_inicio ? this.formatDate(filtros.fecha_inicio) : undefined,
       fecha_fin: filtros.fecha_fin ? this.formatDate(filtros.fecha_fin) : undefined,
     }).subscribe((data: Blob) => {

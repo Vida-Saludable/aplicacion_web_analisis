@@ -1,7 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ClasificationHope, HopeUnique } from 'src/app/models/habits/hope.model';
+import {  HopeUnique } from 'src/app/models/habits/hope.model';
+import { PaginatedResponse } from 'src/app/models/pager/pager'; // Importar la interfaz de paginación
+import { ProfileUser } from 'src/app/models/profileUser';
 import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
@@ -28,15 +30,17 @@ export class HopeService {
     return this.http.get<HopeUnique>(`${this.baseUrl}esperanza-unicos`);
   }
 
-  // Obtener clasificación de usuarios de esperanza con filtros opcionales
+  // Obtener clasificación de usuarios de esperanza con filtros opcionales y paginación
   getClasificationHope(filtros: {
     tipo_practica?: string;
     fecha?: string;
     fecha_inicio?: string;
     fecha_fin?: string;
-  }): Observable<ClasificationHope> {
+    page?: number;
+    pageSize?: number;
+  }): Observable<PaginatedResponse<ProfileUser>> { // Usar la interfaz PaginatedResponse para el tipo de respuesta
     const params = this.buildParams(filtros);
-    return this.http.get<ClasificationHope>(`${this.baseUrl}clasificacion-esperanza-usuarios`, { params });
+    return this.http.get<PaginatedResponse<ProfileUser>>(`${this.baseUrl}clasificacion-esperanza-usuarios`, { params });
   }
 
   // Exportar clasificación de usuarios de esperanza a Excel

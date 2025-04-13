@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HabitsRoutingModule } from './habits-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -27,6 +27,7 @@ import { SolComponent } from './sol/sol.component';
 import { SuenioComponent } from './suenio/suenio.component';
 import { MessageService } from 'primeng/api';
 import { MessagesModule } from 'primeng/messages';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 
 
 
@@ -61,10 +62,10 @@ import { MessagesModule } from 'primeng/messages';
 		ProgressBarModule,
 		ToastModule,
 		CardModule,
-		MessagesModule
-		
-		
+		MessagesModule,
+		AutoCompleteModule
   ],
+  
   providers: [MessageService]
 })
 export class HabitsModule { }

@@ -3,7 +3,7 @@
     <div class="flex flex-wrap gap-2 align-items-center justify-content-between mb-2">
       <div class="flex align-items-center">
         <span class="p-ml-2">
-          <i class="pi pi-calendar"></i> 
+          <i>inicio</i><br>
           {{ project.fecha_inicio | date: 'yyyy-MM-dd' }}
         </span>
       </div>
@@ -15,8 +15,8 @@
       <div class="mb-3">{{ project.descripcion }}</div>
     </div>
     <div class="flex align-items-center justify-content-between">
-      <p-inputSwitch [(ngModel)]="project.estado"></p-inputSwitch>
-      <span class="p-ml-2"><i class="pi pi-thumbs-up"></i> {{ project.fecha_fin }}</span>
+      <!-- <p-inputSwitch [(ngModel)]="project.estado"></p-inputSwitch> -->
+      <span class="p-ml-2">     <i>fin</i><br> {{ project.fecha_fin }}</span>
     </div>
   </div>
 </div>

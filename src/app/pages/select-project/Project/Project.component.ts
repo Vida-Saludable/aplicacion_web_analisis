@@ -1,8 +1,13 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Project } from 'src/app/models/project.modet';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 import { ProjectService } from 'src/app/services/project.service';
+import { RolesService } from 'src/app/services/roles.service';
+import { UserService, UsuarioPersonal } from 'src/app/services/user.service';
+import { User } from '../../../models/user.model';
+import { Patient } from 'src/app/models/patient.model';
 
 @Component({
   selector: 'app-home',
@@ -18,22 +23,84 @@ export class ProjectComponent implements OnInit {
   startDate: Date | null = null;
   endDate: Date | null = null;
   searchQuery: string = '';
+  usuario:UsuarioPersonal 
+  userName!: string | null;
+  userEmail!: string | null;
+  userRole!: string | null;
+  userId!: number | null;
+  userslist: Patient[] = [];
+  totalItems: number = 0;
+  pageSize: number = 10000;
+  currentPage: number = 1;
+  
 
   private project$=inject(ProjectService)
+  private rol=inject(RolesService)
+  private userService = inject(UserService);
+  constructor(
+  private authService: AuthService){
+
+  }
 
   ngOnInit() {
+    
+    // this.userName = this.authService.getUserName();
+    this.userEmail = this.authService.getUserCorreo();
+    this.userRole = this.authService.getUserRole();
+    console.log("Wel rol del usuario es",this.userRole)
+    this.userId= parseInt(this.authService.getUserid());
+    this.obtenerdatosDelUsuario()
     this.getAllProject()
+  
+
+
 
     
   }
   
   getAllProject(){
+   
     this.project$.getAllProjects().subscribe(response=> {
       console.log(response)
-      this.projects=response
-      this.filteredCards = [...this.projects];
-      this.updatePaginatedCards();
+      if(this.userRole=="Admin"){
+        console.log("LLega aqui")
+        this.projects=response
+        this.filteredCards = [...this.projects];
+        this.updatePaginatedCards();
+      }else
+      {
+        this.projects=response.filter(p=>p.id==this.usuario.proyectoId)
+
+        this.filteredCards = [...this.projects];
+        this.updatePaginatedCards();
+      }
+     
     } )
+  }
+
+  getUsersbyProject(projectId: number, page: number, pageSize: number) {
+    this.userService.getPatients(projectId, page, pageSize).subscribe(
+      response => {
+        this.userslist = response.data;
+        this.totalItems = response.totalItems;
+        this.pageSize = response.pageSize;
+        this.currentPage = response.page;
+
+      },
+      error => {
+        console.error('Error fetching users', error);
+      }
+    );
+  }
+
+
+  obtenerdatosDelUsuario(){
+    this.userService.getUsuarioPersonal(this.userId).subscribe(user=>{
+      console.log("El usuario es ++++",user)
+        this.usuario=user
+        console.log("El usuario es",this.usuario)
+       
+    })
   }
 
   // Método para buscar por nombre

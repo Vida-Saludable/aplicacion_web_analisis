@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ExerciseUnique, ClasificationExercise, ClasificationExerciseUsers } from 'src/app/models/habits/exercise.model'; 
+import { ExerciseUnique, } from 'src/app/models/habits/exercise.model'; 
 import { MessageService } from 'primeng/api';
 import { ExerciseService } from 'src/app/services/habits/exercise.service';
+import { ProfileUser } from 'src/app/models/profileUser';
+import { PaginatedResponse } from 'src/app/models/pager/pager';
 
 @Component({
   selector: 'app-ejercicio',
@@ -13,10 +15,15 @@ export class EjercicioComponent implements OnInit {
   filtersForm: FormGroup;
   tiposEjercicio: { label: string, value: string }[] = [];
   tiemposEjercicio: { label: string, value: number }[] = [];
+  filteredTiemposEjercicio: { label: string, value: number }[] = [];
   fechaMinima!: Date;
   fechaMaxima!: Date;
-  usuarios: ClasificationExerciseUsers[] = [];
-  usuariosFiltrados: ClasificationExerciseUsers[] = [];
+  usuarios: ProfileUser[] = [];
+  usuariosFiltrados: ProfileUser[] = [];
+  totalItems: number = 0;
+  pageSize: number = 10;
+  currentPage: number = 1;
+  loading: boolean = false;
   messages: any[] = [];
 
   constructor(private fb: FormBuilder, private exerciseService: ExerciseService, private messageService: MessageService) {
@@ -38,28 +45,49 @@ export class EjercicioComponent implements OnInit {
     });
   }
 
+  filterTiemposEjercicio(event: any): void {
+    const query = event.query.toLowerCase();
+    this.filteredTiemposEjercicio = this.tiemposEjercicio.filter(option =>
+      option.label.toLowerCase().includes(query)
+    );
+  }
+
+
   // Método para buscar los usuarios según los filtros aplicados
   buscarUsuarios(): void {
     const filtros = this.filtersForm.value;
 
     if (new Date(filtros.fecha_inicio) > new Date(filtros.fecha_fin)) {
-      // Mostrar alerta si la fecha de inicio es mayor que la fecha de fin
-      this.messages = [
-        { severity: 'warn', summary: 'Advertencia', detail: 'La fecha de inicio no puede ser mayor a la fecha de fin.' }
-      ];
+      this.messages = [{ severity: 'warn', summary: 'Advertencia', detail: 'La fecha de inicio no puede ser mayor a la fecha de fin.' }];
       return;
     }
 
+    this.loading = true;
     this.exerciseService.getClasificationExercise({
       tipo: filtros.tipo,
-      tiempo: filtros.tiempo,
+      tiempo: filtros.tiempo.value,
       fecha_inicio: filtros.fecha_inicio ? this.formatDate(filtros.fecha_inicio) : undefined,
       fecha_fin: filtros.fecha_fin ? this.formatDate(filtros.fecha_fin) : undefined,
-    }).subscribe((data: ClasificationExercise) => {
-      this.usuarios = data.usuarios;
-      this.usuariosFiltrados = this.usuarios; 
-      this.messages = []; // Limpiamos los mensajes cuando la búsqueda es exitosa
+      page: this.currentPage,
+      pageSize: this.pageSize,
+    }).subscribe((response: PaginatedResponse<ProfileUser>) => {
+      this.usuarios = response.data;
+      this.totalItems = response.totalItems;
+      this.pageSize = response.pageSize;
+      this.currentPage = response.page;
+      this.usuariosFiltrados = this.usuarios;
+      this.loading = false;
+      this.messages = [];
     });
+  }
+
+  // Manejar el cambio de página
+  onPageChange(event: any): void {
+    if (event.page !== undefined && event.rows !== undefined) {
+      this.currentPage = event.page + 1;
+      this.pageSize = event.rows;
+      this.buscarUsuarios();
+    }
   }
 
   
@@ -67,7 +95,7 @@ export class EjercicioComponent implements OnInit {
     const filtros = this.filtersForm.value;
     this.exerciseService.exportClasificationExerciseExcel({
       tipo: filtros.tipo,
-      tiempo: filtros.tiempo,
+      tiempo: filtros.tiempo.value,
       fecha_inicio: filtros.fecha_inicio ? this.formatDate(filtros.fecha_inicio) : undefined,
       fecha_fin: filtros.fecha_fin ? this.formatDate(filtros.fecha_fin) : undefined,
     }).subscribe((data: Blob) => {

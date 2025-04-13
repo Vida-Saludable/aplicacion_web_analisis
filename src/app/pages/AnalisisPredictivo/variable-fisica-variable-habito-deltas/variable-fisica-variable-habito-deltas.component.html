@@ -1,3 +1,6 @@
+<p-messages [(value)]="messages" [enableService]="false"></p-messages>
+<p-toast></p-toast> <!-- Componente de PrimeNG para mostrar mensajes de advertencia o error -->
+
 <div class="grid">
   <div class="col-12">
     <div class="card">
@@ -7,11 +10,14 @@
       <div class="flex justify-content-between form-row">
         <div class="flex input-group">
           <!-- Dato Corporal -->
-          <div class="input-field">
+          <div class="input-group-column">
+            <label for="dato_corporal" class="label-value">Dato Corporal</label>
+
             <p-dropdown
               placeholder="Seleccione un Dato Corporal"
-              [options]="datosCorporales"
+              [options]="datosCorporalOptions"
               [(ngModel)]="selectedDatoCorporal"
+              (onChange)="onDatoCorporalChange()"
               optionLabel="label"
               optionValue="value"
               inputId="datosCorporales"
@@ -20,10 +26,12 @@
           </div>
 
           <!-- Dato de Hábito -->
-          <div class="input-field">
+          <div class="input-group-column">
+            <label for="dato-habito" class="label-value">Dato de Hábito</label>
+            
             <p-dropdown
               placeholder="Seleccione un Dato de Hábito"
-              [options]="datosHabitos"
+              [options]="filteredDatosHabitos"
               [(ngModel)]="selectedDatoHabito"
               optionLabel="label"
               optionValue="value"
@@ -35,7 +43,8 @@
 
         <!-- Tipo de correlación para X e Y -->
         <div class="flex input-group">
-          <div class="input-field">
+          <div class="input-group-column">
+            <label for="tipo-correlacion" class="label-value">Tipo de Correlación (X)</label>
             <p-dropdown
               placeholder="Tipo de correlación (X)"
               [options]="typesCorrelations"
@@ -44,7 +53,9 @@
               styleClass="custom-dropdown">
             </p-dropdown>
           </div>
-          <div class="input-field">
+          <div class="input-group-column">
+            <label for="tipo-correlacion" class="label-value">Tipo de Correlación (Y)</label>
+
             <p-dropdown
               placeholder="Tipo de correlación (Y)"
               [options]="typesCorrelations"
@@ -56,8 +67,14 @@
         </div>
       </div>
 
+      <!-- ProgressSpinner -->
+      <div *ngIf="loading" class="spinner-container mt-4">
+        <p-progressSpinner></p-progressSpinner>
+        <p>Cargando... Por favor espere.</p>
+      </div>
+
       <!-- Botón para realizar el análisis -->
-      <div class="btn-container">
+      <div class="btn-container mt-4" *ngIf="!loading">
         <button
           pButton
           label="Realizar Análisis"
@@ -80,28 +97,43 @@
           <!-- Correlaciones Iniciales -->
           <div class="result-grid initial-correlations">
             <h6 class="correlation-heading full-width-title">Correlaciones Iniciales</h6>
-            <div class="result-category" *ngFor="let method of ['pearson', 'spearman', 'kendall']">
-              <h6>{{ method.charAt(0).toUpperCase() + method.slice(1) }}</h6>
-              <p><strong>Correlación:</strong> {{ correlationData.correlaciones_iniciales[method].correlation }}</p>
-              <p><strong>p-Valor:</strong> {{ correlationData.correlaciones_iniciales[method].p_value }}</p>
-              <p>
-                <strong>Interpretación:</strong> 
-                {{ interpretarCorrelacion(correlationData.correlaciones_iniciales[method].correlation, correlationData.correlaciones_iniciales[method].p_value) }}
-              </p>
+            <div class="result-category">
+              <p><strong>Pearson:</strong></p>
+              <p>Correlación: {{ correlationData.correlaciones_iniciales.pearson.correlation }}</p>
+              <p>p-Valor: {{ correlationData.correlaciones_iniciales.pearson.p_value }}</p>
+            </div>
+            <div class="result-category">
+              <p><strong>Spearman:</strong></p>
+              <p>Correlación: {{ correlationData.correlaciones_iniciales.spearman.correlation }}</p>
+              <p>p-Valor: {{ correlationData.correlaciones_iniciales.spearman.p_value }}</p>
+            </div>
+            <div class="result-category">
+              <p><strong>Kendall:</strong></p>
+              <p>Correlación: {{ correlationData.correlaciones_iniciales.kendall.correlation }}</p>
+              <p>p-Valor: {{ correlationData.correlaciones_iniciales.kendall.p_value }}</p>
             </div>
           </div>
+
+          
 
           <!-- Correlaciones Finales -->
           <div class="result-grid final-correlations">
             <h6 class="correlation-heading full-width-title">Correlaciones Finales</h6>
-            <div class="result-category" *ngFor="let method of ['pearson', 'spearman', 'kendall']">
-              <h6>{{ method.charAt(0).toUpperCase() + method.slice(1) }}</h6>
-              <p><strong>Correlación:</strong> {{ correlationData.correlaciones_finales[method].correlation }}</p>
-              <p><strong>p-Valor:</strong> {{ correlationData.correlaciones_finales[method].p_value }}</p>
-              <p>
-                <strong>Interpretación:</strong> 
-                {{ interpretarCorrelacion(correlationData.correlaciones_finales[method].correlation, correlationData.correlaciones_finales[method].p_value) }}
-              </p>
+        
+            <div class="result-category">
+              <p><strong>Pearson:</strong></p>
+              <p>Correlación: {{ correlationData.correlaciones_finales.pearson.correlation }}</p>
+              <p>p-Valor: {{ correlationData.correlaciones_finales.pearson.p_value }}</p>
+            </div>
+            <div class="result-category">
+              <p><strong>Spearman:</strong></p>
+              <p>Correlación: {{ correlationData.correlaciones_finales.spearman.correlation }}</p>
+              <p>p-Valor: {{ correlationData.correlaciones_finales.spearman.p_value }}</p>
+            </div>
+            <div class="result-category">
+              <p><strong>Kendall:</strong></p>
+              <p>Correlación: {{ correlationData.correlaciones_finales.kendall.correlation }}</p>
+              <p>p-Valor: {{ correlationData.correlaciones_finales.kendall.p_value }}</p>
             </div>
           </div>
 

@@ -1,3 +1,21 @@
+<div class="paciente-info">
+  <div class="paciente-card">
+    <h4><i class="pi pi-user"></i> Paciente</h4>
+    <div class="datos-grid">
+      <div class="dato"><strong>Nombre:</strong> {{ usuario?.nombres_apellidos }}</div>
+      <div class="dato"><strong>Edad:</strong> {{ usuario?.edad }} años</div>
+      <div class="dato"><strong>Sexo:</strong> {{ usuario?.sexo === 'F' ? 'Femenino' : 'Masculino' }}</div>
+      <div class="dato"><strong>Teléfono:</strong> {{ usuario?.telefono }}</div>
+      <div class="dato"><strong>Estado Civil:</strong> {{ usuario?.estado_civil }}</div>
+      <div class="dato"><strong>Fecha Nacimiento:</strong> {{ usuario?.fecha_nacimiento | date:'mediumDate' }}</div>
+      <div class="dato"><strong>Ocupación:</strong> {{ usuario?.ocupacion }}</div>
+      <div class="dato"><strong>Procedencia:</strong> {{ usuario?.procedencia }}</div>
+      <div class="dato"><strong>Religión:</strong> {{ usuario?.religion }}</div>
+    </div>
+  </div>
+</div>
+
+
 <div class="indicators-container">
   <h1>Indicadores de Salud</h1>
 

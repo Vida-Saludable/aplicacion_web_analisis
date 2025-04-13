@@ -1,8 +1,10 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
 import { ProjectService } from 'src/app/services/project.service';
+import { forkJoin, Observable } from 'rxjs';
+
+import { PaginatedResponse } from 'src/app/models/pager/pager';
 import { Project } from 'src/app/models/project.modet';
-import { User } from 'src/app/models/user.model';
 
 @Component({
   selector: 'app-home',
@@ -21,66 +23,83 @@ export class HomeComponent implements OnInit {
   barData: any;
   barOptions: any;
 
+  loading: boolean = true; // Variable de estado de carga
+
   private userService = inject(UserService);
   private projectService = inject(ProjectService);
 
   ngOnInit(): void {
-    this.getUsersAndCountByRoles();
-    this.getProjectCount();
+    this.loadData();
     this.setupChartsOptions();
   }
 
-  // Obtener los usuarios y contar cuántos hay por rol
-  getUsersAndCountByRoles(): void {
-    this.userService.getUsers().subscribe((users: User[]) => {
-      this.supervisorCount = users.filter(user => user.role === 2).length;
-      this.respSegCount = users.filter(user => user.role === 3).length;
-      this.tomDatosCount = users.filter(user => user.role === 4).length;
-      this.pacienteCount = users.filter(user => user.role === 5).length;
+  // Método para cargar los datos y contar por roles
+  loadData(): void {
+    this.loading = true;
+    
+    forkJoin({
+      users: this.userService.getUsers(),
+      projects: this.projectService.getAllProjects()
+    }).subscribe(
+      ({ users, projects }) => {
+        this.processUsersData(users);
+        this.processProjectsData(projects); // Procesar proyectos
+        this.loading = false;
+      },
+      error => {
+        console.error('Error al cargar los datos:', error);
+        this.loading = false;
+      }
+    );
+  }
 
-      // Actualizar el gráfico de pastel con los valores
-      this.pieData = {
-        labels: ['Supervisores', 'Resp. Seguimiento', 'Tomadores de Datos', 'Pacientes'],
+  // Procesar los datos de los usuarios y contar por roles
+  processUsersData(users: any[]): void {
+    this.supervisorCount = users.filter(user => user.role === 2).length;
+    this.respSegCount = users.filter(user => user.role === 3).length;
+    this.tomDatosCount = users.filter(user => user.role === 4).length;
+    this.pacienteCount = users.filter(user => user.role === 5).length;
+
+    this.pieData = {
+      labels: ['Supervisores', 'Resp. Seguimiento', 'Tomadores de Datos', 'Pacientes'],
+      datasets: [{
+        data: [this.supervisorCount, this.respSegCount, this.tomDatosCount, this.pacienteCount],
+        backgroundColor: ['#42A5F5', '#66BB6A', '#FFA726', '#FF7043'],
+        hoverBackgroundColor: ['#64B5F6', '#81C784', '#FFB74D', '#FF8A65']
+      }]
+    };
+  }
+
+  // Procesar los datos de los proyectos y configurar el gráfico de barras
+  processProjectsData(projects: Project[]): void {
+    this.projectCount = projects.length;
+    const projectLabels: string[] = [];
+    const patientsPerProjectRequests: Observable<PaginatedResponse<any>>[] = [];
+
+    // Crear una solicitud para cada proyecto para obtener el número de pacientes
+    projects.forEach(project => {
+      projectLabels.push(project.nombre);
+      // Solicitar pacientes de cada proyecto sin paginación (ajustamos el pageSize a un número alto)
+      patientsPerProjectRequests.push(this.userService.getPatients(project.id, 1, 10000));
+    });
+
+    // Ejecutar todas las solicitudes en paralelo
+    forkJoin(patientsPerProjectRequests).subscribe((responses) => {
+      const patientsPerProject = responses.map(response => response.totalItems); // totalItems indica la cantidad total de pacientes
+
+      // Configurar los datos del gráfico de barras
+      this.barData = {
+        labels: projectLabels,
         datasets: [{
-          data: [this.supervisorCount, this.respSegCount, this.tomDatosCount, this.pacienteCount],
-          backgroundColor: ['#42A5F5', '#66BB6A', '#FFA726', '#FF7043'],
-          hoverBackgroundColor: ['#64B5F6', '#81C784', '#FFB74D', '#FF8A65']
+          label: 'Pacientes por Proyecto',
+          backgroundColor: '#42A5F5',
+          data: patientsPerProject
         }]
       };
     });
   }
 
-  // Obtener la cantidad de proyectos y usuarios por proyecto
-  getProjectCount(): void {
-    this.projectService.getAllProjects().subscribe((projects: Project[]) => {
-      this.projectCount = projects.length;
-      const projectLabels: string[] = [];
-      const usersPerProject: number[] = [];
-
-      projects.forEach(project => {
-        projectLabels.push(project.nombre);
-
-        // Llamar al servicio para obtener la cantidad de usuarios por proyecto
-        this.userService.getPatients(project.id).subscribe((patients) => {
-          usersPerProject.push(patients.length);
-
-          // Actualizar el gráfico de barras con los datos reales de usuarios por proyecto
-          this.barData = {
-            labels: projectLabels,
-            datasets: [
-              {
-                label: 'Usuarios por Proyecto',
-                backgroundColor: '#42A5F5',
-                data: usersPerProject
-              }
-            ]
-          };
-        });
-      });
-    });
-  }
-
-  // Configurar las opciones para los gráficos
+  // Configurar las opciones de los gráficos
   setupChartsOptions(): void {
     this.pieOptions = {
       plugins: {
@@ -94,8 +113,11 @@ export class HomeComponent implements OnInit {
 
     this.barOptions = {
       scales: {
-        x: {
-          beginAtZero: true
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1 // Configura el paso a 1 para facilitar la visualización
+          }
         }
       },
       responsive: true

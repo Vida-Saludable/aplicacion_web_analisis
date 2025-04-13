@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IndicatorsInitialVsEnd } from 'src/app/models/indicatormainvsend.model';
 
 import { PatientsService } from 'src/app/services/patients.service';
+import { UserService, UsuarioPersonal } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-initial-versus-final-indicators',
@@ -14,8 +15,10 @@ export class InitialVsEndIndicatorsComponent implements OnInit {
   private patients$ = inject(PatientsService);
   private router = inject(Router);
   private activateRoute = inject(ActivatedRoute);
+   private userService = inject(UserService);
   public listsindicatorMainvsEnd: IndicatorsInitialVsEnd[]; // Inicializa en null para evitar errores
   public id: number;
+  usuario:UsuarioPersonal 
 
   constructor() {
     // Recupera el parámetro 'id' de la ruta
@@ -25,6 +28,7 @@ export class InitialVsEndIndicatorsComponent implements OnInit {
   ngOnInit() {
     // Llama al método para obtener los indicadores cuando se inicializa el componente
     this.getIndicatorsMainvsEnd(this.id);
+    this.obtenerdatosDelUsuario()
   }
 
   getIndicatorsMainvsEnd(userId: number) {
@@ -37,5 +41,14 @@ export class InitialVsEndIndicatorsComponent implements OnInit {
         console.error('Error al obtener los indicadores:', error);
       }
     );
+  }
+
+  obtenerdatosDelUsuario(){
+    this.userService.getUsuarioPersonal(this.id).subscribe(user=>{
+      console.log("El usuario es",user)
+
+        this.usuario=user
+        console.log("El usuario es",this.usuario)
+    })
   }
 }

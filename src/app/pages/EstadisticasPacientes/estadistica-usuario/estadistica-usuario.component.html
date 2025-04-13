@@ -1,27 +1,53 @@
+<!-- Gráfico -->
 <div class="card-container">
   <p-chart type="bar" [data]="data" [options]="options"></p-chart>
 </div>
 
+<!-- Sección del reporte -->
 <div *ngIf="indicatorHealthReport.length > 0" class="result-section mt-4">
   <div class="card result-card">
-      <h6 class="section-title">Reporte de Salud Detallado</h6>
-    
-      <div class="result-grid">
-          <!-- Tarjetas de Resultados por Indicador -->
-          <div *ngFor="let item of indicatorHealthReport; let i = index" class="result-category">
-              <h6 class="category-title">{{ getCardTitle(i) }}</h6>
-              <p>{{ item }}</p>
-          </div>
+
+    <!-- Datos del paciente alineados a la izquierda -->
+    <div class="paciente-info">
+      <div class="paciente-card">
+        <h4><i class="pi pi-user"></i> Paciente</h4>
+        <div class="datos-grid">
+          <div class="dato"><strong>Nombre:</strong> {{ usuario?.nombres_apellidos }}</div>
+          <div class="dato"><strong>Edad:</strong> {{ usuario?.edad }} años</div>
+          <div class="dato"><strong>Sexo:</strong> {{ usuario?.sexo === 'F' ? 'Femenino' : 'Masculino' }}</div>
+          <div class="dato"><strong>Teléfono:</strong> {{ usuario?.telefono }}</div>
+          <div class="dato"><strong>Estado Civil:</strong> {{ usuario?.estado_civil }}</div>
+          <div class="dato"><strong>Fecha Nacimiento:</strong> {{ usuario?.fecha_nacimiento | date:'mediumDate' }}</div>
+          <div class="dato"><strong>Ocupación:</strong> {{ usuario?.ocupacion }}</div>
+          <div class="dato"><strong>Procedencia:</strong> {{ usuario?.procedencia }}</div>
+          <div class="dato"><strong>Religión:</strong> {{ usuario?.religion }}</div>
+        </div>
       </div>
+    </div>
+
+    <!-- Título centrado -->
+    <div class="reporte-titulo">
+      <h5 class="section-title text-center">Reporte de salud detallado</h5>
+    </div>
+
+    <!-- Resultados -->
+    <div class="result-grid">
+      <div *ngFor="let item of indicatorHealthReport; let i = index" class="result-category">
+        <h6 class="category-title">{{ getCardTitle(i) }}</h6>
+        <p>{{ item }}</p>
+      </div>
+    </div>
+
   </div>
 </div>
+
 <!-- Resumen de colores -->
-<div class="color-summary">
+<div class="color-summary mt-4">
   <h4>Resumen del estado de los indicadores:</h4>
-  <p><strong>{{ colorSummary.green }} indicadores</strong> esta muy bien (verde).</p>
-  <p><strong>{{ colorSummary.lightGreen }} indicadores</strong> esta bien (verde claro).</p>
-  <p><strong>{{ colorSummary.yellow }} indicadores</strong> esta en un estado aceptable (amarillo).</p>
+  <p><strong>{{ colorSummary.green }} indicadores</strong> están muy bien (verde).</p>
+  <p><strong>{{ colorSummary.lightGreen }} indicadores</strong> están bien (verde claro).</p>
+  <p><strong>{{ colorSummary.yellow }} indicadores</strong> están en un estado aceptable (amarillo).</p>
   <p><strong>{{ colorSummary.orange }} indicadores</strong> indican niveles elevados o bajos (naranja).</p>
-  <p><strong>{{ colorSummary.red }} indicadores</strong> esta en mal estado (rojo).</p>
-  <p><strong>{{ colorSummary.darkRed }} indicadores</strong> esta en muy mal estado (rojo oscuro).</p>
+  <p><strong>{{ colorSummary.red }} indicadores</strong> están en mal estado (rojo).</p>
+  <p><strong>{{ colorSummary.darkRed }} indicadores</strong> están en muy mal estado (rojo oscuro).</p>
 </div>

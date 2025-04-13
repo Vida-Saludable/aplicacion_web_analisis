@@ -61,7 +61,7 @@
 
   <!-- Tabla de Usuarios -->
   <div class="table-container">
-    <p-table [value]="usuariosFiltrados" [value]="usuarios" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]" responsiveLayout="scroll">
+    <p-table [value]="usuariosFiltrados" [paginator]="true" [rows]="pageSize" [totalRecords]="totalItems" [first]="(currentPage - 1) * pageSize" [rowHover]="true" [loading]="loading" [rowsPerPageOptions]="[5, 10, 15]" responsiveLayout="scroll" (onPage)="onPageChange($event)">
       <ng-template pTemplate="header">
         <tr>
           <th>Nombres</th>
@@ -70,7 +70,7 @@
           <th>Estado Civil</th>
           <th>Fecha de Nacimiento</th>
           <th>Teléfono</th>
-          <th>Grado de Instrucción</th>
+          <th>Ocupación</th>
           <th>Correo</th>
         </tr>
       </ng-template>
@@ -83,7 +83,7 @@
           <td>{{ usuario.estado_civil }}</td>
           <td>{{ usuario.fecha_nacimiento }}</td>
           <td>{{ usuario.telefono }}</td>
-          <td>{{ usuario.grado_instruccion }}</td>
+          <td>{{ usuario.ocupacion }}</td>
           <td>{{ usuario.correo }}</td>
         </tr>
       </ng-template>
@@ -91,6 +91,14 @@
       <ng-template pTemplate="emptymessage">
         <tr>
           <td colspan="8">No se encontraron usuarios.</td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="loadingbody">
+        <tr>
+          <td colspan="5">
+            <p-progressSpinner></p-progressSpinner>
+            Cargando datos de usuarios. Por favor espera.
+          </td>
         </tr>
       </ng-template>
     </p-table>

@@ -3,13 +3,22 @@
     <div class="card">
       <h5>Usuarios</h5>
 
-      <p-table #dt [value]="userslist" dataKey="id" [rows]="10" [paginator]="true" [loading]="loading" responsiveLayout="scroll">
+      <p-table 
+      #dt
+       [value]="userslist"
+        dataKey="id"
+         [rows]="10"
+          [paginator]="true"
+          [loading]="loading"
+          responsiveLayout="scroll"
+          [rowsPerPageOptions]="[5,10,15]"
+          >
         <ng-template pTemplate="caption">
           <div class="flex justify-content-between flex-column sm:flex-row">
             <div class="flex items-center mb-2">
               <span class="p-input-icon-left w-full">
                 <i class="pi pi-search"></i>
-                <input pInputText type="text" #globalFilter (input)="onGlobalFilter(dt, $event)" placeholder="Buscar por palabra clave" class="w-full" />
+                <input pInputText type="text" #globalFilter (input)="onGlobalFilter(dt, $event)" placeholder="Buscar por usuario" class="w-full" />
               </span>
             </div>
             <p-button label="Crear Usuario" icon="pi pi-user-plus" [routerLink]="['/dashboard/controlUsuarios/usuarios/new']" styleClass="p-button-info"></p-button>

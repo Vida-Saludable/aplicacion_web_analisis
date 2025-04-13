@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { SunUnique, ClasificationSunUsers } from 'src/app/models/habits/sun.model';
+import { SunUnique } from 'src/app/models/habits/sun.model';
+import { PaginatedResponse } from 'src/app/models/pager/pager';
+import { ProfileUser } from 'src/app/models/profileUser';
 import { SunService } from 'src/app/services/habits/sun.service';
 
 @Component({
@@ -11,11 +13,16 @@ import { SunService } from 'src/app/services/habits/sun.service';
 export class SolComponent implements OnInit {
   filtersForm: FormGroup;
   tiemposSolOptions: { label: string, value: number }[] = [];
+  filteredTiemposSolOptions: { label: string, value: number }[] = [];
   fechaMinima!: Date;
   fechaMaxima!: Date;
-  usuarios: ClasificationSunUsers[] = [];
-  usuariosFiltrados: ClasificationSunUsers[] = [];
-  messages: any[] = [];  // Para mensajes de advertencia
+  usuarios: ProfileUser[] = [];
+  usuariosFiltrados: ProfileUser[] = [];
+  totalItems: number = 0;
+  pageSize: number = 10;
+  currentPage: number = 1;
+  loading: boolean = false;
+  messages: any[] = [];
 
   constructor(private fb: FormBuilder, private sunService: SunService) {
     this.filtersForm = this.fb.group({
@@ -39,31 +46,54 @@ export class SolComponent implements OnInit {
     this.filtersForm.patchValue({ [fieldName]: event.value });
   }
 
+   // Filtrar tiempos de exposición basado en el input del usuario
+   filterTiemposSol(event: any): void {
+    const query = event.query.toLowerCase();
+    this.filteredTiemposSolOptions = this.tiemposSolOptions.filter(option =>
+      option.label.toLowerCase().includes(query)
+    );
+  }
+
   // Método para buscar los usuarios según los filtros aplicados
   buscarUsuarios(): void {
     const filtros = this.filtersForm.value;
 
     if (new Date(filtros.fecha_inicio) > new Date(filtros.fecha_fin)) {
-      // Mostrar mensaje si la fecha de inicio es mayor que la fecha de fin
       this.messages = [{ severity: 'warn', summary: 'Advertencia', detail: 'La fecha de inicio no puede ser mayor a la fecha de fin.' }];
       return;
     }
 
+    this.loading = true;
     this.sunService.getClasificationSun({
-      tiempo: filtros.tiempo,
+      tiempo: filtros.tiempo.value,
       fecha_inicio: filtros.fecha_inicio ? this.formatDate(filtros.fecha_inicio) : undefined,
       fecha_fin: filtros.fecha_fin ? this.formatDate(filtros.fecha_fin) : undefined,
-    }).subscribe((data) => {
-      this.usuarios = data.usuarios;
-      this.usuariosFiltrados = this.usuarios; 
-      this.messages = [];  // Limpiar mensajes de advertencia si la búsqueda fue exitosa
+      page: this.currentPage,
+      pageSize: this.pageSize,
+    }).subscribe((response: PaginatedResponse<ProfileUser>) => {
+      this.usuarios = response.data;
+      this.totalItems = response.totalItems;
+      this.pageSize = response.pageSize;
+      this.currentPage = response.page;
+      this.usuariosFiltrados = this.usuarios;
+      this.loading = false;
+      this.messages = [];
     });
   }
+    // Manejar el cambio de página
+    onPageChange(event: any): void {
+      if (event.page !== undefined && event.rows !== undefined) {
+        this.currentPage = event.page + 1;
+        this.pageSize = event.rows;
+        this.buscarUsuarios();
+      }
+    }
+
   
   exportarExcel(): void {
     const filtros = this.filtersForm.value;
     this.sunService.exportClasificationSunExcel({
-      tiempo: filtros.tiempo,
+      tiempo: filtros.tiempo.value,
       fecha_inicio: filtros.fecha_inicio ? this.formatDate(filtros.fecha_inicio) : undefined,
       fecha_fin: filtros.fecha_fin ? this.formatDate(filtros.fecha_fin) : undefined,
     }).subscribe((data:Blob) => {

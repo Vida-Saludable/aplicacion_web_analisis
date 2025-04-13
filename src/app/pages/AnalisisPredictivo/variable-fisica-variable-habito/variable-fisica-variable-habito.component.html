@@ -3,25 +3,31 @@
     <div class="card">
       <h5 class="title">Análisis de Correlación</h5>
 
-      <div class="flex justify-content-between form-row">
-        <div class="flex input-group">
-          <!-- Dato Corporal -->
-          <div class="input-field">
+      <div class="form-row grid grid-nogutter">
+        <!-- Dato Corporal -->
+        <div class="col-4">
+          <div class="input-group-column">
+            <label for="dato_corporal" class="label-value">Dato Corporal</label>
             <p-dropdown
               placeholder="Seleccione un Dato Corporal"
-              [options]="datosCorporales"
+              [options]="datosCorporalOptions"
               [(ngModel)]="selectedDatoCorporal"
+              (onChange)="onDatoCorporalChange()"
               optionLabel="label"
               optionValue="value"
               inputId="datosCorporales"
               styleClass="custom-dropdown">
             </p-dropdown>
           </div>
-          <!-- Dato de Hábito -->
-          <div class="input-field">
+        </div>
+
+        <!-- Dato de Hábito -->
+        <div class="col-4">
+          <div class="input-group-column">
+            <label for="dato-habito" class="label-value">Dato de Hábito</label>
             <p-dropdown
               placeholder="Seleccione un Dato de Hábito"
-              [options]="datosHabitos"
+              [options]="filteredDatosHabitos"
               [(ngModel)]="selectedDatoHabito"
               optionLabel="label"
               optionValue="value"
@@ -32,8 +38,9 @@
         </div>
 
         <!-- Tipo de correlación -->
-        <div class="flex input-group">
-          <div class="input-field">
+        <div class="col-4">
+          <div class="input-group-column">
+            <label for="tipo-correlacion" class="label-value">Tipo de Correlación</label>
             <p-dropdown
               placeholder="Seleccione el Tipo de Correlación"
               [options]="typesCorrelations"
@@ -45,8 +52,14 @@
         </div>
       </div>
 
+      <!-- ProgressSpinner -->
+      <div *ngIf="loading" class="spinner-container mt-4">
+        <p-progressSpinner></p-progressSpinner>
+        <p>Cargando... Por favor espere.</p>
+      </div>
+
       <!-- Botón para realizar el análisis -->
-      <div class="btn-container">
+      <div class="btn-container mt-4" *ngIf="!loading">
         <button
           pButton
           label="Realizar Análisis"

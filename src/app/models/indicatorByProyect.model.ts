@@ -18,10 +18,6 @@ export interface IndicatorByProject {
     saturacion_oxigeno:                         Indicator;
     glicemia_basal:                             Indicator;
     temperatura:                                Indicator;
-    frecuencia_cardiaca_en_reposo:              Indicator;
-    frecuencia_cardiaca_despues_de_45_segundos: Indicator;
-    frecuencia_cardiaca_1_minuto_despues:       Indicator;
-    resultado_test_ruffier:                     Indicator;
 }
 
 export interface Indicator {

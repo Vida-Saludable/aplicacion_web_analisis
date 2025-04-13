@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HistoryHabitsByUser } from 'src/app/models/history-habits.model';
 import { PatientsService } from 'src/app/services/patients.service';
+import { UserService, UsuarioPersonal } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-historial-de-usuarios',
@@ -13,16 +14,20 @@ export class HistorialDeUsuariosComponent implements OnInit {
     private router = inject(Router);
     private activateRoute = inject(ActivatedRoute);
     private patients$ = inject(PatientsService);
+      private userService = inject(UserService);
+    
     public historyHabits: HistoryHabitsByUser[] = [];
     public id: number;
     public chartData: any[] = [];  // Array para los diferentes gráficos
     public chartOptions: any;
+    usuario:UsuarioPersonal 
   
     constructor() {
       this.id = Number(this.activateRoute.snapshot.paramMap.get('id'));
     }
 
     ngOnInit() {
+        this.obtenerdatosDelUsuario()
         this.patients$.getHistoryHabitsByUsers(this.id).subscribe(
             (response) => {
                 this.historyHabits = response;
@@ -66,6 +71,15 @@ export class HistorialDeUsuariosComponent implements OnInit {
             }
         };
     }
+
+    obtenerdatosDelUsuario(){
+        this.userService.getUsuarioPersonal(this.id).subscribe(user=>{
+          console.log("El usuario es",user)
+    
+            this.usuario=user
+            console.log("El usuario es",this.usuario)
+        })
+      }
 
     setupCharts() {
         const documentStyle = getComputedStyle(document.documentElement);

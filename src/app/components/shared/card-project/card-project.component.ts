@@ -18,7 +18,7 @@ export class CardProjectComponent {
   // Método que se ejecuta al hacer clic en la tarjeta
   onchangeProject(id: number) {
     // Guardamos el ID del proyecto en localStorage
-    localStorage.setItem('project', id.toString());
+    localStorage.setItem('projectId', id.toString());
 
     // Navegamos a la ruta /dashboard
     this.router.navigate(['/dashboard']);

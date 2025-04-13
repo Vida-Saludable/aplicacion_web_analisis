@@ -1,7 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ClasificationFood, FoodUnique } from 'src/app/models/habits/food.model';
+import {  FoodUnique } from 'src/app/models/habits/food.model';
+import { PaginatedResponse } from 'src/app/models/pager/pager'; // Importar la interfaz de paginación
+import { ProfileUser } from 'src/app/models/profileUser';
 import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
@@ -28,7 +30,7 @@ export class FoodService {
     return this.http.get<FoodUnique>(`${this.baseUrl}alimentacion-unicos`);
   }
 
-  // Obtener clasificación de usuarios de alimentación con filtros opcionales
+  // Obtener clasificación de usuarios de alimentación con filtros opcionales y paginación
   getClasificationFood(filtros: {
     desayuno_hora?: string;
     almuerzo_hora?: string;
@@ -41,9 +43,11 @@ export class FoodService {
     cena_saludable?: number;
     fecha_inicio?: string;
     fecha_fin?: string;
-  }): Observable<ClasificationFood> {
+    page?: number;
+    pageSize?: number;
+  }): Observable<PaginatedResponse<ProfileUser>> { // Usar la interfaz PaginatedResponse para el tipo de respuesta
     const params = this.buildParams(filtros);
-    return this.http.get<ClasificationFood>(`${this.baseUrl}clasificacion-alimentacion-usuarios`, { params });
+    return this.http.get<PaginatedResponse<ProfileUser>>(`${this.baseUrl}clasificacion-alimentacion-usuarios`, { params });
   }
 
   // Exportar clasificación de usuarios de alimentación a Excel

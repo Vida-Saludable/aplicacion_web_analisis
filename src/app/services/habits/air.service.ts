@@ -1,6 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+
+import { PaginatedResponse } from 'src/app/models/pager/pager';
+import { ProfileUser } from 'src/app/models/profileUser';
 import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
@@ -32,9 +35,11 @@ export class AirService {
     tiempo?: number;
     fecha_inicio?: string;
     fecha_fin?: string;
-  }): Observable<any> {
+    page?: number;
+    pageSize?: number;
+  }): Observable<PaginatedResponse<ProfileUser>> {
     const params = this.buildParams(filtros);
-    return this.http.get(`${this.baseUrl}clasificacion-aire-usuarios`, { params });
+    return this.http.get<PaginatedResponse<ProfileUser>>(`${this.baseUrl}clasificacion-aire-usuarios`, { params });
   }
 
   // Exportar clasificación de usuarios de aire a Excel

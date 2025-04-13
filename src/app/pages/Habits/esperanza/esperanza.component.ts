@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { HopeService } from 'src/app/services/habits/hope.service';
-import { HopeUnique, ClasificationHope, ClasificationHopeUsers } from 'src/app/models/habits/hope.model';
+import { HopeUnique} from 'src/app/models/habits/hope.model';
 import { MessageService } from 'primeng/api';
+import { ProfileUser } from 'src/app/models/profileUser';
+import { PaginatedResponse } from 'src/app/models/pager/pager';
 
 @Component({
   selector: 'app-esperanza',
@@ -15,9 +17,13 @@ export class EsperanzaComponent implements OnInit {
   fechasOptions: { label: string, value: string }[] = [];
   fechaMinima!: Date;
   fechaMaxima!: Date;
-  usuarios: ClasificationHopeUsers[] = [];
-  usuariosFiltrados: ClasificationHopeUsers[] = [];
-  messages: any[] = [];  // Para las alertas
+  usuarios: ProfileUser[] = [];
+  usuariosFiltrados: ProfileUser[] = [];
+  totalItems: number = 0;
+  pageSize: number = 10;
+  currentPage: number = 1;
+  loading: boolean = false;
+  messages: any[] = [];
 
   constructor(private fb: FormBuilder, private hopeService: HopeService, private messageService: MessageService) {
     // Inicialización del formulario con los campos correspondientes
@@ -51,23 +57,34 @@ export class EsperanzaComponent implements OnInit {
   buscarUsuarios(): void {
     const filtros = this.filtersForm.value;
 
-    // Validación: la fecha de inicio no puede ser mayor que la fecha de fin
     if (new Date(filtros.fecha_inicio) > new Date(filtros.fecha_fin)) {
       this.messages = [{ severity: 'warn', summary: 'Advertencia', detail: 'La fecha de inicio no puede ser mayor a la fecha de fin.' }];
       return;
     }
 
-    // Realizar la búsqueda con los filtros
+    this.loading = true;
     this.hopeService.getClasificationHope({
       tipo_practica: filtros.tipo_practica,
-      fecha: filtros.fecha,
       fecha_inicio: filtros.fecha_inicio ? this.formatDate(filtros.fecha_inicio) : undefined,
       fecha_fin: filtros.fecha_fin ? this.formatDate(filtros.fecha_fin) : undefined,
-    }).subscribe((data: ClasificationHope) => {
-      this.usuarios = data.usuarios;  // Asignación de los datos de usuarios a la tabla
-      this.usuariosFiltrados = this.usuarios; 
-      this.messages = [];  // Limpiar los mensajes en caso de éxito
+      page: this.currentPage,
+      pageSize: this.pageSize,
+    }).subscribe((response: PaginatedResponse<ProfileUser>) => {
+      this.usuarios = response.data;
+      this.totalItems = response.totalItems;
+      this.pageSize = response.pageSize;
+      this.currentPage = response.page;
+      this.usuariosFiltrados = this.usuarios;
+      this.loading = false;
+      this.messages = [];
     });
+  }
+  onPageChange(event: any): void {
+    if (event.page !== undefined && event.rows !== undefined) {
+      this.currentPage = event.page + 1;
+      this.pageSize = event.rows;
+      this.buscarUsuarios();
+    }
   }
 
 

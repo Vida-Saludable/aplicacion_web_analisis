@@ -1,7 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ClasificationSun, SunUnique } from 'src/app/models/habits/sun.model';
+import { SunUnique } from 'src/app/models/habits/sun.model';
+import { PaginatedResponse } from 'src/app/models/pager/pager'; // Importar la interfaz de paginación
+import { ProfileUser } from 'src/app/models/profileUser';
 import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
@@ -28,14 +30,16 @@ export class SunService {
     return this.http.get<SunUnique>(`${this.baseUrl}sol-unicos`);
   }
 
-  // Obtener clasificación de usuarios de exposición al sol con filtros opcionales
+  // Obtener clasificación de usuarios de exposición al sol con filtros opcionales y paginación
   getClasificationSun(filtros: {
     tiempo?: number;
     fecha_inicio?: string;
     fecha_fin?: string;
-  }): Observable<ClasificationSun> {
+    page?: number;
+    pageSize?: number;
+  }): Observable<PaginatedResponse<ProfileUser>> { // Usar la interfaz PaginatedResponse para el tipo de respuesta
     const params = this.buildParams(filtros);
-    return this.http.get<ClasificationSun>(`${this.baseUrl}clasificacion-sol-usuarios`, { params });
+    return this.http.get<PaginatedResponse<ProfileUser>>(`${this.baseUrl}clasificacion-sol-usuarios`, { params });
   }
 
   // Exportar clasificación de usuarios de exposición al sol a Excel
