@@ -23,6 +23,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { TendenciasHabitosUsuarioComponent } from './tendencias-habitos-usuario/tendencias-habitos-usuario.component';
 import { CardModule } from 'primeng/card';
 import { MessagesModule } from 'primeng/messages';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 
 
@@ -33,7 +34,8 @@ import { MessagesModule } from 'primeng/messages';
 	TendenciasPatronesRiesgoComponent,
 	EstadisticaProyectoComponent,
 	EstadisticaUsuarioComponent,
-	TendenciasHabitosUsuarioComponent
+	TendenciasHabitosUsuarioComponent,
+	
   ],
   imports: [
 	ChartModule,
@@ -53,7 +55,8 @@ import { MessagesModule } from 'primeng/messages';
 		ProgressBarModule,
 		ToastModule,
 		CardModule,
-		MessagesModule
+		MessagesModule,
+		ProgressSpinnerModule
 		
 		
   ]

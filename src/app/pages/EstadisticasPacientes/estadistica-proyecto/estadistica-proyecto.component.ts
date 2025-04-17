@@ -55,51 +55,19 @@ export class EstadisticaProyectoComponent implements OnInit {
         'Temperatura',
     ],
     
+
+
       datasets: [
         {
           type: 'bar',
-          label: 'Verde claro=  Bueno', // Explanation of color scheme
-          backgroundColor: '#32CD32', // Colors will be dynamically populated
-          borderColor: '#00FF00',
-        
-        },
-        {
-          type: 'bar',
-          label: 'Verde = Muy Bueno',
-          backgroundColor: '#32CD32',  // Color rojo con transparencia
-    
-
-        },
-
-        {
-          type: 'bar',
-          label: 'Amarillo = Aceptable',
-          backgroundColor: '#FFD700',  // Color verde con transparencia
-          
-        },
-        {
-          type: 'bar',
-          label: 'Naranja = Regular',
-          backgroundColor: '#FFA500',  // Color rojo con transparencia
-           // Los datos serán asignados después de la llamada a la API
-        },
-
-       
-        {
-          type: 'bar',
-          label: 'Rojo = Malo',
-          backgroundColor: '#FF4C4C',  // Color rojo con transparencia
-      
-
-        },
-        {
-          type: 'bar',
-          label: 'Rojo Oscuro= Muy Malo',
-          backgroundColor: '#FF0000',  // Color rojo con transparencia
-      
-
+          label: 'Indicadores de Salud',
+          data: [], // se llenará luego
+          backgroundColor: [], // se llenará luego
+          borderColor: '#000000',
+          borderWidth: 1
         }
       ]
+      
     };
 
     this.options = {
@@ -116,7 +84,9 @@ export class EstadisticaProyectoComponent implements OnInit {
           }
         },
         legend: {
+          display: false,
           labels: {
+            // display:false,
             color: textColor,
             font: {
               size: 14
@@ -166,63 +136,66 @@ export class EstadisticaProyectoComponent implements OnInit {
   getIndicatorByProject(projectId: number) {
     this.indicatorByProjectService.getProjectHealthIndicators(projectId).subscribe(
       response => {
+        console.log('DATA:', this.data.datasets[0].data);
+        console.log('COLORES:', this.data.datasets[0].backgroundColor);
         this.indicatorByProject = response;
         this.generateHealthReport(this.indicatorByProject);
         this.countColors(this.indicatorByProject);
+        console.log("los datos ",this.data.datasets[0].data)
         this.data.datasets[0].data = [
-          response.peso.promedio,
-          // response.altura.promedio,
-          response.imc.promedio,
-          response.radio_abdominal.M.promedio, // Radio abdominal (M)
-          response.radio_abdominal.F.promedio, // Radio abdominal (F)
-          response.porcentaje_musculo.M.promedio, // Porcentaje de músculo (M)
-          response.porcentaje_musculo.F.promedio, // Porcentaje de músculo (F)
-          response.grasa_corporal.M.promedio, // Grasa corporal (M)
-          response.grasa_corporal.F.promedio, // Grasa corporal (F)
-          response.grasa_visceral.promedio,
-          response.colesterol_total.promedio,
-          response.colesterol_hdl.M.promedio, // Colesterol HDL (M)
-          response.colesterol_hdl.F.promedio, // Colesterol HDL (F)
-          response.colesterol_ldl.promedio,
-          response.trigliceridos.promedio,
-          response.glucosa.promedio,
-          response.presion_sistolica.promedio,
-          response.presion_diastolica.promedio,
-          response.frecuencia_cardiaca.promedio,
-          response.frecuencia_respiratoria.promedio,
-          response.saturacion_oxigeno.promedio,
-          response.glicemia_basal.promedio,
-          response.temperatura.promedio,
-      ];
-      
+       
+          this.safeValue(response.peso?.promedio),
+  this.safeValue(response.imc?.promedio),
+  this.safeValue(response.radio_abdominal?.M?.promedio),
+  this.safeValue(response.radio_abdominal?.F?.promedio),
+  this.safeValue(response.porcentaje_musculo?.M?.promedio),
+  this.safeValue(response.porcentaje_musculo?.F?.promedio),
+  this.safeValue(response.grasa_corporal?.M?.promedio),
+  this.safeValue(response.grasa_corporal?.F?.promedio),
+  this.safeValue(response.grasa_visceral?.promedio),
+  this.safeValue(response.colesterol_total?.promedio),
+  this.safeValue(response.colesterol_hdl?.M?.promedio),
+  this.safeValue(response.colesterol_hdl?.F?.promedio),
+  this.safeValue(response.colesterol_ldl?.promedio),
+  this.safeValue(response.trigliceridos?.promedio),
+  this.safeValue(response.glucosa?.promedio),
+  this.safeValue(response.presion_sistolica?.promedio),
+  this.safeValue(response.presion_diastolica?.promedio),
+  this.safeValue(response.frecuencia_cardiaca?.promedio),
+  this.safeValue(response.frecuencia_respiratoria?.promedio),
+  this.safeValue(response.saturacion_oxigeno?.promedio),
+  this.safeValue(response.glicemia_basal?.promedio),
+  this.safeValue(response.temperatura?.promedio),
 
-        // Populate the colors from the response
-      // Populate the colors from the response
+      ];
+
 this.data.datasets[0].backgroundColor = [
-  response.peso.data.color,
-  // response.altura.data.color,
-  response.imc.data.color,
-  response.radio_abdominal.M.status.color, // Radio abdominal (M)
-  response.radio_abdominal.F.status.color, // Radio abdominal (F)
-  response.porcentaje_musculo.M.status.color, // Porcentaje de músculo (M)
-  response.porcentaje_musculo.F.status.color, // Porcentaje de músculo (F)
-  response.grasa_corporal.M.status.color, // Grasa corporal (M)
-  response.grasa_corporal.F.status.color, // Grasa corporal (F)
-  response.grasa_visceral.data.color,
-  response.colesterol_total.data.color,
-  response.colesterol_hdl.M.status.color, // Colesterol HDL (M)
-  response.colesterol_hdl.F.status.color, // Colesterol HDL (F)
-  response.colesterol_ldl.data.color,
-  response.trigliceridos.data.color,
-  response.glucosa.data.color,
-  response.presion_sistolica.data.color,
-  response.presion_diastolica.data.color,
-  response.frecuencia_cardiaca.data.color,
-  response.frecuencia_respiratoria.data.color,
-  response.saturacion_oxigeno.data.color,
-  response.glicemia_basal.data.color,
-  response.temperatura.data.color,
+
+  this.safeColor(response.peso?.data?.color),
+  this.safeColor(response.imc?.data?.color),
+  this.safeColor(response.radio_abdominal?.M?.status?.color),
+  this.safeColor(response.radio_abdominal?.F?.status?.color),
+  this.safeColor(response.porcentaje_musculo?.M?.status?.color),
+  this.safeColor(response.porcentaje_musculo?.F?.status?.color),
+  this.safeColor(response.grasa_corporal?.M?.status?.color),
+  this.safeColor(response.grasa_corporal?.F?.status?.color),
+  this.safeColor(response.grasa_visceral?.data?.color),
+  this.safeColor(response.colesterol_total?.data?.color),
+  this.safeColor(response.colesterol_hdl?.M?.status?.color),
+  this.safeColor(response.colesterol_hdl?.F?.status?.color),
+  this.safeColor(response.colesterol_ldl?.data?.color),
+  this.safeColor(response.trigliceridos?.data?.color),
+  this.safeColor(response.glucosa?.data?.color),
+  this.safeColor(response.presion_sistolica?.data?.color),
+  this.safeColor(response.presion_diastolica?.data?.color),
+  this.safeColor(response.frecuencia_cardiaca?.data?.color),
+  this.safeColor(response.frecuencia_respiratoria?.data?.color),
+  this.safeColor(response.saturacion_oxigeno?.data?.color),
+  this.safeColor(response.glicemia_basal?.data?.color),
+  this.safeColor(response.temperatura?.data?.color),
 ];
+console.log('DATA:', this.data.datasets[0].data); //NO llega aqui
+console.log('COLORES:', this.data.datasets[0].backgroundColor);  //NO llega aqui
 
         
 
@@ -239,30 +212,33 @@ this.data.datasets[0].backgroundColor = [
   // Función para contar los colores
   countColors(indicators: IndicatorByProject) {
     const allColors = [
-      indicators.peso.data.color,                        // Peso
-      // indicators.altura.data.color,                     // Altura
-      indicators.imc.data.color,                        // IMC
-      indicators.radio_abdominal.M.status.color,        // Radio abdominal (M)
-      indicators.radio_abdominal.F.status.color,        // Radio abdominal (F)
-      indicators.porcentaje_musculo.M.status.color,     // Porcentaje músculo (M)
-      indicators.porcentaje_musculo.F.status.color,     // Porcentaje músculo (F)
-      indicators.grasa_corporal.M.status.color,         // Grasa corporal (M)
-      indicators.grasa_corporal.F.status.color,         // Grasa corporal (F)
-      indicators.grasa_visceral.data.color,             // Grasa visceral
-      indicators.colesterol_total.data.color,           // Colesterol total
-      indicators.colesterol_hdl.M.status.color,         // Colesterol HDL (M)
-      indicators.colesterol_hdl.F.status.color,         // Colesterol HDL (F)
-      indicators.colesterol_ldl.data.color,             // Colesterol LDL
-      indicators.trigliceridos.data.color,              // Triglicéridos
-      indicators.glucosa.data.color,                    // Glucosa
-      indicators.presion_sistolica.data.color,          // Presión sistólica
-      indicators.presion_diastolica.data.color,         // Presión diastólica
-      indicators.frecuencia_cardiaca.data.color,        // Frecuencia cardíaca
-      indicators.frecuencia_respiratoria.data.color,    // Frecuencia respiratoria
-      indicators.saturacion_oxigeno.data.color,         // Saturación de oxígeno
-      indicators.glicemia_basal.data.color,             // Glicemia basal
-      indicators.temperatura.data.color                 // Temperatura
-  ];
+      this.safeColor(indicators.peso?.data?.color),
+      this.safeColor(indicators.imc?.data?.color),
+      this.safeColor(indicators.radio_abdominal?.M?.status?.color),
+      this.safeColor(indicators.radio_abdominal?.F?.status?.color),
+      this.safeColor(indicators.porcentaje_musculo?.M?.status?.color),
+      this.safeColor(indicators.porcentaje_musculo?.F?.status?.color),
+      this.safeColor(indicators.grasa_corporal?.M?.status?.color),
+      this.safeColor(indicators.grasa_corporal?.F?.status?.color),
+      this.safeColor(indicators.grasa_visceral?.data?.color),
+      this.safeColor(indicators.colesterol_total?.data?.color),
+      this.safeColor(indicators.colesterol_hdl?.M?.status?.color),
+      this.safeColor(indicators.colesterol_hdl?.F?.status?.color),
+      this.safeColor(indicators.colesterol_ldl?.data?.color),
+      this.safeColor(indicators.trigliceridos?.data?.color),
+      this.safeColor(indicators.glucosa?.data?.color),
+      this.safeColor(indicators.presion_sistolica?.data?.color),
+      this.safeColor(indicators.presion_diastolica?.data?.color),
+      this.safeColor(indicators.frecuencia_cardiaca?.data?.color),
+      this.safeColor(indicators.frecuencia_respiratoria?.data?.color),
+      this.safeColor(indicators.saturacion_oxigeno?.data?.color),
+      this.safeColor(indicators.glicemia_basal?.data?.color),
+      this.safeColor(indicators.temperatura?.data?.color)
+    ];
+    
+
+ 
+
   
     this.colorSummary = { 
       darkRed:0, lightGreen:0, green: 0,  yellow: 0, orange: 0, red: 0 };
@@ -288,37 +264,43 @@ this.data.datasets[0].backgroundColor = [
     });
   }
 
+
   updateChart() {
-    // Force chart update
-    if (this.data && this.options) {
-      this.data = { ...this.data };
-      this.options = { ...this.options };
-    }
+    this.data = {
+      ...this.data,
+      datasets: [{
+        ...this.data.datasets[0],
+        data: [...this.data.datasets[0].data],
+        backgroundColor: [...this.data.datasets[0].backgroundColor]
+      }]
+    };
   }
+  
+
+
 
   generateHealthReport(userData: IndicatorByProject) {
     this.indicatorhealthReport = [
-      `Peso: Actualmente su peso es de ${userData.peso.promedio} kg, lo cual está considerado como ${userData.peso.data.status}.`,
-      // `Altura: Su altura de ${userData.altura.promedio} cm está ${userData.altura.data.status}.`,
-      `IMC: Su índice de masa corporal (IMC) es ${userData.imc.promedio} kg/m², lo que indica que se encuentra en ${userData.imc.data.status}.`,
-      `Radio Abdominal: Para mujeres es de ${userData.radio_abdominal.F.promedio} cm (${userData.radio_abdominal.F.status.status}), y para hombres es de ${userData.radio_abdominal.M.promedio} cm (${userData.radio_abdominal.M.status.status}).`,
-      `Porcentaje de Músculo: Para mujeres es ${userData.porcentaje_musculo.F.promedio}% (${userData.porcentaje_musculo.F.status.status}), y para hombres es ${userData.porcentaje_musculo.M.promedio}% (${userData.porcentaje_musculo.M.status.status}).`,
-      `Grasa Corporal: Para mujeres es ${userData.grasa_corporal.F.promedio}% (${userData.grasa_corporal.F.status.status}), y para hombres es ${userData.grasa_corporal.M.promedio}% (${userData.grasa_corporal.M.status.status}).`,
-      `Grasa Visceral: Su nivel de grasa visceral es ${userData.grasa_visceral.promedio}%, lo cual está ${userData.grasa_visceral.data.status}.`,
-      `Colesterol Total: Su nivel de colesterol total es ${userData.colesterol_total.promedio} mg/dl (${userData.colesterol_total.data.status}).`,
-      `Colesterol HDL: Para mujeres es ${userData.colesterol_hdl.F.promedio} mg/dl (${userData.colesterol_hdl.F.status.status}), y para hombres es ${userData.colesterol_hdl.M.promedio} mg/dl (${userData.colesterol_hdl.M.status.status}).`,
-      `Colesterol LDL: Su nivel de colesterol LDL es ${userData.colesterol_ldl.promedio} mg/dl (${userData.colesterol_ldl.data.status}).`,
-      `Triglicéridos: Sus triglicéridos están en ${userData.trigliceridos.promedio} mg/dl (${userData.trigliceridos.data.status}).`,
-      `Glucosa: Sus niveles de glucosa son ${userData.glucosa.promedio} mg/dl (${userData.glucosa.data.status}).`,
-      `Presión Sistólica: Su presión sistólica es de ${userData.presion_sistolica.promedio} mmHg (${userData.presion_sistolica.data.status}).`,
-      `Presión Diastólica: Su presión diastólica es de ${userData.presion_diastolica.promedio} mmHg (${userData.presion_diastolica.data.status}).`,
-      `Frecuencia Cardíaca: Su frecuencia cardiaca en reposo es de ${userData.frecuencia_cardiaca.promedio} latidos por minuto (${userData.frecuencia_cardiaca.data.status}).`,
-      `Frecuencia Respiratoria: Su frecuencia respiratoria es de ${userData.frecuencia_respiratoria.promedio} respiraciones por minuto (${userData.frecuencia_respiratoria.data.status}).`,
-      `Temperatura: Su temperatura corporal es de ${userData.temperatura.promedio}°C (${userData.temperatura.data.status}).`,
-      `Saturación de Oxígeno: Su saturación de oxígeno es ${userData.saturacion_oxigeno.promedio}% (${userData.saturacion_oxigeno.data.status}).`,
+      `Peso: Actualmente su peso es de ${userData.peso?.promedio ?? 'N/A'} kg, lo cual está considerado como ${userData.peso?.data?.status ?? 'Sin dato'}.`,
+      `IMC: Su índice de masa corporal (IMC) es ${userData.imc?.promedio ?? 'N/A'} kg/m², lo que indica que se encuentra en ${userData.imc?.data?.status ?? 'Sin dato'}.`,
+      `Radio Abdominal: Para mujeres es de ${userData.radio_abdominal?.F?.promedio ?? 'N/A'} cm (${userData.radio_abdominal?.F?.status?.status ?? 'Sin dato'}), y para hombres es de ${userData.radio_abdominal?.M?.promedio ?? 'N/A'} cm (${userData.radio_abdominal?.M?.status?.status ?? 'Sin dato'}).`,
+      `Porcentaje de Músculo: Para mujeres es ${userData.porcentaje_musculo?.F?.promedio ?? 'N/A'}% (${userData.porcentaje_musculo?.F?.status?.status ?? 'Sin dato'}), y para hombres es ${userData.porcentaje_musculo?.M?.promedio ?? 'N/A'}% (${userData.porcentaje_musculo?.M?.status?.status ?? 'Sin dato'}).`,
+      `Grasa Corporal: Para mujeres es ${userData.grasa_corporal?.F?.promedio ?? 'N/A'}% (${userData.grasa_corporal?.F?.status?.status ?? 'Sin dato'}), y para hombres es ${userData.grasa_corporal?.M?.promedio ?? 'N/A'}% (${userData.grasa_corporal?.M?.status?.status ?? 'Sin dato'}).`,
+      `Grasa Visceral: Su nivel de grasa visceral es ${userData.grasa_visceral?.promedio ?? 'N/A'}%, lo cual está ${userData.grasa_visceral?.data?.status ?? 'Sin dato'}.`,
+      `Colesterol Total: Su nivel de colesterol total es ${userData.colesterol_total?.promedio ?? 'N/A'} mg/dl (${userData.colesterol_total?.data?.status ?? 'Sin dato'}).`,
+      `Colesterol HDL: Para mujeres es ${userData.colesterol_hdl?.F?.promedio ?? 'N/A'} mg/dl (${userData.colesterol_hdl?.F?.status?.status ?? 'Sin dato'}), y para hombres es ${userData.colesterol_hdl?.M?.promedio ?? 'N/A'} mg/dl (${userData.colesterol_hdl?.M?.status?.status ?? 'Sin dato'}).`,
+      `Colesterol LDL: Su nivel de colesterol LDL es ${userData.colesterol_ldl?.promedio ?? 'N/A'} mg/dl (${userData.colesterol_ldl?.data?.status ?? 'Sin dato'}).`,
+      `Triglicéridos: Sus triglicéridos están en ${userData.trigliceridos?.promedio ?? 'N/A'} mg/dl (${userData.trigliceridos?.data?.status ?? 'Sin dato'}).`,
+      `Glucosa: Sus niveles de glucosa son ${userData.glucosa?.promedio ?? 'N/A'} mg/dl (${userData.glucosa?.data?.status ?? 'Sin dato'}).`,
+      `Presión Sistólica: Su presión sistólica es de ${userData.presion_sistolica?.promedio ?? 'N/A'} mmHg (${userData.presion_sistolica?.data?.status ?? 'Sin dato'}).`,
+      `Presión Diastólica: Su presión diastólica es de ${userData.presion_diastolica?.promedio ?? 'N/A'} mmHg (${userData.presion_diastolica?.data?.status ?? 'Sin dato'}).`,
+      `Frecuencia Cardíaca: Su frecuencia cardiaca en reposo es de ${userData.frecuencia_cardiaca?.promedio ?? 'N/A'} latidos por minuto (${userData.frecuencia_cardiaca?.data?.status ?? 'Sin dato'}).`,
+      `Frecuencia Respiratoria: Su frecuencia respiratoria es de ${userData.frecuencia_respiratoria?.promedio ?? 'N/A'} respiraciones por minuto (${userData.frecuencia_respiratoria?.data?.status ?? 'Sin dato'}).`,
+      `Temperatura: Su temperatura corporal es de ${userData.temperatura?.promedio ?? 'N/A'}°C (${userData.temperatura?.data?.status ?? 'Sin dato'}).`,
+      `Saturación de Oxígeno: Su saturación de oxígeno es ${userData.saturacion_oxigeno?.promedio ?? 'N/A'}% (${userData.saturacion_oxigeno?.data?.status ?? 'Sin dato'}).`,
     ];
-    
   }
+  
   
 
 getCardTitle(index: number): string {
@@ -331,6 +313,17 @@ getCardTitle(index: number): string {
         'Temperatura', 'Saturación de oxígeno'
   ];
   return titles[index];
+}
+
+
+// Si el valor es null o undefined, devuelve 0 (la barra se verá vacía)
+safeValue(value: number | null | undefined): number {
+  return value ?? 0;
+}
+
+// Si el color es null o undefined, usa un gris para "sin dato"
+safeColor(color: string | null | undefined): string {
+  return color ?? '#d3d3d3'; // gris claro
 }
 
 

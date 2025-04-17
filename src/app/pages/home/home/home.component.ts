@@ -17,6 +17,7 @@ export class HomeComponent implements OnInit {
   tomDatosCount = 0;
   pacienteCount = 0;
   projectCount = 0;
+  admin=0
 
   pieData: any;
   pieOptions: any;
@@ -55,16 +56,18 @@ export class HomeComponent implements OnInit {
 
   // Procesar los datos de los usuarios y contar por roles
   processUsersData(users: any[]): void {
+    console.log("Los usuario",users)
+    this.admin= users.filter(user => user.role === 1).length;
     this.supervisorCount = users.filter(user => user.role === 2).length;
     this.respSegCount = users.filter(user => user.role === 3).length;
     this.tomDatosCount = users.filter(user => user.role === 4).length;
     this.pacienteCount = users.filter(user => user.role === 5).length;
 
     this.pieData = {
-      labels: ['Supervisores', 'Resp. Seguimiento', 'Tomadores de Datos', 'Pacientes'],
+      labels: ['Administradores','Supervisores', 'Resp. Seguimiento', 'Tomadores de Datos', 'Pacientes'],
       datasets: [{
-        data: [this.supervisorCount, this.respSegCount, this.tomDatosCount, this.pacienteCount],
-        backgroundColor: ['#42A5F5', '#66BB6A', '#FFA726', '#FF7043'],
+        data: [this.admin, this.supervisorCount, this.respSegCount, this.tomDatosCount, this.pacienteCount],
+        backgroundColor: ['#25e035','#42A5F5', '#66BB6A', '#FFA726', '#FF7043'],
         hoverBackgroundColor: ['#64B5F6', '#81C784', '#FFB74D', '#FF8A65']
       }]
     };

@@ -13,6 +13,12 @@
       <div *ngIf="!loading">
         <div class="row metrics-row">
           <div class="p-col-12 p-md-3">
+            <div class="card metric-card metric-stock">
+              <div class="metric-title">Administradores</div>
+              <div class="metric-value">{{ admin }}</div>
+            </div>
+          </div>
+          <div class="p-col-12 p-md-3">
             <div class="card metric-card metric-sales">
               <div class="metric-title">Supervisores de proyecto</div>
               <div class="metric-value">{{ supervisorCount }}</div>

@@ -1,47 +1,59 @@
-<div class="paciente-info">
-  <div class="paciente-card">
-    <h4><i class="pi pi-user"></i> Paciente</h4>
-    <div class="datos-grid">
-      <div class="dato"><strong>Nombre:</strong> {{ usuario?.nombres_apellidos }}</div>
-      <div class="dato"><strong>Edad:</strong> {{ usuario?.edad }} años</div>
-      <div class="dato"><strong>Sexo:</strong> {{ usuario?.sexo === 'F' ? 'Femenino' : 'Masculino' }}</div>
-      <div class="dato"><strong>Teléfono:</strong> {{ usuario?.telefono }}</div>
-      <div class="dato"><strong>Estado Civil:</strong> {{ usuario?.estado_civil }}</div>
-      <div class="dato"><strong>Fecha Nacimiento:</strong> {{ usuario?.fecha_nacimiento | date:'mediumDate' }}</div>
-      <div class="dato"><strong>Ocupación:</strong> {{ usuario?.ocupacion }}</div>
-      <div class="dato"><strong>Procedencia:</strong> {{ usuario?.procedencia }}</div>
-      <div class="dato"><strong>Religión:</strong> {{ usuario?.religion }}</div>
-    </div>
-  </div>
+<!-- Mostrar mientras cargan los datos del usuario -->
+<div *ngIf="cargandoUsuario; else mostrarUsuario">
+  <p>🔄 Cargando datos del paciente...</p>
 </div>
 
+<ng-template #mostrarUsuario>
+  <div class="paciente-info">
+    <div class="paciente-card">
+      <h4><i class="pi pi-user"></i> Paciente</h4>
+      <div class="datos-grid">
+        <div class="dato"><strong>Nombre:</strong> {{ usuario?.nombres_apellidos }}</div>
+        <div class="dato"><strong>Edad:</strong> {{ usuario?.edad }} años</div>
+        <div class="dato"><strong>Sexo:</strong> {{ usuario?.sexo === 'F' ? 'Femenino' : 'Masculino' }}</div>
+        <div class="dato"><strong>Teléfono:</strong> {{ usuario?.telefono }}</div>
+        <div class="dato"><strong>Estado Civil:</strong> {{ usuario?.estado_civil }}</div>
+        <div class="dato"><strong>Fecha Nacimiento:</strong> {{ usuario?.fecha_nacimiento | date:'mediumDate' }}</div>
+        <div class="dato"><strong>Ocupación:</strong> {{ usuario?.ocupacion }}</div>
+        <div class="dato"><strong>Procedencia:</strong> {{ usuario?.procedencia }}</div>
+        <div class="dato"><strong>Religión:</strong> {{ usuario?.religion }}</div>
+      </div>
+    </div>
+  </div>
+</ng-template>
 
+
+<!-- Indicadores de salud -->
 <div class="indicators-container">
   <h1>Indicadores de Salud</h1>
 
-  <!-- Verifica si hay indicadores disponibles -->
-  <div *ngIf="listsindicatorMainvsEnd?.length > 0; else noIndicators" class="indicators-grid">
-    <div *ngFor="let item of listsindicatorMainvsEnd; let i = index" class="indicator-card">
-      <h2> {{item.nombre }}</h2>
-
-      <div class="indicator-detail">
-        <p><strong>Valor Inicial:</strong> {{ item.valor_inicial }}</p>
-        <p><strong>Valor Final:</strong> {{ item.valor_final }}</p>
-        <p><strong>Diferencia:</strong> {{ item.diferencia }}</p>
-      </div>
-
-      <div class="recommendation">
-        <strong>Recomendación:</strong> {{ item.recomendacion }}
-      </div>
-
-      <div class="warning">
-        <strong>Advertencia:</strong> {{ item.advertencia }}
-      </div>
-    </div>
+  <!-- Mostrar mensaje de carga -->
+  <div *ngIf="cargandoIndicadores">
+    <p>🔄 Cargando indicadores de salud...</p>
   </div>
 
-  <!-- Plantilla para cuando no hay indicadores -->
-  <ng-template #noIndicators>
-    <p>No hay indicadores disponibles para mostrar.</p>
-  </ng-template>
+  <!-- Mostrar indicadores si ya están listos -->
+  <div *ngIf="!cargandoIndicadores">
+    <div *ngIf="listsindicatorMainvsEnd?.length > 0; else noIndicators" class="indicators-grid">
+      <div *ngFor="let item of listsindicatorMainvsEnd" class="indicator-card">
+        <h2>{{ item.nombre }}</h2>
+        <div class="indicator-detail">
+          <p><strong>Valor Inicial:</strong> {{ item.valor_inicial }}</p>
+          <p><strong>Valor Final:</strong> {{ item.valor_final }}</p>
+          <p><strong>Diferencia:</strong> {{ item.diferencia }}</p>
+        </div>
+        <div class="recommendation">
+          <strong>Recomendación:</strong> {{ item.recomendacion }}
+        </div>
+        <div class="warning">
+          <strong>Advertencia:</strong> {{ item.advertencia }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Si no hay indicadores -->
+    <ng-template #noIndicators>
+      <p>No hay indicadores disponibles para mostrar.</p>
+    </ng-template>
+  </div>
 </div>

@@ -19,6 +19,9 @@ export class InitialVsEndIndicatorsComponent implements OnInit {
   public listsindicatorMainvsEnd: IndicatorsInitialVsEnd[]; // Inicializa en null para evitar errores
   public id: number;
   usuario:UsuarioPersonal 
+  public cargandoUsuario: boolean = true;
+public cargandoIndicadores: boolean = true;
+
 
   constructor() {
     // Recupera el parámetro 'id' de la ruta
@@ -31,24 +34,24 @@ export class InitialVsEndIndicatorsComponent implements OnInit {
     this.obtenerdatosDelUsuario()
   }
 
-  getIndicatorsMainvsEnd(userId: number) {
-    this.patients$.getIndicatorsMainvsEnd(userId).subscribe(
-      response => {
-        console.log(response); // Verifica los datos en la consola
-        this.listsindicatorMainvsEnd = response; // Asigna la respuesta a la propiedad
-      },
-      error => {
-        console.error('Error al obtener los indicadores:', error);
-      }
-    );
-  }
+ 
+getIndicatorsMainvsEnd(userId: number) {
+  this.patients$.getIndicatorsMainvsEnd(userId).subscribe(
+    response => {
+      this.listsindicatorMainvsEnd = response;
+      this.cargandoIndicadores = false;
+    },
+    error => {
+      console.error('Error al obtener los indicadores:', error);
+      this.cargandoIndicadores = false;
+    }
+  );
+}
 
-  obtenerdatosDelUsuario(){
-    this.userService.getUsuarioPersonal(this.id).subscribe(user=>{
-      console.log("El usuario es",user)
-
-        this.usuario=user
-        console.log("El usuario es",this.usuario)
-    })
+  obtenerdatosDelUsuario() {
+    this.userService.getUsuarioPersonal(this.id).subscribe(user => {
+      this.usuario = user;
+      this.cargandoUsuario = false;
+    });
   }
 }

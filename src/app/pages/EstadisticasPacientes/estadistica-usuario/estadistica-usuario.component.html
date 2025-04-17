@@ -1,4 +1,15 @@
 <!-- Gráfico -->
+
+<div class="legend-custom" style="display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+  <div><span style="background:#00FF00; width:15px; height:15px; display:inline-block;"></span> Verde = Muy Bueno</div>
+  <div><span style="background:#32CD32; width:15px; height:15px; display:inline-block;"></span> Verde claro = Bueno</div>
+  <div><span style="background:#FFD700; width:15px; height:15px; display:inline-block;"></span> Amarillo = Aceptable</div>
+  <div><span style="background:#FFA500; width:15px; height:15px; display:inline-block;"></span> Naranja = Regular</div>
+  <div><span style="background:#FF4C4C; width:15px; height:15px; display:inline-block;"></span> Rojo = Malo</div>
+  <div><span style="background:#FF0000; width:15px; height:15px; display:inline-block;"></span> Rojo oscuro = Muy Malo</div>
+  <div><span style="background:#d3d3d3; width:15px; height:15px; display:inline-block;"></span> Sin dato</div>
+</div>
+
 <div class="card-container">
   <p-chart type="bar" [data]="data" [options]="options"></p-chart>
 </div>

@@ -17,6 +17,18 @@
   </div>
   
 
+<!-- Spinner mientras carga -->
+<div *ngIf="cargando" class="spinner-container">
+    <p-progressSpinner styleClass="custom-spinner"></p-progressSpinner>
+  </div>
+  
+  <!-- Si no hay datos -->
+  <div *ngIf="!cargando && sinDatos" class="mensaje-vacio">
+    <p>No existen registros de hábitos para este usuario.</p>
+  </div>
+  
+
+  
 <div *ngFor="let habit of historyHabits; let i = index" class="card mb-4">
     <!-- Título del hábito -->
     <h5>{{ habit.habito | titlecase }}</h5>

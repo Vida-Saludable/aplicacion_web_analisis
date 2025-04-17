@@ -15,6 +15,9 @@ export class HistorialDeUsuariosComponent implements OnInit {
     private activateRoute = inject(ActivatedRoute);
     private patients$ = inject(PatientsService);
       private userService = inject(UserService);
+      public cargando: boolean = true;
+    public sinDatos: boolean = false;
+
     
     public historyHabits: HistoryHabitsByUser[] = [];
     public id: number;
@@ -30,10 +33,21 @@ export class HistorialDeUsuariosComponent implements OnInit {
         this.obtenerdatosDelUsuario()
         this.patients$.getHistoryHabitsByUsers(this.id).subscribe(
             (response) => {
-                this.historyHabits = response;
+              this.historyHabits = response;
+              this.cargando = false;
+        
+              if (!response || response.length === 0) {
+                this.sinDatos = true;
+              } else {
                 this.setupCharts();
+              }
+            },
+            (error) => {
+              this.cargando = false;
+              this.sinDatos = true;
+              console.error("Error al obtener historial", error);
             }
-        );
+          );
 
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--text-color');

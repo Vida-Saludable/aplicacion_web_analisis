@@ -156,3 +156,26 @@
     border-radius: 10px;
   }
   
+
+
+  
+
+.custom-legend {
+  display: flex;
+  justify-content: center; /* 👈 centra horizontalmente */
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  align-items: center;
+  text-align: center;
+}
+
+.legend-box {
+  display: inline-block;
+  width: 20px;
+  height: 14px;
+  margin-right: 5px;
+  border: 1px solid #999;
+  vertical-align: middle;
+}
