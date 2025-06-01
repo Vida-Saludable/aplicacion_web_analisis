@@ -3,6 +3,7 @@ export interface CorrelationHealthyHabits {
     variable_y: string;
     tipo:       string;
     resultados: Resultados;
+    error?: string;
 }
 
 export interface Resultados {
@@ -13,6 +14,6 @@ export interface Resultados {
 
 export interface CorrelationResult {
     correlacion:    number;
-    valor_p:        number;
+    nivel_de_confiabilidad:        number;
     interpretacion: string;
 }

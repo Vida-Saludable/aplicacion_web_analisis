@@ -18,6 +18,8 @@ export class VariableFisicaVariableHabitoComponent implements OnInit {
   correlationData: CorrelationHealthyHabits;
   typesCorrelations: string[] = [];
   loading: boolean = false;
+  analisisIntentado: boolean = false;
+
 
   filteredDatosHabitos: any[] = []; // Habitos filtrados dinámicamente
   datosCorporalOptions: any[] = []; // Opciones para el dropdown de Dato Corporal
@@ -57,27 +59,54 @@ export class VariableFisicaVariableHabitoComponent implements OnInit {
     this.filteredDatosHabitos = correlacion ? correlacion.habitos : [];
   }
 
-  realizarAnalisis(): void {
-    if (this.selectedDatoCorporal && this.selectedDatoHabito && this.selectedStatus) {
-      this.loading = true; // Mostrar el ProgressSpinner
-      const variableX = this.selectedDatoCorporal;
-      const variableY = this.selectedDatoHabito;
+realizarAnalisis(): void {
+  if (this.selectedDatoCorporal && this.selectedDatoHabito && this.selectedStatus) {
+    this.analisisIntentado = true;
+    this.loading = true;
 
-      this.correlationService.getCorrelationHealthyVsHabits(variableX, variableY, this.selectedStatus)
-        .subscribe(
-          data => {
-            this.correlationData = data;
-            this.messageService.add({ severity: 'success', summary: 'Análisis Completado', detail: 'Los resultados se han generado correctamente.' });
-            this.loading = false; // Ocultar el ProgressSpinner
-          },
-          error => {
-            console.error('Error al realizar el análisis', error);
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo completar el análisis.' });
-            this.loading = false; // Ocultar el ProgressSpinner
+    const variableX = this.selectedDatoCorporal;
+    const variableY = this.selectedDatoHabito;
+
+    this.correlationService.getCorrelationHealthyVsHabits(variableX, variableY, this.selectedStatus)
+      .subscribe(
+        data => {
+          this.loading = false;
+
+          if (data.error) {
+            this.correlationData = null;
+            this.messageService.add({
+              severity: 'warn',
+              summary: 'Sin datos suficientes',
+              detail: data.error
+            });
+            return;
           }
-        );
-    } else {
-      this.messageService.add({ severity: 'warn', summary: 'Faltan datos', detail: 'Seleccione todas las variables antes de realizar el análisis.' });
-    }
+
+          this.correlationData = data;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Análisis Completado',
+            detail: 'Los resultados se han generado correctamente.'
+          });
+        },
+        error => {
+          this.loading = false;
+          this.analisisIntentado = true;
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Sin datos suficientes.'
+          });
+        }
+      );
+  } else {
+    this.messageService.add({
+      severity: 'warn',
+      summary: 'Faltan datos',
+      detail: 'Seleccione todas las variables antes de realizar el análisis.'
+    });
   }
+}
+
+
 }

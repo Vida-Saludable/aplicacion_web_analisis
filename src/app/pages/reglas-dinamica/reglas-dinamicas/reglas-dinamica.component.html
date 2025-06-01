@@ -1,123 +1,161 @@
 <div class="p-grid p-dir-col p-align-center">
-    <div class="p-col-12 p-md-10">
-        <p-card header="Reglamentación Operativa del Departamento de Interacción Social">
-            <h2>Programa “Vida Saludable” de la Universidad Adventista de Bolivia</h2>
-            <p>
-                El sistema desarrollado está destinado a apoyar el Programa “Vida Saludable”, implementado por el Departamento de Interacción Social de la Universidad Adventista de Bolivia. Este programa tiene como objetivo promover hábitos de vida saludables entre los participantes (pacientes), monitorizando su evolución a lo largo del tiempo a través de mediciones periódicas tanto de hábitos diarios como de datos corporales.
-            </p>
+  <div class="p-col-12 p-md-10">
+    <p-card header="Reglamentación Operativa del Departamento de Interacción Social">
+      <h2>Programa “Vida Saludable” de la Universidad Adventista de Bolivia</h2>
+      <p>
+        El sistema desarrollado está destinado a apoyar el Programa “Vida Saludable”, implementado por el Departamento de Interacción Social de la Universidad Adventista de Bolivia. Este programa tiene como objetivo promover hábitos de vida saludables entre los participantes (pacientes), monitorizando su evolución a lo largo del tiempo a través de mediciones periódicas tanto de hábitos diarios como de datos corporales.
+      </p>
+    </p-card>
+  </div>
+
+  <div class="p-col-12 p-md-10">
+    <p-accordion>
+
+      <!-- 1 -->
+      <p-accordionTab header="1. Contexto General del Programa y Sistema">
+        <p>
+          El sistema proporciona una plataforma tecnológica para registrar, analizar y visualizar datos clínicos y de hábitos saludables, permitiendo:
+        </p>
+        <ul>
+          <li>Monitoreo longitudinal del estado de salud de los pacientes.</li>
+          <li>Comparación entre mediciones clínicas iniciales y finales.</li>
+          <li>Visualización de la evolución de hábitos saludables.</li>
+          <li>Correlación estadística entre hábitos y biomarcadores.</li>
+          <li>Generación de reportes.</li>
+        </ul>
+      </p-accordionTab>
+
+      <!-- 2 -->
+      <p-accordionTab header="2. Estructura Jerárquica del Sistema">
+        <p>El sistema asigna funciones específicas a cada tipo de usuario:</p>
+        <p-card header="Roles y Funciones">
+          <p-tabView>
+            <p-tabPanel header="Administrador Principal">
+              <ul>
+                <li>Gestión integral del sistema.</li>
+                <li>Administración de usuarios, roles y permisos.</li>
+                <li>Auditoría de uso y seguridad de datos.</li>
+              </ul>
+            </p-tabPanel>
+          
+            <p-tabPanel header="Supervisor de Proyecto">
+             
+              <ul>
+                <li>Gestión de proyectos y asignación de supervisores.</li>
+                <li>Seguimiento y evaluación del avance general.</li>
+                <li>Revisión y aprobación de informes.</li>
+              </ul>
+            </p-tabPanel>
+              <p-tabPanel header="Responsable de Seguimiento">
+             <ul>
+                <li>Monitoreo del registro diario de hábitos y signos vitales.</li>
+                <li>Validación de datos y retroalimentación.</li>
+                <li>Supervisión de tomadores de datos.</li>
+              </ul>
+            </p-tabPanel>
+            <p-tabPanel header="Tomador de Datos">
+              <ul>
+                <li>Recolección de información clínica y de hábitos.</li>
+                <li>Registro inicial y final de cada paciente.</li>
+              </ul>
+            </p-tabPanel>
+          </p-tabView>
         </p-card>
+      </p-accordionTab>
+
+      <!-- 3 -->
+      <p-accordionTab header="3. Normas de Estándar de Datos">
+        <p>
+          Se establece un marco de estandarización técnica para asegurar la precisión, homogeneidad y trazabilidad de la información recolectada.
+        </p>
+      <p>
+  Para garantizar la precisión y la interoperabilidad de los datos, cada variable registrada en el sistema sigue un formato estandarizado. A continuación se detallan los indicadores biométricos y sus respectivos formatos:
+</p>
+
+<p-card header="Formato Estándar de Indicadores Biométricos">
+  <div class="p-grid">
+    <div class="p-col-12 p-md-6 p-lg-4" *ngFor="let indicador of formatosBiometricos">
+      <p-card [header]="indicador.nombre">
+        <p><strong>Unidad:</strong> {{ indicador.unidad }}</p>
+        <p><strong>Formato:</strong> {{ indicador.formato }}</p>
+        <p *ngIf="indicador.detalle"><strong>Observación:</strong> {{ indicador.detalle }}</p>
+      </p-card>
     </div>
+  </div>
+</p-card>
 
-    <div class="p-col-12 p-md-10">
-        <p-accordion>
-            <p-accordionTab header="1. Contexto General del Programa y Sistema">
-                <p>
-                    El sistema proporciona una plataforma tecnológica para gestionar, analizar y correlacionar estos datos, permitiendo tanto el monitoreo individual como grupal de los participantes.
-                </p>
-                <ul>
-                    <li>Monitorear el estado de salud de los pacientes a lo largo del tiempo.</li>
-                    <li>Capturar datos detallados sobre sus hábitos diarios (alimentación, ejercicio, sueño, respiración, etc.).</li>
-                    <li>Realizar análisis estadísticos y correlaciones para identificar patrones entre los hábitos de vida y los indicadores de salud.</li>
-                    <li>Emitir informes automatizados sobre el progreso de cada paciente y grupo de pacientes.</li>
-                    <li>Facilitar la generación de datos comparativos entre el inicio y el final del programa.</li>
-                </ul>
-            </p-accordionTab>
 
-            <p-accordionTab header="2. Estructura Jerárquica del Sistema">
-                <p>
-                    El sistema implementa una estructura jerárquica clara que organiza a los usuarios en diferentes niveles de responsabilidad y acceso.
-                </p>
-                <p-card header="Roles y Responsabilidades">
-                    <p-tabView>
-                        <p-tabPanel header="Administrador Principal del Sistema">
-                            <ul>
-                                <li>Es la máxima autoridad dentro del sistema y tiene control total sobre su funcionamiento.</li>
-                                <li>Gestión de roles y permisos de todos los usuarios.</li>
-                                <li>Supervisar el almacenamiento y la seguridad de los datos.</li>
-                                <li>Auditar el acceso a la información sensible.</li>
-                            </ul>
-                        </p-tabPanel>
-                        <p-tabPanel header="Responsable de Proyecto">
-                            <ul>
-                                <li>Gestiona y supervisa todas las actividades y datos relacionados con su proyecto.</li>
-                                <li>Asignar tareas y gestionar a los supervisores y tomadores de datos.</li>
-                                <li>Generar informes periódicos sobre el progreso del proyecto.</li>
-                            </ul>
-                        </p-tabPanel>
-                        <p-tabPanel header="Supervisores de Proyecto">
-                            <ul>
-                                <li>Monitorear la recolección de datos diarios de los pacientes.</li>
-                                <li>Generar informes de avance y validar la consistencia y precisión de los datos.</li>
-                            </ul>
-                        </p-tabPanel>
-                        <p-tabPanel header="Tomadores de Datos">
-                            <ul>
-                                <li>Recolectar la información diaria de los pacientes.</li>
-                                <li>Ingresar datos sobre los hábitos de vida como alimentación, ejercicio físico, sueño, etc.</li>
-                            </ul>
-                        </p-tabPanel>
-                    </p-tabView>
-                </p-card>
-            </p-accordionTab>
+      </p-accordionTab>
 
-            <p-accordionTab header="3. Normas de Estándar de Datos">
-                <p>
-                    La estandarización de datos es clave para garantizar la precisión y consistencia de la información.
-                </p>
-                <p-card header="Formato Estándar de Datos Corporales">
-                    <ul>
-                        <li>Peso: Kilogramos (kg) con dos decimales.</li>
-                        <li>Altura: Metros (m) con dos decimales.</li>
-                        <li>Presión Arterial: Sistólica y Diastólica en mmHg.</li>
-                    </ul>
-                </p-card>
-                <p-card header="Formato Estándar de Datos de Hábitos de Vida">
-                    <ul>
-                        <li>Frecuencia de actividades: Se registra en minutos o veces por día/semana.</li>
-                    </ul>
-                </p-card>
-            </p-accordionTab>
+      <!-- 4 -->
+      <p-accordionTab header="4. Generación y Gestión de Informes">
+        <p>
+          Los informes son generados automáticamente por el sistema:
+        </p>
+          <ul>
+    <li><strong>Agua:</strong> Informe sobre cantidad de usuarios que cumplen la ingesta diaria recomendada de agua, variaciones semanales y evolución personal.</li>
+    <li><strong>Aire:</strong> Informe de cumplimiento de prácticas de respiración profunda y tiempo al aire libre.</li>
+    <li><strong>Alimentos:</strong> Registro de frecuencia de consumo saludable, ingesta de frutas, verduras y patrones de alimentación.</li>
+    <li><strong>Despertar:</strong> Reporte de horarios de inicio del día, cumplimiento de rutinas matutinas y estabilidad en el despertar.</li>
+    <li><strong>Dormir:</strong> Informe de cantidad de horas de sueño, regularidad en los horarios y calidad de descanso percibida.</li>
+    <li><strong>Ejercicio:</strong> Seguimiento del tiempo de actividad física diaria y semanal, tipo de ejercicio y frecuencia.</li>
+    <li><strong>Esperanza:</strong> Informe de autoevaluación espiritual, registro de actividades relacionadas con gratitud, oración o lectura espiritual.</li>
+    <li><strong>Sol:</strong> Informe de exposición solar diaria, duración promedio y cumplimiento del mínimo recomendado.</li>
+  </ul>
+      </p-accordionTab>
 
-            <p-accordionTab header="4. Generación y Gestión de Informes">
-                <p>
-                    El sistema está diseñado para generar diversos informes automáticos.
-                </p>
-                <ul>
-                    <li>Informes Individuales de Pacientes.</li>
-                    <li>Informes Grupales.</li>
-                    <li>Informes de Correlación.</li>
-                </ul>
-            </p-accordionTab>
+      <!-- 5 -->
+      <!-- <p-accordionTab header="5. Almacenamiento de Datos e Informes">
+        <p>
+          Todos los datos e informes son almacenados de manera segura:
+        </p>
+        <p-card header="Repositorio Institucional en la Nube">
+          <ul>
+            <li>Acceso exclusivo p.</li>
+            <li>Respaldo automático y control de versiones.</li>
+            <li>Seguridad basada en roles definidos.</li>
+          </ul>
+        </p-card>
+      </p-accordionTab> -->
 
-            <p-accordionTab header="5. Almacenamiento de Datos e Informes">
-                <p>
-                    Todos los informes y datos del sistema se almacenarán en un repositorio en Google Drive, con acceso restringido según la jerarquía definida.
-                </p>
-                <p-card header="Acceso y Seguridad">
-                    <ul>
-                        <li>Solo los administradores y responsables de proyecto tendrán acceso al almacenamiento completo.</li>
-                        <li>Los supervisores solo podrán acceder a los informes parciales relacionados con sus proyectos.</li>
-                    </ul>
-                </p-card>
-            </p-accordionTab>
+      <!-- 6 -->
+      <p-accordionTab header="5. Dinámica Operativa del Sistema">
+        <ul>
+          <li><strong>Ingreso:</strong> Registro del paciente y datos iniciales.</li>
+          <li><strong>Seguimiento:</strong> Registro diario de hábitos.</li>
+          <li><strong>Evaluación final:</strong> Segunda toma de datos clínicos.</li>
+          <li><strong>Análisis:</strong> Comparación automática y visualización gráfica.</li>
+          <li><strong>Informe:</strong> Generación y entrega de resultados.</li>
+        </ul>
+      </p-accordionTab>
 
-            <p-accordionTab header="6. Dinámica Operativa del Sistema">
-                <p>
-                    Recolección de Datos, Supervisión, Análisis y Correlación son los pilares de la dinámica operativa del sistema.
-                </p>
-            </p-accordionTab>
+      <!-- 7 -->
+      <p-accordionTab header="6. Seguridad y Confidencialidad">
+        <p>
+          Todos los usuarios del sistema deben firmar un acuerdo de confidencialidad.
+        </p>
+        <ul>
+          <li>Solo usuarios autorizados pueden acceder a información sensible.</li>
+          <li>La actividad en el sistema es auditada periódicamente.</li>
+          <li>Datos personales están protegidos bajo políticas de privacidad institucional.</li>
+          <li>Solo cada usuario solo puede ver los datos del proyecto al que pertenece.</li>
+          <li>Solo los Administradores tienen acceso a todos los proyectos y todas las opciones.</li>
+          <li>El mal uso de los resultados obtenidos de los estudios sera sancionados por la Institución.</li>
+        </ul>
+      </p-accordionTab>
 
-            <p-accordionTab header="7. Seguridad y Confidencialidad">
-                <p>
-                    Todo el personal que accede al sistema debe firmar acuerdos de confidencialidad.
-                </p>
-            </p-accordionTab>
+      <!-- 8 -->
+      <p-accordionTab header="7. Supervisión del Programa">
+        <p>
+          La evaluación continua garantiza el correcto uso del sistema:
+        </p>
+        <ul>
+          <li>Auditorías mensuales realizadas por el administrador del sistema.</li>
+          <li>Validaciones de calidad de datos por responsables de cada facultad.</li>
+          <li>Reuniones interinstitucionales de revisión y retroalimentación.</li>
+        </ul>
+      </p-accordionTab>
 
-            <p-accordionTab header="8. Supervisión del Programa">
-                <p>
-                    El administrador principal será responsable de auditar mensualmente el sistema.
-                </p>
-            </p-accordionTab>
-        </p-accordion>
-    </div>
+    </p-accordion>
+  </div>
 </div>

@@ -54,7 +54,9 @@ export class AddEditUserComponent implements OnInit {
   // Cargar roles disponibles
   loadRoles(): void {
     this.rolesService.getRoles().subscribe((roles: Roles[]) => {
-      this.roles = roles;
+      this.roles=roles.filter(rol=>rol.name=="Administrador")
+      console.log("los roles son",this.roles)
+        // this.roles = roles;
     });
   }
 

@@ -20,6 +20,8 @@ export class VariableFisicaVariableHabitoDeltasComponent implements OnInit {
   correlationData: CorrelationHealthyHabistDeltas;
   typesCorrelations: string[] = [];
   loading: boolean = false;
+  analisisIntentado: boolean = false;
+
 
   filteredDatosHabitos: any[] = []; // Hábitos filtrados dinámicamente
   datosCorporalOptions: any[] = []; // Opciones para Dato Corporal
@@ -74,32 +76,35 @@ export class VariableFisicaVariableHabitoDeltasComponent implements OnInit {
     return true;
   }
 
-  realizarAnalisis(): void {
-    if (this.selectedDatoCorporal && this.selectedDatoHabito && this.selectedStatusX && this.selectedStatusY) {
-      if (!this.validarTiposCorrelacion()) {
-        return;
-      }
-      
-      this.loading = true; // Mostrar el ProgressSpinner
-      const variableX = this.selectedDatoCorporal;
-      const variableY = this.selectedDatoHabito;
-
-      this.correlationService.getCorrelationHealthyVsHabitsDeltas(variableX, variableY, this.selectedStatusX, this.selectedStatusY)
-        .subscribe(
-          data => {
-            console.log('Datos recibidos:', data); // Verifica los datos recibidos
-            this.correlationData = data;
-            this.messageService.add({ severity: 'success', summary: 'Análisis Completado', detail: 'Los resultados se han generado correctamente.' });
-            this.loading = false; // Ocultar el ProgressSpinner
-          },
-          error => {
-            console.error('Error al realizar el análisis', error);
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo completar el análisis.' });
-            this.loading = false; // Ocultar el ProgressSpinner
-          }
-        );
-    } else {
-      this.messageService.add({ severity: 'warn', summary: 'Faltan Datos', detail: 'Debe seleccionar todas las opciones para realizar el análisis.' });
+ realizarAnalisis(): void {
+  if (this.selectedDatoCorporal && this.selectedDatoHabito && this.selectedStatusX && this.selectedStatusY) {
+    if (!this.validarTiposCorrelacion()) {
+      return;
     }
+
+    this.analisisIntentado = true;
+    this.loading = true;
+
+    const variableX = this.selectedDatoCorporal;
+    const variableY = this.selectedDatoHabito;
+
+    this.correlationService.getCorrelationHealthyVsHabitsDeltas(variableX, variableY, this.selectedStatusX, this.selectedStatusY)
+      .subscribe(
+        data => {
+          this.correlationData = data;
+          this.messageService.add({ severity: 'success', summary: 'Análisis Completado', detail: 'Los resultados se han generado correctamente.' });
+          this.loading = false;
+        },
+        error => {
+          console.error('Error al realizar el análisis', error);
+          this.correlationData = null;
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: error.error?.error || 'No se pudo completar el análisis.' });
+          this.loading = false;
+        }
+      );
+  } else {
+    this.messageService.add({ severity: 'warn', summary: 'Faltan Datos', detail: 'Debe seleccionar todas las opciones para realizar el análisis.' });
   }
+}
+
 }

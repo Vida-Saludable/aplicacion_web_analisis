@@ -4,7 +4,7 @@
 <div class="grid">
   <div class="col-12">
     <div class="card">
-      <h5 class="title">Análisis de Correlación</h5>
+      <h5 class="title">Análisis de Correlación Deltas</h5>
 
       <!-- Selección de variables -->
       <div class="flex justify-content-between form-row">
@@ -100,17 +100,17 @@
             <div class="result-category">
               <p><strong>Pearson:</strong></p>
               <p>Correlación: {{ correlationData.correlaciones_iniciales.pearson.correlation }}</p>
-              <p>p-Valor: {{ correlationData.correlaciones_iniciales.pearson.p_value }}</p>
+              <p>Nivel de confiabilidad: {{ correlationData.correlaciones_iniciales.pearson.nivel_de_confiabilidad }}</p>
             </div>
             <div class="result-category">
               <p><strong>Spearman:</strong></p>
               <p>Correlación: {{ correlationData.correlaciones_iniciales.spearman.correlation }}</p>
-              <p>p-Valor: {{ correlationData.correlaciones_iniciales.spearman.p_value }}</p>
+              <p>Nivel de confiabilidad: {{ correlationData.correlaciones_iniciales.spearman.nivel_de_confiabilidad }}</p>
             </div>
             <div class="result-category">
               <p><strong>Kendall:</strong></p>
               <p>Correlación: {{ correlationData.correlaciones_iniciales.kendall.correlation }}</p>
-              <p>p-Valor: {{ correlationData.correlaciones_iniciales.kendall.p_value }}</p>
+              <p>Nivel de confiabilidad: {{ correlationData.correlaciones_iniciales.kendall.nivel_de_confiabilidad }}</p>
             </div>
           </div>
 
@@ -123,29 +123,39 @@
             <div class="result-category">
               <p><strong>Pearson:</strong></p>
               <p>Correlación: {{ correlationData.correlaciones_finales.pearson.correlation }}</p>
-              <p>p-Valor: {{ correlationData.correlaciones_finales.pearson.p_value }}</p>
+              <p>Nivel de confiabilidad: {{ correlationData.correlaciones_finales.pearson.nivel_de_confiabilidad }}</p>
             </div>
             <div class="result-category">
               <p><strong>Spearman:</strong></p>
               <p>Correlación: {{ correlationData.correlaciones_finales.spearman.correlation }}</p>
-              <p>p-Valor: {{ correlationData.correlaciones_finales.spearman.p_value }}</p>
+              <p>Nivel de confiabilidad: {{ correlationData.correlaciones_finales.spearman.nivel_de_confiabilidad }}</p>
             </div>
             <div class="result-category">
               <p><strong>Kendall:</strong></p>
               <p>Correlación: {{ correlationData.correlaciones_finales.kendall.correlation }}</p>
-              <p>p-Valor: {{ correlationData.correlaciones_finales.kendall.p_value }}</p>
+              <p>Nivel de confiabilidad: {{ correlationData.correlaciones_finales.kendall.nivel_de_confiabilidad }}</p>
             </div>
           </div>
 
           <!-- Cambios -->
           <div class="result-grid correlation-changes">
             <h6 class="correlation-heading full-width-title">Cambios en la Correlación</h6>
-            <p><strong>Pearson:</strong> {{ correlationData.cambios.pearson }}</p>
-            <p><strong>Spearman:</strong> {{ correlationData.cambios.spearman }}</p>
-            <p><strong>Kendall:</strong> {{ correlationData.cambios.kendall }}</p>
+      <p><strong>Pearson:</strong> {{ correlationData.cambios.pearson.interpretacion }} ({{ correlationData.cambios.pearson.cantidad_cambio }})</p>
+      <p><strong>Spearman:</strong> {{ correlationData.cambios.spearman.interpretacion }} ({{ correlationData.cambios.spearman.cantidad_cambio }})</p>
+      <p><strong>Kendall:</strong> {{ correlationData.cambios.kendall.interpretacion }} ({{ correlationData.cambios.kendall.cantidad_cambio }})</p>
+
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Mensaje visual si hubo un error y ya se intentó -->
+<div *ngIf="analisisIntentado && !correlationData && !loading" class="mt-4">
+  <div class="card result-card p-4 text-center">
+    <h6 class="text-danger">⚠️ No hay datos suficientes para mostrar la correlación.</h6>
+    <p>Intente con otra combinación de variables o asegúrese de que los datos estén disponibles.</p>
+  </div>
+</div>
+

@@ -85,7 +85,7 @@
             <div class="result-category">
               <h6 class="category-title">Pearson</h6>
               <p><strong>Correlación:</strong> {{ correlationData.resultados.Pearson.correlacion }}</p>
-              <p><strong>Valor p:</strong> {{ correlationData.resultados.Pearson.valor_p }}</p>
+              <p><strong>Nivel de confiabilidad:</strong> {{ correlationData.resultados.Pearson.nivel_de_confiabilidad }}</p>
               <p [innerHTML]="correlationData.resultados.Pearson.interpretacion"></p>
             </div>
 
@@ -93,7 +93,7 @@
             <div class="result-category">
               <h6 class="category-title">Spearman</h6>
               <p><strong>Correlación:</strong> {{ correlationData.resultados.Spearman.correlacion }}</p>
-              <p><strong>Valor p:</strong> {{ correlationData.resultados.Spearman.valor_p }}</p>
+              <p><strong>Nivel de confiabilidad:</strong> {{ correlationData.resultados.Spearman.nivel_de_confiabilidad }}</p>
               <p [innerHTML]="correlationData.resultados.Spearman.interpretacion"></p>
             </div>
 
@@ -101,7 +101,7 @@
             <div class="result-category">
               <h6 class="category-title">Kendall</h6>
               <p><strong>Correlación:</strong> {{ correlationData.resultados.Kendall.correlacion }}</p>
-              <p><strong>Valor p:</strong> {{ correlationData.resultados.Kendall.valor_p }}</p>
+              <p><strong>Nivel de confiabilidad:</strong> {{ correlationData.resultados.Kendall.nivel_de_confiabilidad }}</p>
               <p [innerHTML]="correlationData.resultados.Kendall.interpretacion"></p>
             </div>
           </div>
@@ -110,3 +110,13 @@
     </div>
   </div>
 </div>
+<!-- Mensaje visual si hubo un error -->
+<!-- Mensaje visual si hubo un error y ya se intentó analizar -->
+<div *ngIf="analisisIntentado && !correlationData && !loading" class="mt-4">
+  <div class="card result-card p-4 text-center">
+    <h6 class="text-danger">⚠️ No hay datos suficientes para mostrar la correlación.</h6>
+    <p>Intente con otra combinación de variables o revise si hay datos disponibles del usuario.</p>
+  </div>
+</div>
+
+

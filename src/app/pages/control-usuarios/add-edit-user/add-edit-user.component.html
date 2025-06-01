@@ -21,7 +21,7 @@
     <!-- Input para Contraseña solo al crear -->
     <div *ngIf="!isEdit" class="form-group">
       <label for="contrasenia">Contraseña:</label>
-      <input id="contrasenia" type="password" pInputText formControlName="contrasenia" placeholder="Ingrese la contraseña" />
+      <input id="contrasenia" type="text" pInputText formControlName="contrasenia" placeholder="Ingrese la contraseña" />
       <small *ngIf="userForm.get('contrasenia').invalid && userForm.get('contrasenia').touched" class="p-error">La contraseña es requerida</small>
     </div>
 
