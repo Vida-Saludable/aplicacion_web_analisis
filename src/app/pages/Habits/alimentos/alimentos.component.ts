@@ -71,6 +71,10 @@ export class AlimentosComponent implements OnInit {
       // Fechas mínimas y máximas para el calendario
       this.fechaMinima = new Date(data.fecha_minima);
       this.fechaMaxima = new Date(data.fecha_maxima);
+          this.filtersForm.patchValue({
+      fecha_inicio: new Date(data.fecha_minima),
+      fecha_fin: new Date(data.fecha_maxima)
+    });
     });
   }
 
@@ -127,7 +131,12 @@ export class AlimentosComponent implements OnInit {
       this.usuariosFiltrados = this.usuarios;
       this.loading = false;
       this.messages = [];
-    });
+      (error)=>{
+       this.loading = false;
+    }
+    }
+  
+  );
   }
     // Manejar el cambio de página
     onPageChange(event: any): void {

@@ -60,4 +60,9 @@ export class AppTopBarComponent {
             
         
     }
+
+    goToProjectSelection(): void {
+  this.router.navigate(['/select-project']);
+}
+
 }

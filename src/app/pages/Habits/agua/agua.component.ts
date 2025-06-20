@@ -47,6 +47,10 @@ export class AguaComponent implements OnInit {
       this.cantidadAguaOptions = data.cantidades.map((cantidad: number) => ({ label: `${cantidad} ml`, value: cantidad }));
       this.fechaMinima = new Date(data.fecha_minima);
       this.fechaMaxima = new Date(data.fecha_maxima);
+          this.filtersForm.patchValue({
+      fecha_inicio: new Date(data.fecha_minima),
+      fecha_fin: new Date(data.fecha_maxima)
+    });
     });
   }
 

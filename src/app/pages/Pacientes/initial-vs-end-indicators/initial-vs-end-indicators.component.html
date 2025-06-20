@@ -34,22 +34,28 @@
 
   <!-- Mostrar indicadores si ya están listos -->
   <div *ngIf="!cargandoIndicadores">
-    <div *ngIf="listsindicatorMainvsEnd?.length > 0; else noIndicators" class="indicators-grid">
-      <div *ngFor="let item of listsindicatorMainvsEnd" class="indicator-card">
-        <h2>{{ item.nombre }}</h2>
-        <div class="indicator-detail">
-          <p><strong>Valor Inicial:</strong> {{ item.valor_inicial }}</p>
-          <p><strong>Valor Final:</strong> {{ item.valor_final }}</p>
-          <p><strong>Diferencia:</strong> {{ item.diferencia }}</p>
-        </div>
-        <div class="recommendation">
-          <strong>Recomendación:</strong> {{ item.recomendacion }}
-        </div>
-        <div class="warning">
-          <strong>Advertencia:</strong> {{ item.advertencia }}
-        </div>
-      </div>
-    </div>
+ <div class="grid-indicators">
+<div *ngFor="let item of listsindicatorMainvsEnd" class="indicator-card-nice">
+  <div class="habit-name-bar">
+    <span class="habit-name">{{ item.nombre | uppercase }}</span>
+  </div>
+
+  <div class="values">
+    <p><strong>Valor Inicial:</strong> {{ item.valor_inicial }}</p>
+    <p><strong>Valor Final:</strong> {{ item.valor_final }}</p>
+    <p><strong>Diferencia:</strong> {{ item.diferencia | number:'1.2-2' }}</p>
+  </div>
+
+ <div *ngIf="item.diferencia !== 0" class="warning-box yellow">
+  <i class="pi pi-exclamation-triangle mr-2"></i>
+  <strong>Importante:</strong> {{ item.advertencia }}
+</div>
+
+
+</div>
+
+</div>
+
 
     <!-- Si no hay indicadores -->
     <ng-template #noIndicators>

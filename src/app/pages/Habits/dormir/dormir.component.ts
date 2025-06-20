@@ -39,6 +39,10 @@ export class DormirComponent implements OnInit {
       this.horasDormir = data.hora.map((h: string) => ({ label: h, value: h }));
       this.fechaMinima = new Date(data.fecha_minima);
       this.fechaMaxima = new Date(data.fecha_maxima);
+          this.filtersForm.patchValue({
+      fecha_inicio: new Date(data.fecha_minima),
+      fecha_fin: new Date(data.fecha_maxima)
+    });
     });
   }
 

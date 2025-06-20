@@ -322,9 +322,21 @@ safeValue(value: number | null | undefined): number {
 }
 
 // Si el color es null o undefined, usa un gris para "sin dato"
+// Mapear colores del backend a otros más perceptibles en el frontend
 safeColor(color: string | null | undefined): string {
-  return color ?? '#d3d3d3'; // gris claro
+  const colorMap: { [key: string]: string } = {
+    '#00FF00': '#009E73',   // Muy Bueno → Verde fuerte azulado
+    '#32CD32': '#A6D854',   // Bueno → Verde lima claro
+    '#FFD700': '#FFD92F',   // Aceptable → Amarillo brillante
+    '#FFA500': '#FFB482',   // Regular → Durazno claro
+    '#FF4C4C': '#E41A1C',   // Malo → Rojo puro
+    '#FF0000': '#7F0000',   // Muy Malo → Rojo oscuro/marrón
+    '#d3d3d3': '#BDBDBD'    // Sin dato → Gris claro
+  };
+
+  return colorMap[color ?? '#d3d3d3'] ?? '#BDBDBD';
 }
+
 
 
 

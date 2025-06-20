@@ -38,6 +38,10 @@ export class SolComponent implements OnInit {
       this.tiemposSolOptions = data.tiempo.map((t: number) => ({ label: `${t} min`, value: t }));
       this.fechaMinima = new Date(data.fecha_minima);
       this.fechaMaxima = new Date(data.fecha_maxima);
+          this.filtersForm.patchValue({
+      fecha_inicio: new Date(data.fecha_minima),
+      fecha_fin: new Date(data.fecha_maxima)
+    });
     });
   }
 

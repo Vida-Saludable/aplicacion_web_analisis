@@ -45,6 +45,10 @@ export class EsperanzaComponent implements OnInit {
       // Asignar las fechas mínima y máxima al calendario
       this.fechaMinima = new Date(data.fecha_minima);
       this.fechaMaxima = new Date(data.fecha_maxima);
+          this.filtersForm.patchValue({
+      fecha_inicio: new Date(data.fecha_minima),
+      fecha_fin: new Date(data.fecha_maxima)
+    });
     });
   }
 

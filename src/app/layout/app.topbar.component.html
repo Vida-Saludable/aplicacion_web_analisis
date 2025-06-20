@@ -11,6 +11,15 @@
         <i class="pi pi-ellipsis-v"></i>
     </button>
 
+
+    <!-- Botón para ir a seleccionar proyecto -->
+<button class="p-button p-button-sm" style="background-color: #007BFF; color: white; border: 2px solid white; border-radius: 6px; padding: 5px 14px;"
+        (click)="goToProjectSelection()">
+    <i class="pi pi-folder-open mr-2"></i>
+    Seleccionar Proyecto
+</button>
+
+
     <!-- Información de Usuario -->
     <div class="layout-topbar-info" *ngIf="userName && userEmail && userRole">
         <p>{{ userName }} | {{ userEmail }} | Rol: {{ userRole }}</p>

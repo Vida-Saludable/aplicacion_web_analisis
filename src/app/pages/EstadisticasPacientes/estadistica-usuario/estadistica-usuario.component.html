@@ -1,14 +1,15 @@
 <!-- Gráfico -->
 
-<div class="legend-custom" style="display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
-  <div><span style="background:#00FF00; width:15px; height:15px; display:inline-block;"></span> Verde = Muy Bueno</div>
-  <div><span style="background:#32CD32; width:15px; height:15px; display:inline-block;"></span> Verde claro = Bueno</div>
-  <div><span style="background:#FFD700; width:15px; height:15px; display:inline-block;"></span> Amarillo = Aceptable</div>
-  <div><span style="background:#FFA500; width:15px; height:15px; display:inline-block;"></span> Naranja = Regular</div>
-  <div><span style="background:#FF4C4C; width:15px; height:15px; display:inline-block;"></span> Rojo = Malo</div>
-  <div><span style="background:#FF0000; width:15px; height:15px; display:inline-block;"></span> Rojo oscuro = Muy Malo</div>
-  <div><span style="background:#d3d3d3; width:15px; height:15px; display:inline-block;"></span> Sin dato</div>
+<div class="custom-legend">
+  <span class="legend-box" style="background-color: #009E73;"></span> Muy Bueno
+  <span class="legend-box" style="background-color: #A6D854;"></span> Bueno
+  <span class="legend-box" style="background-color: #FFD92F;"></span> Aceptable
+  <span class="legend-box" style="background-color: #FFB482;"></span> Regular
+  <span class="legend-box" style="background-color: #E41A1C;"></span> Malo
+  <span class="legend-box" style="background-color: #7F0000;"></span> Muy Malo
+  <span class="legend-box" style="background-color: #BDBDBD;"></span> Sin dato
 </div>
+
 
 <div class="card-container">
   <p-chart type="bar" [data]="data" [options]="options"></p-chart>
