@@ -73,8 +73,11 @@ export class AguaComponent implements OnInit {
   // Método para buscar los usuarios según los filtros aplicados y la paginación
   buscarUsuarios(): void {
     const filtros = this.filtersForm.value;
-    if (new Date(filtros.fecha_inicio) > new Date(filtros.fecha_fin)) {
-      this.messages = [{ severity: 'warn', summary: 'Advertencia', detail: 'La fecha de inicio no puede ser mayor a la fecha de fin.' }];
+    if (new Date(filtros.fecha_inicio) > new Date(filtros.fecha_fin)) 
+      {
+      this.messages = [{ severity: 'warn', 
+        summary: 'Advertencia', 
+        detail: 'La fecha de inicio no puede ser mayor a la fecha de fin.' }];
       return;
     }
 

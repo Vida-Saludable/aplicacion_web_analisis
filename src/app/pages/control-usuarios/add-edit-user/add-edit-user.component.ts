@@ -54,7 +54,8 @@ export class AddEditUserComponent implements OnInit {
   // Cargar roles disponibles
   loadRoles(): void {
     this.rolesService.getRoles().subscribe((roles: Roles[]) => {
-      this.roles=roles.filter(rol=>rol.name=="Administrador")
+      // this.roles=roles.filter(rol=>rol.name=="Administrador")
+      this.roles=roles
       console.log("los roles son",this.roles)
         // this.roles = roles;
     });
@@ -62,15 +63,20 @@ export class AddEditUserComponent implements OnInit {
 
   // Cargar datos del usuario cuando se edita
   loadUser(id: number): void {
-    this.userService.getUserById(id).subscribe((user: User) => {
-      this.userForm.patchValue({
-        nombre: user.nombre,
-        correo: user.correo,
-        role: user.role
-      });
-      this.userForm.removeControl('contrasenia');  // Quitar el control de contraseña al editar
+  this.userService.getUserById(id).subscribe((user: User) => {
+    // Esperar a que los roles ya estén cargados
+    const selectedRole = this.roles.find(r => r.id === user.role );
+
+    this.userForm.patchValue({
+      nombre: user.nombre,
+      correo: user.correo,
+      role: selectedRole  // ✅ Asignar objeto completo
     });
-  }
+
+    this.userForm.removeControl('contrasenia');
+  });
+}
+
 
   // Enviar el formulario
   // Enviar el formulario

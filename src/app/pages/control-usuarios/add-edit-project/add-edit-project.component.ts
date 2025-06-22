@@ -16,6 +16,7 @@ export class AddEditProjectComponent implements OnInit {
   isEdit: boolean = false;
   projectId: number | null = null;
   messages: any[] = [];  // Declarar la variable para los mensajes
+  public todayString: string = new Date().toISOString().split('T')[0];
 
   constructor(
     private fb: FormBuilder,
@@ -54,38 +55,63 @@ export class AddEditProjectComponent implements OnInit {
     });
   }
 
-  onSubmit(): void {
-    if (this.projectForm.valid) {
-      const projectData = {
-        ...this.projectForm.value,
-        estado: this.projectForm.value.estado ? 1 : 0
-      };
+ onSubmit(): void {
+  if (this.projectForm.valid) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Quitar la hora para comparar solo fechas
 
-      if (this.isEdit && this.projectId) {
-        this.projectService.updateProject(this.projectId, projectData).subscribe(
-          () => {
-            this.messages = [{ severity: 'success', summary: 'Actualizado', detail: 'Proyecto actualizado correctamente.' }];
-            this.router.navigate(['/dashboard/controlUsuarios/projectos']);
-          },
-          (error) => this.messages = [{ severity: 'error', summary: 'Error', detail: 'Error al actualizar el proyecto' }]
-        );
-      } else {
-        this.projectService.registerProject(
-          projectData.nombre,
-          projectData.descripcion,
-          projectData.fecha_inicio,
-          projectData.fecha_fin,
-          projectData.estado
-        ).subscribe(
-          () => {
-            this.messages = [{ severity: 'success', summary: 'Creado', detail: 'Proyecto creado correctamente.' }];
-            this.router.navigate(['/dashboard/controlUsuarios/projectos']);
-          },
-          (error) => this.messages = [{ severity: 'error', summary: 'Error', detail: 'Error al crear el proyecto' }]
-        );
-      }
+    const fechaInicio = new Date(this.projectForm.value.fecha_inicio);
+    const fechaFin = new Date(this.projectForm.value.fecha_fin);
+
+    if (fechaInicio < today) {
+      this.messages = [{
+        severity: 'warn',
+        summary: 'Fecha inválida',
+        detail: 'La fecha de inicio no puede ser anterior al día de hoy.'
+      }];
+      return;
+    }
+
+    if (fechaInicio > fechaFin) {
+      this.messages = [{
+        severity: 'warn',
+        summary: 'Fecha inválida',
+        detail: 'La fecha de inicio no puede ser mayor que la fecha de fin.'
+      }];
+      return;
+    }
+
+    const projectData = {
+      ...this.projectForm.value,
+      estado: this.projectForm.value.estado ? 1 : 0
+    };
+
+    if (this.isEdit && this.projectId) {
+      this.projectService.updateProject(this.projectId, projectData).subscribe(
+        () => {
+          this.messages = [{ severity: 'success', summary: 'Actualizado', detail: 'Proyecto actualizado correctamente.' }];
+          this.router.navigate(['/dashboard/controlUsuarios/projectos']);
+        },
+        (error) => this.messages = [{ severity: 'error', summary: 'Error', detail: 'Error al actualizar el proyecto' }]
+      );
+    } else {
+      this.projectService.registerProject(
+        projectData.nombre,
+        projectData.descripcion,
+        projectData.fecha_inicio,
+        projectData.fecha_fin,
+        projectData.estado
+      ).subscribe(
+        () => {
+          this.messages = [{ severity: 'success', summary: 'Creado', detail: 'Proyecto creado correctamente.' }];
+          this.router.navigate(['/dashboard/controlUsuarios/projectos']);
+        },
+        (error) => this.messages = [{ severity: 'error', summary: 'Error', detail: 'Error al crear el proyecto' }]
+      );
     }
   }
+}
+
 
   onCancel(): void {
     this.router.navigate(['/dashboard/controlUsuarios/projectos']);

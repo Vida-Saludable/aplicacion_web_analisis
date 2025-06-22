@@ -22,7 +22,6 @@ export class AppMenuComponent implements OnInit {
     ngOnInit() {
         this.userRole = this.authService.getUserRole();
         this.model = [
-
             {
                 label: 'Inicio',
                 items: [

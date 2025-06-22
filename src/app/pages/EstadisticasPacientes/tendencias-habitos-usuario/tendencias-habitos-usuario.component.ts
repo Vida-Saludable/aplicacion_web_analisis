@@ -33,6 +33,8 @@ export class TendenciasHabitosUsuarioComponent implements OnInit {
   public options: any;
   usuario:UsuarioPersonal 
 
+  
+
   constructor() {
     this.userId = Number(this.activateRoute.snapshot.paramMap.get('id'));
     if (this.userId) {
@@ -110,8 +112,14 @@ export class TendenciasHabitosUsuarioComponent implements OnInit {
       error => {
         console.error("Error al obtener el rango de fechas", error);
         this.fechasCargadas = false; // Si falla, deshabilitar los calendarios
-      }
-    );
+    this.messages.push({
+        severity: 'warn',
+        summary: 'Sin registros',
+        detail: 'Este usuario no tiene registros de hábitos en ninguna fecha.'
+      });
+      this.messageService.add(this.messages[this.messages.length - 1]);
+    }
+  );
   }
 
   // Obtener los indicadores según el rango de fechas

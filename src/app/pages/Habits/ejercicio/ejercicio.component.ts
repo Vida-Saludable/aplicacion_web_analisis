@@ -69,7 +69,7 @@ export class EjercicioComponent implements OnInit {
     this.loading = true;
     this.exerciseService.getClasificationExercise({
       tipo: filtros.tipo,
-      tiempo: filtros.tiempo.value,
+      tiempo: filtros.tiempo?.value,
       fecha_inicio: filtros.fecha_inicio ? this.formatDate(filtros.fecha_inicio) : undefined,
       fecha_fin: filtros.fecha_fin ? this.formatDate(filtros.fecha_fin) : undefined,
       page: this.currentPage,
@@ -99,7 +99,7 @@ export class EjercicioComponent implements OnInit {
     const filtros = this.filtersForm.value;
     this.exerciseService.exportClasificationExerciseExcel({
       tipo: filtros.tipo,
-      tiempo: filtros.tiempo.value,
+      tiempo: filtros.tiempo?.value,
       fecha_inicio: filtros.fecha_inicio ? this.formatDate(filtros.fecha_inicio) : undefined,
       fecha_fin: filtros.fecha_fin ? this.formatDate(filtros.fecha_fin) : undefined,
     }).subscribe((data: Blob) => {

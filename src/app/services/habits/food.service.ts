@@ -47,6 +47,7 @@ export class FoodService {
     pageSize?: number;
   }): Observable<PaginatedResponse<ProfileUser>> { // Usar la interfaz PaginatedResponse para el tipo de respuesta
     const params = this.buildParams(filtros);
+    console.log("estos son los filtros",filtros)
     return this.http.get<PaginatedResponse<ProfileUser>>(`${this.baseUrl}clasificacion-alimentacion-usuarios`, { params });
   }
 

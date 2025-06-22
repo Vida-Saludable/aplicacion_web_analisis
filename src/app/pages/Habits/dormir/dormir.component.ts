@@ -63,7 +63,7 @@ export class DormirComponent implements OnInit {
 
     this.loading = true;
     this.sleepService.getClasificationSleep({
-      hora: filtros.hora.value,
+      hora: filtros.hora?.value,
       fecha_inicio: filtros.fecha_inicio ? this.formatDate(filtros.fecha_inicio) : undefined,
       fecha_fin: filtros.fecha_fin ? this.formatDate(filtros.fecha_fin) : undefined,
       page: this.currentPage,
@@ -92,7 +92,7 @@ export class DormirComponent implements OnInit {
     const filtros = this.filtersForm.value;
 
     this.sleepService.exportClasificationSleepExcel({
-      hora: filtros.hora.value,
+      hora: filtros.hora?.value,
       fecha_inicio: filtros.fecha_inicio ? this.formatDate(filtros.fecha_inicio) : undefined,
       fecha_fin: filtros.fecha_fin ? this.formatDate(filtros.fecha_fin) : undefined,
     }).subscribe((data: Blob) => {

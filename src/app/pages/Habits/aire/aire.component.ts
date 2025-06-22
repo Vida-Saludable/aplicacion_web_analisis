@@ -59,13 +59,16 @@ export class AireComponent implements OnInit {
     const filtros = this.filtersForm.value;
 
     if (new Date(filtros.fecha_inicio) > new Date(filtros.fecha_fin)) {
-      this.messages = [{ severity: 'warn', summary: 'Advertencia', detail: 'La fecha de inicio no puede ser mayor a la fecha de fin.' }];
+      this.messages = [{ 
+        severity: 'warn', 
+        summary: 'Advertencia', 
+        detail: 'La fecha de inicio no puede ser mayor a la fecha de fin.' }];
       return;
     }
 
     this.loading = true;
     this.airService.getClasificationAir({
-      tiempo: filtros.tiempo.value,
+      tiempo: filtros.tiempo?.value,
       fecha_inicio: filtros.fecha_inicio ? this.formatDate(filtros.fecha_inicio) : undefined,
       fecha_fin: filtros.fecha_fin ? this.formatDate(filtros.fecha_fin) : undefined,
       page: this.currentPage,
@@ -94,7 +97,7 @@ export class AireComponent implements OnInit {
   exportarExcel(): void {
     const filtros = this.filtersForm.value;
     this.airService.exportClasificationAirExcel({
-      tiempo: filtros.tiempo.value,
+      tiempo: filtros.tiempo?.value,
       fecha_inicio: filtros.fecha_inicio ? this.formatDate(filtros.fecha_inicio) : undefined,
       fecha_fin: filtros.fecha_fin ? this.formatDate(filtros.fecha_fin) : undefined,
     }).subscribe((data: Blob) => {

@@ -53,7 +53,11 @@ export class AlimentosComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Cargar datos únicos de la API
+  this.loadUniqueData()
+  }
+
+  loadUniqueData(){
+  // Cargar datos únicos de la API
     this.foodService.getFoodUnique().subscribe((data: FoodUnique) => {
       // Asignación de datos únicos a las listas de dropdowns
       this.desayunoHoras = data.desayuno_hora.map((hora) => ({ label: hora, value: hora }));
@@ -77,7 +81,6 @@ export class AlimentosComponent implements OnInit {
     });
     });
   }
-
   // Métodos para filtrar las opciones de cada hora
   filterDesayunoHoras(event: any): void {
     const query = event.query.toLowerCase();
@@ -110,9 +113,9 @@ export class AlimentosComponent implements OnInit {
 
     this.loading = true;
     this.foodService.getClasificationFood({
-      desayuno_hora: filtros.desayuno_hora.value,
-      almuerzo_hora: filtros.almuerzo_hora.value,
-      cena_hora: filtros.cena_hora.value,
+      desayuno_hora: filtros.desayuno_hora?.value,
+      almuerzo_hora: filtros.almuerzo_hora?.value,
+      cena_hora: filtros.cena_hora?.value,
       desayuno: filtros.desayuno,
       almuerzo: filtros.almuerzo,
       cena: filtros.cena,
@@ -152,9 +155,9 @@ export class AlimentosComponent implements OnInit {
     const filtros = this.filtersForm.value;
     // Realizar la búsqueda con los filtros
     this.foodService.exportClasificationFoodExcel({
-      desayuno_hora: filtros.desayuno_hora.value,
-      almuerzo_hora: filtros.almuerzo_hora.value,
-      cena_hora: filtros.cena_hora.value,
+      desayuno_hora: filtros.desayuno_hora?.value,
+      almuerzo_hora: filtros.almuerzo_hora?.value,
+      cena_hora: filtros.cena_hora?.value,
       desayuno: filtros.desayuno,
       almuerzo: filtros.almuerzo,
       cena: filtros.cena,

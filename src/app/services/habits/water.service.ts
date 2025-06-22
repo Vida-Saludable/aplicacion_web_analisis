@@ -47,6 +47,7 @@ export class WaterService {
     if (filtros.pageSize) {
       params = params.set('pageSize', filtros.pageSize.toString());
     }
+    console.log("estos son los filtros",filtros)
 
     return this.http.get<PaginatedResponse<ProfileUser>>(`${this.baseUrl}clasificacion-agua-usuarios`, { params });
   }

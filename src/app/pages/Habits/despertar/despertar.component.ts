@@ -81,7 +81,7 @@ export class DespertarComponent implements OnInit {
 
     this.loading = true;
     this.wakeUpService.getClasificationWakeUp({
-      hora: filtros.hora.value,
+      hora: filtros.hora?.value,
       estado: filtros.estado,
       fecha_inicio: filtros.fecha_inicio ? this.formatDate(filtros.fecha_inicio) : undefined,
       fecha_fin: filtros.fecha_fin ? this.formatDate(filtros.fecha_fin) : undefined,
@@ -102,7 +102,7 @@ export class DespertarComponent implements OnInit {
   exportarExcel(): void {
     const filtros = this.filtersForm.value;
     this.wakeUpService.exportClasificationWakeUpExcel({
-      hora: filtros.hora.value,
+      hora: filtros.hora?.value,
       estado: filtros.estado,
       fecha_inicio: filtros.fecha_inicio ? this.formatDate(filtros.fecha_inicio) : undefined,
       fecha_fin: filtros.fecha_fin ? this.formatDate(filtros.fecha_fin) : undefined,

@@ -39,6 +39,8 @@ export class AirService {
     pageSize?: number;
   }): Observable<PaginatedResponse<ProfileUser>> {
     const params = this.buildParams(filtros);
+    console.log("estos son los filtros",filtros)
+
     return this.http.get<PaginatedResponse<ProfileUser>>(`${this.baseUrl}clasificacion-aire-usuarios`, { params });
   }
 

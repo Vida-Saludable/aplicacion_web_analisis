@@ -69,7 +69,7 @@ export class SolComponent implements OnInit {
 
     this.loading = true;
     this.sunService.getClasificationSun({
-      tiempo: filtros.tiempo.value,
+      tiempo: filtros.tiempo?.value,
       fecha_inicio: filtros.fecha_inicio ? this.formatDate(filtros.fecha_inicio) : undefined,
       fecha_fin: filtros.fecha_fin ? this.formatDate(filtros.fecha_fin) : undefined,
       page: this.currentPage,
@@ -97,7 +97,7 @@ export class SolComponent implements OnInit {
   exportarExcel(): void {
     const filtros = this.filtersForm.value;
     this.sunService.exportClasificationSunExcel({
-      tiempo: filtros.tiempo.value,
+      tiempo: filtros.tiempo?.value,
       fecha_inicio: filtros.fecha_inicio ? this.formatDate(filtros.fecha_inicio) : undefined,
       fecha_fin: filtros.fecha_fin ? this.formatDate(filtros.fecha_fin) : undefined,
     }).subscribe((data:Blob) => {

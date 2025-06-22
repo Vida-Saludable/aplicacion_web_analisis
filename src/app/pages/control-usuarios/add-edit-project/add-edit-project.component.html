@@ -20,7 +20,7 @@
 
     <div class="form-group">
       <label for="fecha_inicio">Fecha de Inicio</label>
-      <input id="fecha_inicio" type="date" pInputText formControlName="fecha_inicio" />
+      <input id="fecha_inicio" type="date" pInputText formControlName="fecha_inicio" [min]="todayString" />
       <small *ngIf="projectForm.get('fecha_inicio').invalid && projectForm.get('fecha_inicio').touched" class="p-error">Fecha de inicio es requerida</small>
     </div>
 
