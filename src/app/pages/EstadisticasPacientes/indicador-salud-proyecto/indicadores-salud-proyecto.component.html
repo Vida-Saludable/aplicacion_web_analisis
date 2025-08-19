@@ -1,7 +1,7 @@
 <div class="grid">
   <div class="col-12">
     <div class="card contenedor-tabla">
-      <h5 class="titulo-tabla">Pacientes</h5>
+      <h5 class="titulo-tabla">PARTICIPANTES</h5>
       <p-table #dt
                [value]="userslist"
                dataKey="id"
@@ -28,21 +28,19 @@
 
         <ng-template pTemplate="header">
           <tr>
-            <th>Nombre</th>
-            <th>Apellidos</th>
-            <th>Celular</th>
-            <th>Correo</th>
-            <th>Rol</th>
+      <th>Nombre</th>
+      <th>Correo</th>
+      <th>Celular</th>
+      <th>Edad</th>
           </tr>
         </ng-template>
 
         <ng-template pTemplate="body" let-user>
           <tr>
-            <td>{{user.name}}</td>
-            <td>{{user.last_name}}</td>
-            <td>{{user.phone}}</td>
-            <td>{{user.email}}</td>
-            <td>{{user.role_name}}</td>
+      <td>{{ user.datos_personales?.nombres_apellidos || '—' }}</td>
+      <td>{{ user.correo }}</td>
+      <td>{{ user.datos_personales?.telefono || '—' }}</td>
+      <td>{{ user.datos_personales?.edad ?? '—' }}</td>
           </tr>
         </ng-template>
 

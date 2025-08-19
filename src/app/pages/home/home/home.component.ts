@@ -23,6 +23,13 @@ export class HomeComponent implements OnInit {
   pieOptions: any;
   barData: any;
   barOptions: any;
+   EASE = {
+  linear: (t: number) => t,
+  easeOutCubic: (t: number) => 1 - Math.pow(1 - t, 3),
+  easeOutExpo: (t: number) => (t === 0 ? 0 : 1 - Math.pow(2, -10 * t)),
+};
+
+
 
   loading: boolean = true; // Variable de estado de carga
 
@@ -35,24 +42,80 @@ export class HomeComponent implements OnInit {
   }
 
   // Método para cargar los datos y contar por roles
-  loadData(): void {
-    this.loading = true;
-    
-    forkJoin({
-      users: this.userService.getUsers(),
-      projects: this.projectService.getAllProjects()
-    }).subscribe(
-      ({ users, projects }) => {
-        this.processUsersData(users);
-        this.processProjectsData(projects); // Procesar proyectos
-        this.loading = false;
-      },
-      error => {
-        console.error('Error al cargar los datos:', error);
-        this.loading = false;
-      }
-    );
-  }
+loadData(): void {
+  this.loading = true;
+
+  forkJoin({
+    users: this.userService.getUsers(),
+    countByProject: this.userService.getCountUsersByProject() // o projectService si lo pusiste ahí
+  }).subscribe(
+    ({ users, countByProject }) => {
+      // 1) roles (para las demás tarjetas/ gráfico de pie)
+      this.processUsersData(users);
+
+      // 2) construir gráfico de barras desde countByProject.data
+      const rows = countByProject?.data ?? [];
+      const labels = rows.map(r => r.nombre);
+      const counts = rows.map(r => r.pacientes);
+
+      this.projectCount = rows.length;
+
+      this.barData = {
+        labels,
+        datasets: [
+          { label: 'Pacientes por Proyecto', backgroundColor: '#42A5F5', data: counts }
+        ]
+      };
+
+      // 3) TARJETA "Pacientes" = solo recuperados del endpoint
+const pacientesSoloEnProyectos = counts.reduce((a, b) => a + b, 0);
+
+// arranques desfasados 100ms entre tarjetas
+this.animateCount('admin',           this.admin,              { duration: 2000, easing: 'easeOutCubic', staggerMs:   0 });
+this.animateCount('supervisorCount', this.supervisorCount,    { duration: 2000, easing: 'easeOutCubic', staggerMs: 100 });
+this.animateCount('respSegCount',    this.respSegCount,       { duration: 2000, easing: 'easeOutCubic', staggerMs: 200 });
+this.animateCount('tomDatosCount',   this.tomDatosCount,      { duration: 2000, easing: 'easeOutCubic', staggerMs: 300 });
+this.animateCount('pacienteCount',   pacientesSoloEnProyectos,{ duration: 2200, easing: 'easeOutExpo',  staggerMs: 400 });
+this.animateCount('projectCount',    this.projectCount,       { duration: 1800, easing: 'linear',       staggerMs: 500 });
+
+      this.loading = false;
+    },
+    error => {
+      console.error('Error al cargar los datos:', error);
+      this.loading = false;
+    }
+  );
+}
+
+
+
+// home.component.ts
+private animateCount(
+  prop: keyof HomeComponent,
+  to: number,
+  opts: { duration?: number; easing?: keyof typeof this.EASE; from?: number; staggerMs?: number } = {}
+) {
+  const duration = opts.duration ?? 2000;                // ⬅️ más lento (2s). Sube a 3000 si quieres
+  const easing = this.EASE[opts.easing ?? 'easeOutCubic'];
+  const from = (opts.from ?? (this as any)[prop]) ?? 0;
+  const startDelay = opts.staggerMs ?? 0;
+
+  const startAt = performance.now() + startDelay;
+
+  const step = (now: number) => {
+    if (now < startAt) {
+      requestAnimationFrame(step);
+      return;
+    }
+    const t = Math.min((now - startAt) / duration, 1);
+    const eased = easing(t);
+    const value = Math.round(from + (to - from) * eased);
+    (this as any)[prop] = value;
+    if (t < 1) requestAnimationFrame(step);
+  };
+
+  requestAnimationFrame(step);
+}
 
   // Procesar los datos de los usuarios y contar por roles
   processUsersData(users: any[]): void {
@@ -73,57 +136,72 @@ export class HomeComponent implements OnInit {
     };
   }
 
-  // Procesar los datos de los proyectos y configurar el gráfico de barras
-  processProjectsData(projects: Project[]): void {
-    this.projectCount = projects.length;
-    const projectLabels: string[] = [];
-    const patientsPerProjectRequests: Observable<PaginatedResponse<any>>[] = [];
 
-    // Crear una solicitud para cada proyecto para obtener el número de pacientes
-    projects.forEach(project => {
-      projectLabels.push(project.nombre);
-      // Solicitar pacientes de cada proyecto sin paginación (ajustamos el pageSize a un número alto)
-      patientsPerProjectRequests.push(this.userService.getPatients(project.id, 1, 10000));
-    });
+// home.component.ts
+GetCountUsersByProject(): void {
+  this.userService.getCountUsersByProject().subscribe({
+    next: (resp) => {
+      const rows = resp?.data ?? [];
 
-    // Ejecutar todas las solicitudes en paralelo
-    forkJoin(patientsPerProjectRequests).subscribe((responses) => {
-      const patientsPerProject = responses.map(response => response.totalItems); // totalItems indica la cantidad total de pacientes
+      // etiquetas y valores para el bar chart
+      const labels = rows.map(r => r.nombre);
+      const counts = rows.map(r => r.pacientes);
 
-      // Configurar los datos del gráfico de barras
+      // cantidad de proyectos (tarjeta “Proyectos”)
+      this.projectCount = rows.length;
+
+      // datos del gráfico de barras
       this.barData = {
-        labels: projectLabels,
-        datasets: [{
-          label: 'Pacientes por Proyecto',
-          backgroundColor: '#42A5F5',
-          data: patientsPerProject
-        }]
+        labels,
+        datasets: [
+          {
+            label: 'Pacientes por Proyecto',
+            backgroundColor: '#42A5F5',
+            data: counts
+          }
+        ]
       };
-    });
-  }
+    },
+    error: (err) => {
+      console.error('Error al obtener conteo por proyecto', err);
+      // en caso de error, deja el gráfico vacío
+      this.barData = {
+        labels: [],
+        datasets: [{ label: 'Pacientes por Proyecto', backgroundColor: '#42A5F5', data: [] }]
+      };
+      this.projectCount = 0;
+    }
+  });
+}
+
 
   // Configurar las opciones de los gráficos
-  setupChartsOptions(): void {
-    this.pieOptions = {
-      plugins: {
-        legend: {
-          display: true,
-          position: 'top'
-        }
-      },
-      responsive: true
-    };
+ setupChartsOptions(): void {
+  this.pieOptions = {
+    plugins: { legend: { display: true, position: 'top' } },
+    responsive: true
+  };
 
-    this.barOptions = {
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            stepSize: 1 // Configura el paso a 1 para facilitar la visualización
-          }
+  this.barOptions = {
+    responsive: true,
+   
+    plugins: {
+      legend: { display: true, position: 'top' }
+    },
+    scales: {
+      x: {
+        ticks: {
+          autoSkip: false,
+          maxRotation: 30,
+          minRotation: 30
         }
       },
-      responsive: true
-    };
-  }
+      y: {
+        beginAtZero: true,
+        ticks: { stepSize: 5 }
+      }
+    }
+  };
+}
+
 }

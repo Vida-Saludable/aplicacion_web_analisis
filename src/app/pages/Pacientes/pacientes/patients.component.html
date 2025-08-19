@@ -1,61 +1,52 @@
 <div class="grid">
   <div class="col-12">
     <div class="card contenedor-tabla">
-      <h5 class="titulo-tabla">Pacientes</h5>
+      <h5 class="titulo-tabla">INDICADORES DE SALUD POR PARTICIPANTE: TOMA DE DATOS (INICIAL-FINAL)</h5>
+
       <p-table #dt
                [value]="userslist"
+               [columns]="columns"
                dataKey="id"
                [rows]="pageSize"
                [paginator]="true"
                [totalRecords]="totalItems"
-               [first]="(currentPage - 1) * pageSize"
+               [first]="first"
                [rowHover]="true"
                [loading]="loading"
-               [rowsPerPageOptions]="[5,10,15]"
-               [globalFilterFields]="['correo', 'role_name', 'datos_personales.nombres_apellidos', 'datos_personales.telefono']"
+               [rowsPerPageOptions]="[5, 10, 15]"
                responsiveLayout="scroll"
-               (onPage)="onPageChange($event)">
+               [lazy]="true"
+               (onLazyLoad)="onLazyLoad($event)"
+               [tableStyle]="{'min-height':'340px'}">
 
         <ng-template pTemplate="caption">
           <div class="flex justify-content-between flex-column sm:flex-row">
-            <span class="p-input-icon-left w-full">
+            <span class="p-input-icon-left mb-2">
               <i class="pi pi-search"></i>
-              <input pInputText type="text" #globalFilter (input)="onGlobalFilter(dt, $event)" placeholder="Buscar por usuario" class="w-full"/>
+<input #search pInputText type="text"
+       (input)="onFilterInput(search.value)"
+       placeholder="Buscar participante" class="w-full"/>
+
             </span>
           </div>
         </ng-template>
 
-        <ng-template pTemplate="header">
+        <ng-template pTemplate="header" let-columns>
           <tr>
-            <th>Nombre</th>
-            <th>Teléfono</th>
-            <th>Correo</th>
-            <th>Rol</th>
+            <th *ngFor="let col of columns">{{ col.header }}</th>
           </tr>
         </ng-template>
 
-        <ng-template pTemplate="body" let-user>
-          <tr [routerLink]="['/dashboard/seguimientoPacientes/indicadoresInicialesVsFinales', user.id]">
-            <td>{{user.datos_personales.nombres_apellidos}}</td>
-            <td>{{user.datos_personales.telefono}}</td>
-            <td>{{user.correo}}</td>
-            <td>{{user.role_name}}</td>
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+          <tr [routerLink]="['/dashboard/seguimientoPacientes/indicadoresInicialesVsFinales', rowData.id]">
+            <td *ngFor="let col of columns">
+              {{ resolveFieldData(rowData, col.field) || '—' }}
+            </td>
           </tr>
         </ng-template>
 
         <ng-template pTemplate="emptymessage">
-          <tr>
-            <td colspan="4">No se encontraron usuarios.</td>
-          </tr>
-        </ng-template>
-
-        <ng-template pTemplate="loadingbody">
-          <tr>
-            <td colspan="4">
-              <p-progressSpinner></p-progressSpinner>
-              Cargando datos de usuarios. Por favor espera.
-            </td>
-          </tr>
+          <tr><td [attr.colspan]="columns.length">No se encontraron usuarios.</td></tr>
         </ng-template>
       </p-table>
     </div>

@@ -1,13 +1,10 @@
+// project-uab.component.ts
 import { Component, inject, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { Project } from 'src/app/models/project.modet';
 import { AuthService } from 'src/app/services/auth/auth.service';
-
 import { ProjectService } from 'src/app/services/project.service';
 import { RolesService } from 'src/app/services/roles.service';
 import { UserService, UsuarioPersonal } from 'src/app/services/user.service';
-import { User } from '../../models/user.model';
-import { Patient } from 'src/app/models/patient.model';
 
 @Component({
   selector: 'app-home',
@@ -18,131 +15,116 @@ export class ProjecUabComponent implements OnInit {
   projects: Project[] = [];
   filteredCards: Project[] = [];
   paginatedCards: Project[] = [];
-  rows: number = 6;  // Mostrar 6 tarjetas por página
-  page: number = 0;
+
+  // paginación
+  rows = 3;
+  first = 0;
+
+  // filtros
+  searchQuery = '';
   startDate: Date | null = null;
   endDate: Date | null = null;
-  searchQuery: string = '';
-  usuario:UsuarioPersonal 
-  userName!: string | null;
-  userEmail!: string | null;
+
+  // usuario
+  usuario!: UsuarioPersonal;
   userRole!: string | null;
   userId!: number | null;
-  userslist: Patient[] = [];
-  totalItems: number = 0;
-  pageSize: number = 10000;
-  currentPage: number = 1;
-  
 
-  private project$=inject(ProjectService)
-  private rol=inject(RolesService)
+  // KPIs (resumen)
+  stats = { total: 0, activos: 0, finalizados: 0 };
+
+  private project$ = inject(ProjectService);
+  private rol = inject(RolesService);
   private userService = inject(UserService);
-  constructor(
-  private authService: AuthService){
 
-  }
+  constructor(private authService: AuthService) {}
 
   ngOnInit() {
-    
-    // this.userName = this.authService.getUserName();
-    this.userEmail = this.authService.getUserCorreo();
     this.userRole = this.authService.getUserRole();
-    console.log("Wel rol del usuario es",this.userRole)
-    this.userId= parseInt(this.authService.getUserid());
-    this.obtenerdatosDelUsuario()
-    this.getAllProject()
-  
-
-
-
-    
+    this.userId   = parseInt(this.authService.getUserid());
+    this.obtenerdatosDelUsuario();
+    this.getAllProject();
   }
-  
-  getAllProject(){
-   
-    this.project$.getAllProjects().subscribe(response=> {
-      console.log(response)
-      if(this.userRole=="Administrador"){
-        console.log("LLega aqui")
-        this.projects=response
-        this.filteredCards = [...this.projects];
-        this.updatePaginatedCards();
-      }else
-      {
-        this.projects=response.filter(p=>p.id==this.usuario.proyectoId)
 
-        this.filteredCards = [...this.projects];
-        this.updatePaginatedCards();
+  getAllProject() {
+    this.project$.getAllProjects().subscribe((response) => {
+      // filtra por rol si es necesario
+      if (this.userRole === 'Administrador') {
+        this.projects = response;
+      } else {
+        this.projects = response.filter(p => p.id === this.usuario?.proyectoId);
       }
-     
-    } )
+
+      // 1) ORDENAR POR ID ASCENDENTE (creación más nueva al final)
+      this.sortProjectsAscById(this.projects);
+
+      // 2) KPIs
+      this.computeStats();
+
+      // 3) aplicar al listado visible
+      this.filteredCards = [...this.projects];
+      this.first = 0;
+      this.updatePaginatedCards();
+    });
   }
 
-  getUsersbyProject(projectId: number, page: number, pageSize: number) {
-    this.userService.getPatients(projectId, page, pageSize).subscribe(
-      response => {
-        this.userslist = response.data;
-        this.totalItems = response.totalItems;
-        this.pageSize = response.pageSize;
-        this.currentPage = response.page;
-
-      },
-      error => {
-        console.error('Error fetching users', error);
-      }
-    );
+  obtenerdatosDelUsuario() {
+    if (!this.userId) return;
+    this.userService.getUsuarioPersonal(this.userId).subscribe(user => {
+      this.usuario = user;
+    });
   }
 
-
-  obtenerdatosDelUsuario(){
-    this.userService.getUsuarioPersonal(this.userId).subscribe(user=>{
-      console.log("El usuario es ++++",user)
-        this.usuario=user
-        console.log("El usuario es",this.usuario)
-       
-    })
-  }
-
-  // Método para buscar por nombre
+  // ---- FILTROS ----
   onSearch(event: Event) {
     this.searchQuery = (event.target as HTMLInputElement).value.toLowerCase();
     this.applyFilters();
   }
 
-  // Métodos para manejar cambios en las fechas
   onStartDateChange(event: any) {
     this.startDate = event.target.value ? new Date(event.target.value) : null;
   }
-
   onEndDateChange(event: any) {
     this.endDate = event.target.value ? new Date(event.target.value) : null;
   }
 
-  // Método para aplicar todos los filtros (búsqueda y fechas)
   applyFilters() {
-    this.filteredCards = this.projects.filter(project => {
-      const matchesSearchQuery = project.nombre.toLowerCase().includes(this.searchQuery);
-      const matchesStartDate = this.startDate ? new Date(project.fecha_inicio) >= this.startDate : true;
-      const matchesEndDate = this.endDate ? new Date(project.fecha_fin) <= this.endDate : true;
-
-      return matchesSearchQuery && matchesStartDate && matchesEndDate;
+    // filtra sobre el conjunto total ya ordenado
+    const filtered = this.projects.filter(project => {
+      const q = this.searchQuery;
+      const matchesSearch = project.nombre.toLowerCase().includes(q) ||
+                            (project.descripcion || '').toLowerCase().includes(q);
+      const matchesStart  = this.startDate ? new Date(project.fecha_inicio) >= this.startDate : true;
+      const matchesEnd    = this.endDate ? new Date(project.fecha_fin)     <= this.endDate   : true;
+      return matchesSearch && matchesStart && matchesEnd;
     });
 
+    // mantiene el orden por ID ascendente
+    this.filteredCards = filtered;
+    this.first = 0;
     this.updatePaginatedCards();
   }
 
-  // Método para actualizar las tarjetas paginadas
+  // ---- PAGINACIÓN ----
   updatePaginatedCards() {
-    const start = this.page * this.rows;
-    const end = start + this.rows;
+    const start = this.first;
+    const end   = start + this.rows;
     this.paginatedCards = this.filteredCards.slice(start, end);
   }
-
-  // Método para manejar cambios de página
   paginate(event: any) {
-    this.page = event.page;
+    this.first = event.first;
+    this.rows  = event.rows;
     this.updatePaginatedCards();
   }
 
- 
+  // ---- UTIL ----
+  private sortProjectsAscById(list: Project[]) {
+    list.sort((a, b) => (a.id ?? 0) - (b.id ?? 0));
+  }
+
+  private computeStats() {
+    this.stats.total      = this.projects.length;
+    this.stats.activos    = this.projects.filter(p => p.estado === 1).length;
+    this.stats.finalizados= this.stats.total - this.stats.activos;
+  }
 }

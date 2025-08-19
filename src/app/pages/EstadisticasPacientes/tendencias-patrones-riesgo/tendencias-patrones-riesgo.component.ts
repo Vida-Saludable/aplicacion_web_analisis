@@ -3,6 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Patient } from 'src/app/models/patient.model';
 import { UserService } from 'src/app/services/user.service';
 import { StatisticsService } from 'src/app/services/statistics.service';
+import { PaginatedResponse } from 'src/app/models/pager/pager';
+import { TableCol } from '../indicador-salud-usuario/indicador-salud-usuario.component';
+import { LazyLoadEvent } from 'primeng/api';
 
 @Component({
   selector: 'app-tendencias-patrones-riesgo',
@@ -10,83 +13,99 @@ import { StatisticsService } from 'src/app/services/statistics.service';
   styleUrls: ['./tendencias-patrones-riesgo.component.scss']
 })
 export class TendenciasPatronesRiesgoComponent implements OnInit {
-  private router = inject(Router);
   private userService = inject(UserService);
-  private activateRoute = inject(ActivatedRoute);
-  private indicatorByUserService = inject(StatisticsService);
 
+  // Datos mostrados (filtrados)
   userslist: Patient[] = [];
-  loading: boolean = true;
-  projectId: number;
-  public userId: number | null = null;
+  // Página cruda tal como llega del backend (sin filtrar)
+  private pageBuffer: Patient[] = [];
 
-  // Variables para la paginación
-  totalItems: number = 0;
-  pageSize: number = 10;
-  currentPage: number = 1;
+  loading = true;
+  projectId!: number;
 
-  constructor() {}
+  // Paginación
+  totalItems = 0;
+  pageSize = 10;
+  currentPage = 1; // 1-based (API)
+  first = 0;       // 0-based (PrimeNG)
+
+  // Filtro client-side sobre la página actual
+  filterTerm = '';
+
+  // Definición de columnas para header y para filtrar
+  columns: TableCol[] = [
+    { field: 'datos_personales.nombres_apellidos', header: 'Nombre' },
+    { field: 'correo',                              header: 'Correo' },
+    { field: 'datos_personales.telefono',           header: 'Celular' },
+    { field: 'datos_personales.edad',               header: 'Edad' },
+  ];
 
   ngOnInit(): void {
-    this.getProjectFromLocalStorage();
-    this.getUsersbyProject(this.projectId, this.currentPage, this.pageSize);
-
-    // Obtener los queryParams y reconstruir el objeto user
-    this.activateRoute.queryParams.subscribe(params => {
-      this.userId = params['userId'] ? Number(params['userId']) : null;
-
-      if (this.userId) {
-        console.log('User ID:', this.userId);
-      }
-    });
-  }
-
-  getProjectFromLocalStorage(): void {
     const proyecto = localStorage.getItem('projectId');
-    if (proyecto) {
-      this.projectId = parseInt(proyecto);
-    } else {
-      console.error('No hay proyecto seleccionado');
-    }
+    if (proyecto) this.projectId = parseInt(proyecto, 10);
+    else console.error('No hay proyecto seleccionado');
+
+    this.fetchPage(this.currentPage, this.pageSize);
   }
 
-  getUsersbyProject(projectId: number, page: number, pageSize: number) {
+  // Paginación/virtual scroll de PrimeNG en modo lazy
+  onLazyLoad(event: LazyLoadEvent) {
+    const rows  = event.rows  ?? this.pageSize;
+    const first = event.first ?? 0;
+    const page  = Math.floor(first / rows) + 1;
+
+    this.pageSize    = rows;
+    this.currentPage = page;
+    this.first       = first;
+
+    this.fetchPage(page, rows);
+  }
+
+  private fetchPage(page: number, pageSize: number) {
     this.loading = true;
-    this.userService.getPatients(projectId, page, pageSize).subscribe(
-      response => {
-        this.userslist = response.data;
-        this.totalItems = response.totalItems;
-        this.pageSize = response.pageSize;
-        this.currentPage = response.page;
-        this.loading = false;
-      },
-      error => {
-        console.error('Error fetching users', error);
-        this.loading = false;
-      }
+    this.userService.getPatients(this.projectId, page, pageSize)
+      .subscribe({
+        next: (resp: PaginatedResponse<Patient>) => {
+          // Guarda la página original…
+          this.pageBuffer  = resp?.data ?? [];
+          // …y aplica el filtro client-side sobre ESTA página
+          this.applyClientFilter();
+
+          this.totalItems  = resp?.totalItems ?? this.pageBuffer.length;
+          this.pageSize    = resp?.pageSize   ?? pageSize;
+          this.currentPage = resp?.page       ?? page;
+          this.first       = (this.currentPage - 1) * this.pageSize;
+          this.loading     = false;
+        },
+        error: err => { console.error('Error al obtener usuarios', err); this.loading = false; }
+      });
+  }
+
+  // Input del buscador (client-side sobre la página actual)
+  onFilterInput(value: string) {
+    this.filterTerm = (value || '').toLowerCase().trim();
+    this.applyClientFilter();
+  }
+
+  private applyClientFilter() {
+    if (!this.filterTerm) {
+      this.userslist = [...this.pageBuffer];
+      return;
+    }
+    this.userslist = this.pageBuffer.filter(row =>
+      this.columns.some(col => {
+        const val = this.resolveFieldData(row, col.field);
+        return (val !== null && val !== undefined)
+          ? String(val).toLowerCase().includes(this.filterTerm)
+          : false;
+      })
     );
   }
-  
 
-  onPageChange(event: any): void {
-    this.currentPage = event.page + 1; // PrimeNG usa índice basado en 0, por eso sumamos 1
-    this.pageSize = event.rows; // Actualizamos el tamaño de la página con el valor seleccionado
-    this.getUsersbyProject(this.projectId, this.currentPage, this.pageSize);
-  }
-  
-
-  navigateToUserStatistics(user: Patient) {
-    const targetUrl = `/dashboard/Estadisticas/tendenciaUsuario/${user.id}`;
-    this.router.navigate([targetUrl]).then(success => {
-      if (success) {
-        console.log('Navegación exitosa');
-      } else {
-        console.log('Fallo en la navegación');
-      }
-    });
-  }
-
-  onGlobalFilter(table: any, event: Event) {
-    table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+  // Resolver campos anidados 'a.b.c'
+  resolveFieldData(data: any, field: string): any {
+    if (!data || !field) return null;
+    if (!field.includes('.')) return data[field];
+    return field.split('.').reduce((acc: any, k: string) => acc?.[k], data);
   }
 }

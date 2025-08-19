@@ -7,6 +7,7 @@ import { AppLayoutModule } from './layout/app.layout.module';
 import { AuthInterceptor } from './core/auth.interceptor';
 import { PrimeNGConfig } from 'primeng/api';
 import { localeES } from './helpers/objectsCorrelations.ts/calendary';
+import { CalendarModule } from 'primeng/calendar';
 
 
 @NgModule({
@@ -16,6 +17,7 @@ import { localeES } from './helpers/objectsCorrelations.ts/calendary';
     imports: [
         AppRoutingModule, 
         AppLayoutModule,
+         CalendarModule
     ],
     providers: [
         { provide: LocationStrategy, useClass: PathLocationStrategy },

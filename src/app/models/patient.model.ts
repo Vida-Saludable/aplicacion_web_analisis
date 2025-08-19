@@ -2,7 +2,7 @@ export interface Patient {
     id:               number;
     correo:           string;
     role_name:        string;
-    datos_personales: DatosPersonales;
+    datos_personales: DatosPersonales | null;
 }
 
 export interface DatosPersonales {

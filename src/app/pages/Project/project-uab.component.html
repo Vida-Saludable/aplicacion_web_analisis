@@ -1,30 +1,57 @@
-<div class="container">
-  <h1 class="title">VIDA SALUDABLE</h1>
-  
-  <!-- Barra de búsqueda -->
-  <div class="search-container">
-    <div class="search-input">
-      <i class="pi pi-search"></i>
-      <input pInputText type="text" placeholder="Buscar..." (input)="onSearch($event)" />
+<div class="page">
+  <header class="page-header">
+    <h1>VIDA SALUDABLE</h1>
+
+    <div class="filters">
+      <div class="search">
+        <i class="pi pi-search"></i>
+        <input pInputText type="text" placeholder="Buscar proyectos..." (input)="onSearch($event)" />
+      </div>
     </div>
-    <div class="date-filter-container">
-      <input type="date" (change)="onStartDateChange($event)" placeholder="Fecha inicio" class="date-input"/>
-      <input type="date" (change)="onEndDateChange($event)" placeholder="Fecha fin" class="date-input"/>
-      <button pButton type="button" label="Buscar por fechas" icon="pi pi-calendar" (click)="applyFilters()"></button>
-    </div>
+
+    <!-- RESUMEN (ocupa el espacio vacío) -->
+    <section class="summary">
+      <div class="kpi">
+        <div class="kpi-title">Proyectos</div>
+        <div class="kpi-value">{{ stats.total }}</div>
+      </div>
+
+      <div class="kpi">
+        <div class="kpi-title">Activos</div>
+        <div class="kpi-value">{{ stats.activos }}</div>
+      </div>
+
+      <div class="kpi">
+        <div class="kpi-title">Finalizados</div>
+        <div class="kpi-value">{{ stats.finalizados }}</div>
+      </div>
+    </section>
+  </header>
+
+  <div class="cards-area">
+    <section class="cards-grid">
+      <ng-container *ngIf="paginatedCards?.length; else empty">
+        <div class="grid-item" *ngFor="let project of paginatedCards">
+          <app-card-project [project]="project"></app-card-project>
+        </div>
+      </ng-container>
+
+      <ng-template #empty>
+        <div class="empty">
+          <i class="pi pi-folder-open"></i>
+          <p>No hay proyectos para mostrar</p>
+        </div>
+      </ng-template>
+    </section>
   </div>
-  
-  <!-- Contenedor de cards -->
-  <div class="cards-container">
-    <div *ngFor="let project of paginatedCards" class="card-wrapper">
-      <app-card-project [project]="project" ></app-card-project>
-    </div>
-  </div>
-  
-  <!-- Paginador -->
-  <p-paginator
-    [rows]="rows"
-    [totalRecords]="filteredCards.length"
-    (onPageChange)="paginate($event)">
-  </p-paginator>
+
+  <footer class="pager">
+    <p-paginator
+      [rows]="rows"
+      [first]="first"
+      [totalRecords]="filteredCards.length"
+      [rowsPerPageOptions]="[3]"
+      (onPageChange)="paginate($event)">
+    </p-paginator>
+  </footer>
 </div>

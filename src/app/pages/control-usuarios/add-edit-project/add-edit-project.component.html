@@ -1,41 +1,68 @@
 <div class="card">
-  <h1 class="title">{{ isEdit ? 'EDITAR PROYECTO' : 'CREAR PROYECTO' }}</h1>
+  <div class="header">
+    <h1 class="title">{{ isEdit ? 'EDITAR PROYECTO' : 'CREAR PROYECTO' }}</h1>
 
-  <!-- Mensaje de éxito o error -->
+    <!-- Switch para activar/desactivar todo el formulario -->
+    <!-- <div class="form-switch">
+      <label for="switchForm" class="switch-label">Formulario</label>
+      <p-inputSwitch
+        id="switchForm"
+        [ngModel]="formEnabled"
+        (onChange)="toggleFormEnabled($event)"
+        [ngModelOptions]="{standalone:true}">
+      </p-inputSwitch>
+      <span class="switch-hint">{{ formEnabled ? 'Activo' : 'Desactivado' }}</span>
+    </div> -->
+  </div>
+
+  <!-- Mensajes globales -->
   <p-messages [(value)]="messages"></p-messages>
 
-  <!-- Formulario de creación/edición de proyecto -->
-  <form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="form-grid">
+  <!-- Formulario -->
+  <form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="form-grid" autocomplete="off">
     <div class="form-group">
       <label for="nombre">Nombre del Proyecto</label>
       <input id="nombre" type="text" pInputText formControlName="nombre" placeholder="Ingrese el nombre del proyecto" />
-      <small *ngIf="projectForm.get('nombre').invalid && projectForm.get('nombre').touched" class="p-error">El nombre es requerido</small>
+      <small *ngIf="projectForm.get('nombre')?.invalid && projectForm.get('nombre')?.touched" class="p-error">
+        El nombre es requerido
+      </small>
     </div>
 
     <div class="form-group">
       <label for="descripcion">Descripción</label>
-      <textarea id="descripcion" pInputTextarea formControlName="descripcion" placeholder="Descripción del proyecto"></textarea>
-      <small *ngIf="projectForm.get('descripcion').invalid && projectForm.get('descripcion').touched" class="p-error">La descripción es requerida</small>
+      <textarea id="descripcion" rows="4" pInputTextarea formControlName="descripcion" placeholder="Descripción del proyecto"></textarea>
+      <small *ngIf="projectForm.get('descripcion')?.invalid && projectForm.get('descripcion')?.touched" class="p-error">
+        La descripción es requerida
+      </small>
     </div>
 
-    <div class="form-group">
-      <label for="fecha_inicio">Fecha de Inicio</label>
-      <input id="fecha_inicio" type="date" pInputText formControlName="fecha_inicio" [min]="todayString" />
-      <small *ngIf="projectForm.get('fecha_inicio').invalid && projectForm.get('fecha_inicio').touched" class="p-error">Fecha de inicio es requerida</small>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="fecha_inicio">Fecha de Inicio</label>
+        <input id="fecha_inicio" type="date" pInputText formControlName="fecha_inicio" [min]="todayString" />
+        <small *ngIf="projectForm.get('fecha_inicio')?.invalid && projectForm.get('fecha_inicio')?.touched" class="p-error">
+          Fecha de inicio es requerida
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="fecha_fin">Fecha de Fin</label>
+        <input id="fecha_fin" type="date" pInputText formControlName="fecha_fin" [min]="minFechaFin" />
+        <small *ngIf="projectForm.get('fecha_fin')?.invalid && projectForm.get('fecha_fin')?.touched" class="p-error">
+          Fecha de fin es requerida y no puede ser anterior al inicio
+        </small>
+      </div>
     </div>
 
-    <div class="form-group">
-      <label for="fecha_fin">Fecha de Fin</label>
-      <input id="fecha_fin" type="date" pInputText formControlName="fecha_fin" />
-      <small *ngIf="projectForm.get('fecha_fin').invalid && projectForm.get('fecha_fin').touched" class="p-error">Fecha de fin es requerida</small>
-    </div>
-
+    <!-- 🔹 Switch para activar/inactivar el proyecto -->
     <div class="form-group-checkbox">
-      <p-checkbox id="estado" formControlName="estado" binary="true" label="Proyecto Activo"></p-checkbox>
+      <label for="estado">Estado del Proyecto</label>
+      <p-inputSwitch id="estado" formControlName="estado"></p-inputSwitch>
+      <span class="switch-hint">{{ projectForm.value.estado ? 'Activo' : 'Inactivo' }}</span>
     </div>
 
     <div class="button-group">
-      <button pButton type="submit" label="{{ isEdit ? 'Actualizar' : 'Crear' }}" [disabled]="projectForm.invalid" ></button>
+      <button pButton type="submit" [label]="isEdit ? 'Actualizar' : 'Crear'" [disabled]="projectForm.invalid"></button>
       <button pButton type="button" label="Cancelar" class="p-button-secondary" (click)="onCancel()"></button>
     </div>
   </form>

@@ -5,11 +5,8 @@ import { environment } from 'src/environments/environment.prod';
 import { Project } from '../models/project.modet';
 import { Patient } from '../models/patient.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class ProjectService {
-
   private apiUrl = environment.baseUsers + 'proyectos/';
   private http = inject(HttpClient);
   userslist: Patient[] = [];
@@ -22,17 +19,24 @@ export class ProjectService {
     return this.http.get<Project>(`${this.apiUrl}${projectId}`);
   }
 
-  deleteProject(projectId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}${projectId}`);
-  }
+ deleteProject(projectId: number): Observable<void> {
+  return this.http.delete<void>(`${this.apiUrl}${projectId}/`); // <-- barra final
+}
 
-  registerProject(nombre: string, descripcion: string, fecha_inicio: Date, fecha_fin: Date, estado: number): Observable<Project> {
+  // Ahora recibe STRINGS 'YYYY-MM-DD' para fecha_inicio/fecha_fin
+  registerProject(
+    nombre: string,
+    descripcion: string,
+    fecha_inicio: string,
+    fecha_fin: string,
+    estado: number
+  ): Observable<Project> {
     const body = { nombre, descripcion, fecha_inicio, fecha_fin, estado };
     return this.http.post<Project>(this.apiUrl, body);
   }
 
-  updateProject(id: number, project: Project): Observable<Project> {
+  // Update con payload flexible (solo lo que cambias)
+  updateProject(id: number, project: Partial<Project> | any): Observable<Project> {
     return this.http.put<Project>(`${this.apiUrl}${id}/`, project);
   }
-  
 }

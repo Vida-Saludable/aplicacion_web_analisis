@@ -1,33 +1,50 @@
 import { Component } from '@angular/core';
-import { LayoutService } from 'src/app/layout/service/app.layout.service';
-import { AuthService } from 'src/app/services/auth/auth.service'; 
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
+  email = '';
+  password = '';
+  remember = false;
 
-  email: string = '';
-  password!: string;
+  loading = false;
+  authError = '';
 
-  constructor(
-    public layoutService: LayoutService,
-    private authService: AuthService,
-    private router: Router
-  ) { }
+  constructor(private auth: AuthService, private router: Router) {}
 
-  onLogin() {
-    this.authService.login(this.email, this.password).subscribe({
+  onSubmit(f: any) {
+    if (f.invalid || this.loading) return;
+
+    this.authError = '';
+    this.loading = true;
+
+    this.auth.login(this.email, this.password).subscribe({
       next: () => {
-        this.router.navigate(['/select-project']);  // Redirige al usuario al layout principal
+        // si quieres recordar, guarda el correo
+        if (this.remember) localStorage.setItem('remember_email', this.email);
+        else localStorage.removeItem('remember_email');
+
+        this.router.navigate(['/select-project']);
       },
       error: (err) => {
-        console.error('Error de autenticación', err);
-        alert('Credenciales incorrectas');
-      }
+        console.error(err);
+        this.authError = 'Credenciales incorrectas. Inténtalo de nuevo.';
+      },
+      complete: () => (this.loading = false),
     });
+  }
+
+  ngOnInit() {
+    // autocompleta el correo si el usuario marcó "recordarme"
+    const saved = localStorage.getItem('remember_email');
+    if (saved) {
+      this.email = saved;
+      this.remember = true;
+    }
   }
 }

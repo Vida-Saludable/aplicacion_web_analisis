@@ -1,26 +1,70 @@
-<div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden"
-style="background-image: url('assets/img/fondoUab.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
-  <div class="flex flex-column align-items-center justify-content-center">
-      <img src="assets/img/UAB.png" alt="Sakai logo" class="mb-5 w-6rem flex-shrink-0">                
-      <div style="border-radius:56px; padding:0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%);">
-          <div class="w-full surface-card py-8 px-5 sm:px-8" style="border-radius:53px">
-              <div class="text-center mb-5">
-                  <img src="assets/img/logo.png" alt="Image" height="50" class="mb-3">
-                  <div class="text-900 text-3xl font-medium mb-3">Vida Saludable</div>
-                  <span class="text-600 font-medium">Inicia sesión para continuar</span>
-              </div>
-              
-              <!-- Centrar los inputs -->
-              <div class="flex flex-column align-items-center">
-                  <label for="email1" class="block text-900 text-xl font-medium mb-2">Correo electronico</label>
-                  <input [(ngModel)]="email" id="email1" type="text" placeholder="vida-saludable@gmail.com" pInputText class="w-full md:w-30rem mb-5" style="padding:1rem">
-                  
-                  <label for="password1" class="block text-900 font-medium text-xl mb-2">Contraseña</label>
-                  <p-password [(ngModel)]="password" id="password1" placeholder="******" [toggleMask]="true" styleClass="mb-5" inputStyleClass="w-full p-3 md:w-30rem"></p-password>
-                  
-                  <button pButton pRipple label="Acceso" class="w-full p-3 text-xl" (click)="onLogin()"></button>
-              </div>
-          </div>
-      </div>
+<section class="auth-page">
+  <!-- Fondo con imagen + overlay -->
+  <div class="bg"></div>
+
+  <div class="center">
+    <!-- Logotipo superior -->
+    <img src="assets/img/UAB.png" alt="UAB" class="brand-mark" />
+
+    <!-- Card de vidrio -->
+    <div class="glass-card">
+      <header class="head">
+        <img src="assets/img/logo.png" alt="Vida Saludable" height="46" />
+        <h1>Vida Saludable</h1>
+        <p>Inicia sesión para continuar</p>
+      </header>
+
+      <!-- Mensaje de error -->
+      <p-message
+        *ngIf="authError"
+        severity="error"
+        [text]="authError"
+        styleClass="w-full mb-3"
+      ></p-message>
+
+      <!-- Formulario -->
+<form #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+  <!-- EMAIL -->
+  <div class="field-block">
+    <label for="email" class="lbl">Correo electrónico</label>
+    <div class="ctrl">
+      <i class="pi pi-envelope"></i>
+      <input
+        pInputText
+        id="email"
+        name="email"
+        type="email"
+        required
+        email
+        autocomplete="email"
+        [(ngModel)]="email"
+        placeholder="vida-saludable@gmail.com"
+      />
+    </div>
   </div>
-</div>
+
+  <!-- PASSWORD -->
+  <div class="field-block">
+    <label for="password" class="lbl">Contraseña</label>
+    <div class="ctrl">
+      <i class="pi pi-lock"></i>
+      <p-password
+        id="password"
+        name="password"
+        [(ngModel)]="password"
+        required
+        [toggleMask]="true"
+        [feedback]="false"
+        inputStyleClass="ctrl-input"
+        autocomplete="current-password"
+        placeholder="••••••••"
+      ></p-password>
+    </div>
+  </div>
+
+  <button pButton type="submit" class="btn-primary" label="Acceder"></button>
+</form>
+
+    </div>
+  </div>
+</section>

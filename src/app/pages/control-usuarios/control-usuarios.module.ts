@@ -17,6 +17,8 @@ import { AddEditProjectComponent } from './add-edit-project/add-edit-project.com
 import { AddEditUserComponent } from './add-edit-user/add-edit-user.component';
 import { MessagesModule } from 'primeng/messages';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @NgModule({
   declarations: [
@@ -41,7 +43,9 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     ReactiveFormsModule,
     ButtonModule,
     MessagesModule,
-    ConfirmDialogModule 
+    ConfirmDialogModule ,
+    InputSwitchModule,
+    CheckboxModule,
 
 
   ],

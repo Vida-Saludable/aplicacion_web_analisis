@@ -12,3 +12,30 @@ $gutter: 1rem; //for primeflex grid system
 @import "assets/demo/styles/flags/flags.css";
 @import "assets/demo/styles/badges.scss";
 @import "assets/demo/styles/code.scss";
+
+
+
+/* styles.scss */
+// :root {
+//   --brand: #003B71;
+//   --surface-0: #e9eef5;  /* gris azulado suave */
+//   --surface-1: #e3eaf3;  /* un poco más oscuro arriba */
+// }
+
+// html, body { height: 100%; }
+// body {
+//   margin: 0;
+//   background: linear-gradient(180deg, var(--surface-1) 0%, var(--surface-0) 260px);
+//   background-attachment: fixed; /* que no “parpadee” al hacer scroll */
+// }
+
+// /* Patrón súper tenue (opcional) */
+// body::before {
+//   content: '';
+//   position: fixed;
+//   inset: 0;
+//   pointer-events: none;
+//   background-image: radial-gradient(rgba(0,0,0,.06) 1px, transparent 1.6px);
+//   background-size: 22px 22px;
+//   opacity: .22;
+// }

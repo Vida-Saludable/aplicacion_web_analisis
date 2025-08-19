@@ -66,4 +66,23 @@ export class UserService {
     const url = `${this.apiUlr}usuarios-personales/${id}/`;
     return this.http.get<UsuarioPersonal>(url);
   }
+
+
+  //   GetCountUsersByProject(): Observable<any> {
+  //   const url = `${this.apiUlr}usuarios-por-proyecto/`;
+  //   return this.http.get<any>(url);
+  // }
+
+  // project.service.ts (o user.service.ts si lo tienes allí)
+getCountUsersByProject() {
+  const url = `${this.apiUlr}usuarios-por-proyecto/`;
+  return this.http.get<{
+    success: boolean;
+    message: string;
+    data: { id: number; nombre: string; pacientes: number }[];
+  }>(url);
+  // Si usas la acción:
+  // return this.http.get<...>(`/api/usuarios-por-proyecto/pacientes-por-proyecto`);
+}
+
 }

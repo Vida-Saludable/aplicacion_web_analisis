@@ -1,22 +1,43 @@
-<div class="" (click)="onchangeProject(project.id)">
-  <div class="card m-1 border-1 surface-border">
-    <div class="flex flex-wrap gap-2 align-items-center justify-content-between mb-2">
-      <div class="flex align-items-center">
-        <span class="p-ml-2">
-          <i>inicio</i><br>
-          {{ project.fecha_inicio | date: 'yyyy-MM-dd' }}
-        </span>
-      </div>
+<article
+  class="project-card"
+  role="button"
+  tabindex="0"
+  (click)="onchangeProject(project.id)"
+  (keydown.enter)="onchangeProject(project.id)"
+>
+  <!-- BANNER (solo imagen) -->
+  <figure class="banner">
+    <img
+      class="banner-img"
+      [src]="'https://www.proloterapiamedici.com/wp-content/uploads/2017/06/1366_2000-2.jpg'"
+      [alt]="project.nombre"
+      loading="lazy"
+    />
+  </figure>
+
+  <!-- CONTENIDO -->
+  <div class="content">
+    <div class="title-row">
+      <h3 class="name" [title]="project.nombre">{{ project.nombre }}</h3>
+      <span class="status" [class.activo]="project.estado === 1" [class.finalizado]="project.estado !== 1">
+        <i class="pi" [ngClass]="project.estado === 1 ? 'pi-check-circle' : 'pi-stopwatch'"></i>
+        {{ project.estado === 1 ? 'Activo' : 'Finalizado' }}
+      </span>
     </div>
-    <div class="flex flex-column align-items-center text-center mb-3">
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSY9nTkblK-U2Wvn28GnJB6S6BQRNBTmv518A&s" 
-           [alt]="project.nombre" class="w-7 shadow-2 my-2 mx-0" />
-      <div class="text-lg font-bold">{{ project.nombre }}</div>
-      <div class="mb-3">{{ project.descripcion }}</div>
-    </div>
-    <div class="flex align-items-center justify-content-between">
-      <!-- <p-inputSwitch [(ngModel)]="project.estado"></p-inputSwitch> -->
-      <span class="p-ml-2">     <i>fin</i><br> {{ project.fecha_fin }}</span>
+
+    <p class="desc" [title]="project.descripcion || ''">
+      {{ project.descripcion || 'Sin descripción' }}
+    </p>
+
+    <div class="meta">
+      <span class="chip">
+        <i class="pi pi-calendar-plus"></i>
+        <b>Inicio:</b> {{ project.fecha_inicio | date: 'yyyy-MM-dd' }}
+      </span>
+      <span class="chip">
+        <i class="pi pi-calendar-minus"></i>
+        <b>Fin:</b> {{ project.fecha_fin | date: 'yyyy-MM-dd' }}
+      </span>
     </div>
   </div>
-</div>
+</article>

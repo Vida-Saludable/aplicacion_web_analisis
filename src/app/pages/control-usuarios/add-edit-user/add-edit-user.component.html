@@ -4,38 +4,67 @@
   </div>
 
   <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
-    <!-- Input para Nombre -->
+    <!-- Nombre -->
     <div class="form-group">
       <label for="nombre">Nombre completo:</label>
       <input id="nombre" type="text" pInputText formControlName="nombre" placeholder="Ingrese el nombre completo" />
-      <small *ngIf="userForm.get('nombre').invalid && userForm.get('nombre').touched" class="p-error">El nombre es requerido</small>
+      <small *ngIf="userForm.get('nombre')?.invalid && userForm.get('nombre')?.touched" class="p-error">
+        El nombre es requerido
+      </small>
     </div>
 
-    <!-- Input para Correo -->
+    <!-- Correo -->
     <div class="form-group">
       <label for="correo">Correo Electrónico:</label>
       <input id="correo" type="email" pInputText formControlName="correo" placeholder="Ingrese el correo electrónico" />
-      <small *ngIf="userForm.get('correo').invalid && userForm.get('correo').touched" class="p-error">Correo inválido</small>
+      <small *ngIf="userForm.get('correo')?.invalid && userForm.get('correo')?.touched" class="p-error">
+        Correo inválido
+      </small>
     </div>
 
-    <!-- Input para Contraseña solo al crear -->
+    <!-- Contraseña (solo al crear) -->
     <div *ngIf="!isEdit" class="form-group">
       <label for="contrasenia">Contraseña:</label>
       <input id="contrasenia" type="text" pInputText formControlName="contrasenia" placeholder="Ingrese la contraseña" />
-      <small *ngIf="userForm.get('contrasenia').invalid && userForm.get('contrasenia').touched" class="p-error">La contraseña es requerida</small>
+      <small *ngIf="userForm.get('contrasenia')?.invalid && userForm.get('contrasenia')?.touched" class="p-error">
+        La contraseña es requerida
+      </small>
     </div>
 
-    <!-- Input para Rol -->
+    <!-- Rol -->
     <div class="form-group">
       <label for="role">Rol:</label>
-      <p-dropdown [options]="roles" formControlName="role" optionLabel="name" placeholder="Seleccione un rol"></p-dropdown>
-      <small *ngIf="userForm.get('role').invalid && userForm.get('role').touched" class="p-error">El rol es requerido</small>
+      <p-dropdown
+        formControlName="role"
+        [options]="roles"
+        optionLabel="name"
+        optionValue="id"          
+        placeholder="Seleccione un rol"
+        [showClear]="true">
+      </p-dropdown>
+      <small *ngIf="userForm.get('role')?.invalid && userForm.get('role')?.touched" class="p-error">
+        El rol es requerido
+      </small>
     </div>
 
-    <!-- Botones de Acción -->
+    <!-- Botones -->
     <div class="action-buttons">
-      <button pButton type="submit" label="{{ isEdit ? 'Actualizar' : 'Crear' }}" [disabled]="userForm.invalid"></button>
-      <button pButton type="button" label="Cancelar" class="p-button-secondary" (click)="onCancel()"></button>
+      <button
+        pButton
+        type="submit"
+        [label]="isEdit ? 'Actualizar' : 'Crear'"
+        [disabled]="userForm.invalid || submitting"
+        [loading]="submitting">
+      </button>
+
+      <button
+        pButton
+        type="button"
+        label="Cancelar"
+        class="p-button-secondary"
+        (click)="onCancel()"
+        [disabled]="submitting">
+      </button>
     </div>
   </form>
 </div>

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { finalize } from 'rxjs/operators';
+
 import { UserService } from 'src/app/services/user.service';
 import { RolesService } from 'src/app/services/roles.service';
 import { Roles } from 'src/app/models/roles.model';
@@ -15,8 +17,11 @@ import { User } from 'src/app/models/user.model';
 export class AddEditUserComponent implements OnInit {
   userForm: FormGroup;
   roles: Roles[] = [];
-  isEdit: boolean = false;
+  isEdit = false;
   userId: number | null = null;
+
+  // evita doble click en Crear/Actualizar
+  submitting = false;
 
   constructor(
     private fb: FormBuilder,
@@ -29,99 +34,111 @@ export class AddEditUserComponent implements OnInit {
     this.userForm = this.fb.group({
       nombre: ['', Validators.required],
       correo: ['', [Validators.required, Validators.email]],
-      contrasenia: [''], // Campo opcional al inicio
-      role: ['', Validators.required]
+      contrasenia: [''],              // requerido solo en crear
+      role: [null, Validators.required] // ⚠️ trabajaremos con el ID (number)
     });
   }
 
   ngOnInit(): void {
     this.loadRoles();
-    this.userId = +this.route.snapshot.paramMap.get('id');
+
+    const idParam = this.route.snapshot.paramMap.get('id');
+    this.userId = idParam ? +idParam : null;
+
     if (this.userId) {
       this.isEdit = true;
       this.loadUser(this.userId);
+      // en edición, no pedimos contraseña
+      this.userForm.get('contrasenia')?.clearValidators();
+      this.userForm.get('contrasenia')?.updateValueAndValidity();
     } else {
-      this.addPasswordControl();  // Solo al crear
+      // en creación, contraseña requerida
+      this.addPasswordControl();
     }
   }
 
-  // Agregar el campo de contraseña solo si se está creando un usuario
-  addPasswordControl(): void {
+  // Contraseña requerida solo al crear
+  private addPasswordControl(): void {
     this.userForm.get('contrasenia')?.setValidators(Validators.required);
     this.userForm.get('contrasenia')?.updateValueAndValidity();
   }
 
-  // Cargar roles disponibles
-  loadRoles(): void {
+  // Cargar roles (filtrando Paciente si corresponde)
+  private loadRoles(): void {
     this.rolesService.getRoles().subscribe((roles: Roles[]) => {
-      // this.roles=roles.filter(rol=>rol.name=="Administrador")
-      this.roles=roles
-      console.log("los roles son",this.roles)
-        // this.roles = roles;
+      this.roles = roles.filter(r => r.name !== 'Paciente');
+      // si ya hay un valor numérico en role (por ejemplo, porque cargó el user antes),
+      // el dropdown lo mostrará correctamente ahora que ya tiene las options.
     });
   }
 
-  // Cargar datos del usuario cuando se edita
-  loadUser(id: number): void {
-  this.userService.getUserById(id).subscribe((user: User) => {
-    // Esperar a que los roles ya estén cargados
-    const selectedRole = this.roles.find(r => r.id === user.role );
-
-    this.userForm.patchValue({
-      nombre: user.nombre,
-      correo: user.correo,
-      role: selectedRole  // ✅ Asignar objeto completo
+  // Cargar datos del usuario a editar
+  private loadUser(id: number): void {
+    this.userService.getUserById(id).subscribe((user: User) => {
+      // El backend devuelve role como ID (number). Perfecto para optionValue="id".
+      this.userForm.patchValue({
+        nombre: user.nombre,
+        correo: user.correo,
+        role: user.role          // <-- solo el ID
+      });
+      // En edición NO enviamos ni mostramos contraseña
+      this.userForm.get('contrasenia')?.reset();
     });
+  }
 
-    this.userForm.removeControl('contrasenia');
-  });
-}
-
-
-  // Enviar el formulario
-  // Enviar el formulario
   onSubmit(): void {
-    if (this.userForm.valid) {
-      // Extraer los datos del formulario y ajustar el rol para enviar solo su ID
-      const userFormValue = { ...this.userForm.value, role: this.userForm.value.role.id || this.userForm.value.role }; 
-  
-      // Imprimir los valores del formulario en la consola
-      console.log("Datos enviados al servicio:", userFormValue);
-  
-      if (this.isEdit && this.userId) {
-        this.userService.updateUser(this.userId, userFormValue).subscribe(
-          () => {
+    if (this.submitting) return;
+    if (this.userForm.invalid) {
+      this.userForm.markAllAsTouched();
+      return;
+    }
+
+    this.submitting = true;
+
+    // Asegurar que lo que enviamos en 'role' sea SIEMPRE un número (ID)
+    const roleValue = this.userForm.value.role;
+    const roleId = (roleValue && typeof roleValue === 'object') ? roleValue.id : roleValue;
+
+    const payload = {
+      nombre: this.userForm.value.nombre,
+      correo: this.userForm.value.correo,
+      role: roleId
+    };
+
+    if (this.isEdit && this.userId) {
+      // actualizar (sin contraseña)
+      this.userService.updateUser(this.userId, payload)
+        .pipe(finalize(() => this.submitting = false))
+        .subscribe({
+          next: () => {
             this.messageService.add({ severity: 'success', summary: 'Usuario actualizado', detail: 'Usuario actualizado correctamente' });
             this.router.navigate(['/dashboard/controlUsuarios/usuarios']);
           },
-          (error) => {
-            console.error("Error al actualizar el usuario", error);
+          error: (err) => {
+            console.error('Error al actualizar el usuario', err);
             this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el usuario' });
           }
-        );
-      } else {
-        this.userService.register(
-          userFormValue.nombre,
-          userFormValue.correo,
-          userFormValue.contrasenia,  // Contraseña solo requerida al crear
-          userFormValue.role  // Enviar el ID del rol
-        ).subscribe(
-          () => {
+        });
+    } else {
+      // crear (incluye contraseña)
+      const password = this.userForm.value.contrasenia;
+      this.userService.register(payload.nombre, payload.correo, password, payload.role)
+        .pipe(finalize(() => this.submitting = false))
+        .subscribe({
+          next: () => {
             this.messageService.add({ severity: 'success', summary: 'Usuario creado', detail: 'Usuario creado correctamente' });
             this.router.navigate(['/dashboard/controlUsuarios/usuarios']);
           },
-          (error) => {
-            console.error("Error al crear el usuario", error);
+          error: (err) => {
+            console.error('Error al crear el usuario', err);
             this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al crear el usuario' });
           }
-        );
-      }
+        });
     }
   }
-  
-
 
   onCancel(): void {
-    this.router.navigate(['/usuarios']);
+    if (this.submitting) return; // bloquear mientras envía
+    this.router.navigate(['/dashboard/controlUsuarios/usuarios']);
   }
 }

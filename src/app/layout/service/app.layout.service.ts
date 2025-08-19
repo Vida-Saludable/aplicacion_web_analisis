@@ -17,6 +17,7 @@ interface LayoutState {
     configSidebarVisible: boolean;
     staticMenuMobileActive: boolean;
     menuHoverActive: boolean;
+    compactSidebar:boolean
 }
 
 @Injectable({
@@ -32,6 +33,11 @@ export class LayoutService {
         scale: 14,
     };
 
+//       state = {
+//     // ...
+//     compactSidebar: false
+//   };
+
     config = signal<AppConfig>(this._config);
 
     state: LayoutState = {
@@ -41,6 +47,7 @@ export class LayoutService {
         configSidebarVisible: false,
         staticMenuMobileActive: false,
         menuHoverActive: false,
+        compactSidebar: false
     };
 
     private configUpdate = new Subject<AppConfig>();
@@ -156,4 +163,8 @@ export class LayoutService {
     changeScale(value: number) {
         document.documentElement.style.fontSize = `${value}px`;
     }
+
+      toggleCompactSidebar() {
+    this.state.compactSidebar = !this.state.compactSidebar;
+  }
 }

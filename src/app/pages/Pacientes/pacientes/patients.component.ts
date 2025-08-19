@@ -1,6 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { PaginatedResponse } from 'src/app/models/pager/pager';
 import { Patient } from 'src/app/models/patient.model';
 import { UserService } from 'src/app/services/user.service';
+import { TableCol } from '../../EstadisticasPacientes/indicador-salud-usuario/indicador-salud-usuario.component';
+import { LazyLoadEvent } from 'primeng/api';
 
 @Component({
   selector: 'app-seguimiento-usuarios',
@@ -8,61 +11,99 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./patients.component.scss']
 })
 export class PatientsComponent implements OnInit {
-  private userService = inject(UserService);
-
-  userslist: Patient[] = [];
-  loading: boolean = true;
-  projectId: number;
-
-  // Variables para la paginación
-  totalItems: number = 0;
-  pageSize: number = 10;
-  currentPage: number = 1;
-
-  ngOnInit(): void {
-    this.getProjectFromLocalStorage();
-    this.getUsersbyProject(this.projectId, this.currentPage, this.pageSize);
-  }
-
-  getProjectFromLocalStorage(): void {
-    const proyecto = localStorage.getItem('projectId');
-    if (proyecto) {
-      this.projectId = parseInt(proyecto);
-    } else {
-      console.error('No hay proyecto seleccionado');
+    private userService = inject(UserService);
+  
+    // Datos mostrados (filtrados)
+    userslist: Patient[] = [];
+    // Página cruda tal como llega del backend (sin filtrar)
+    private pageBuffer: Patient[] = [];
+  
+    loading = true;
+    projectId!: number;
+  
+    // Paginación
+    totalItems = 0;
+    pageSize = 10;
+    currentPage = 1; // 1-based (API)
+    first = 0;       // 0-based (PrimeNG)
+  
+    // Filtro client-side sobre la página actual
+    filterTerm = '';
+  
+    // Definición de columnas para header y para filtrar
+    columns: TableCol[] = [
+      { field: 'datos_personales.nombres_apellidos', header: 'Nombre' },
+      { field: 'correo',                              header: 'Correo' },
+      { field: 'datos_personales.telefono',           header: 'Celular' },
+      { field: 'datos_personales.edad',               header: 'Edad' },
+    ];
+  
+    ngOnInit(): void {
+      const proyecto = localStorage.getItem('projectId');
+      if (proyecto) this.projectId = parseInt(proyecto, 10);
+      else console.error('No hay proyecto seleccionado');
+  
+      this.fetchPage(this.currentPage, this.pageSize);
     }
-  }
-
-  // Método para obtener los usuarios con paginación
-  getUsersbyProject(projectId: number, page: number, pageSize: number) {
-    this.loading = true;
-    this.userService.getPatients(projectId, page, pageSize).subscribe(
-      response => {
-        this.userslist = response.data;
-        this.totalItems = response.totalItems;
-        this.pageSize = response.pageSize;
-        this.currentPage = response.page;
-        this.loading = false;
-      },
-      error => {
-        console.error('Error fetching users', error);
-        this.loading = false;
+  
+    // Paginación/virtual scroll de PrimeNG en modo lazy
+    onLazyLoad(event: LazyLoadEvent) {
+      const rows  = event.rows  ?? this.pageSize;
+      const first = event.first ?? 0;
+      const page  = Math.floor(first / rows) + 1;
+  
+      this.pageSize    = rows;
+      this.currentPage = page;
+      this.first       = first;
+  
+      this.fetchPage(page, rows);
+    }
+  
+    private fetchPage(page: number, pageSize: number) {
+      this.loading = true;
+      this.userService.getPatients(this.projectId, page, pageSize)
+        .subscribe({
+          next: (resp: PaginatedResponse<Patient>) => {
+            // Guarda la página original…
+            this.pageBuffer  = resp?.data ?? [];
+            // …y aplica el filtro client-side sobre ESTA página
+            this.applyClientFilter();
+  
+            this.totalItems  = resp?.totalItems ?? this.pageBuffer.length;
+            this.pageSize    = resp?.pageSize   ?? pageSize;
+            this.currentPage = resp?.page       ?? page;
+            this.first       = (this.currentPage - 1) * this.pageSize;
+            this.loading     = false;
+          },
+          error: err => { console.error('Error al obtener usuarios', err); this.loading = false; }
+        });
+    }
+  
+    // Input del buscador (client-side sobre la página actual)
+    onFilterInput(value: string) {
+      this.filterTerm = (value || '').toLowerCase().trim();
+      this.applyClientFilter();
+    }
+  
+    private applyClientFilter() {
+      if (!this.filterTerm) {
+        this.userslist = [...this.pageBuffer];
+        return;
       }
-    );
-  }
-
-  onPageChange(event: any): void {
-    if (event.page !== undefined && event.rows !== undefined) {
-      this.currentPage = event.page + 1; 
-      this.pageSize = event.rows; 
-
-      this.getUsersbyProject(this.projectId, this.currentPage, this.pageSize);
-    } else {
-      console.error("El evento de paginación no contiene los valores esperados.");
+      this.userslist = this.pageBuffer.filter(row =>
+        this.columns.some(col => {
+          const val = this.resolveFieldData(row, col.field);
+          return (val !== null && val !== undefined)
+            ? String(val).toLowerCase().includes(this.filterTerm)
+            : false;
+        })
+      );
     }
-  }
-
-  onGlobalFilter(table: any, event: Event) {
-    table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
-  }
+  
+    // Resolver campos anidados 'a.b.c'
+    resolveFieldData(data: any, field: string): any {
+      if (!data || !field) return null;
+      if (!field.includes('.')) return data[field];
+      return field.split('.').reduce((acc: any, k: string) => acc?.[k], data);
+    }
 }

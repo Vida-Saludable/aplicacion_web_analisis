@@ -10,3 +10,16 @@
     align-items: center;
     font-size: 1.5rem;
 }
+
+/* solo si usas loadingbody personalizado */
+.loading-cell {
+  height: 260px;
+  padding: 0 !important;
+}
+.loading-cell > div {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* centrado */
+  gap: .75rem;
+}
