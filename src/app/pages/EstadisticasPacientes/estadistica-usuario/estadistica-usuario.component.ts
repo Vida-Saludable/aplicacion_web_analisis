@@ -4,7 +4,18 @@ import { IndicatorsByPatient } from 'src/app/models/indicatorByUser.model';
 
 import { StatisticsService } from 'src/app/services/statistics.service';
 import { UserService, UsuarioPersonal } from 'src/app/services/user.service';
+// === Colores CRUDOS del backend (para CATEGORIZAR/CONTAR) ===
+const BACK = {
+  GREEN: '#00FF00',        // Muy Bueno
+  LIGHT_GREEN: '#32CD32',  // Bueno
+  YELLOW: '#FFD700',       // Aceptable
+  ORANGE: '#FFA500',       // Regular
+  RED: '#FF4C4C',          // Malo
+  DARK_RED: '#FF0000',     // Muy Malo
+  NONE: '#d3d3d3'          // Sin dato
+} as const;
 
+type ColorCat = 'green' | 'lightGreen' | 'yellow' | 'orange' | 'red' | 'darkRed' | 'none';
 @Component({
   selector: 'app-estadistica-usuario',
   templateUrl: './estadistica-usuario.component.html',
@@ -272,55 +283,37 @@ export class EstadisticaUsuarioComponent implements OnInit {
   
 
   // Función para contar los colores
-  private countColors(response: IndicatorsByPatient) {
-    const allColors = [
-      this.safeColor(response.peso?.data?.color),
-      this.safeColor(response.imc?.data?.color),
-      this.safeColor(response.radio_abdominal?.data?.color),
-      this.safeColor(response.porcentaje_musculo?.data?.color),
-      this.safeColor(response.grasa_corporal?.data?.color),
-      this.safeColor(response.grasa_visceral?.data?.color),
-      this.safeColor(response.colesterol_total?.data?.color),
-      this.safeColor(response.colesterol_hdl?.data?.color),
-      this.safeColor(response.colesterol_ldl?.data?.color),
-      this.safeColor(response.trigliceridos?.data?.color),
-      this.safeColor(response.glucosa?.data?.color),
-      this.safeColor(response.presion_sistolica?.data?.color),
-      this.safeColor(response.presion_diastolica?.data?.color),
-      this.safeColor(response.frecuencia_cardiaca?.data?.color),
-      this.safeColor(response.frecuencia_respiratoria?.data?.color),
-      this.safeColor(response.saturacion_oxigeno?.data?.color),
-      this.safeColor(response.glicemia_basal?.data?.color),
-      this.safeColor(response.temperatura?.data?.color)
+  private countColors(resp: IndicatorsByPatient) {
+  // Usa SIEMPRE colores CRUDOS desde la respuesta (no safeColor)
+  const raw = [
+    resp.peso?.data?.color,
+    resp.imc?.data?.color,
+    resp.radio_abdominal?.data?.color,
+    resp.porcentaje_musculo?.data?.color,
+    resp.grasa_corporal?.data?.color,
+    resp.grasa_visceral?.data?.color,
+    resp.colesterol_total?.data?.color,
+    resp.colesterol_hdl?.data?.color,
+    resp.colesterol_ldl?.data?.color,
+    resp.trigliceridos?.data?.color,
+    resp.glucosa?.data?.color,
+    resp.presion_sistolica?.data?.color,
+    resp.presion_diastolica?.data?.color,
+    resp.frecuencia_cardiaca?.data?.color,
+    resp.frecuencia_respiratoria?.data?.color,
+    resp.saturacion_oxigeno?.data?.color,
+    resp.glicemia_basal?.data?.color,
+    resp.temperatura?.data?.color,
   ];
-  
 
-    this.colorSummary = { 
-      darkRed:0, lightGreen:0, green: 0,  yellow: 0, orange: 0, red: 0 };
-      allColors.forEach(color => {
-        switch (color) {
-          case '#00FF00':
-            this.colorSummary.green += 1;
-            break;
-          case '#FFD700':
-            this.colorSummary.yellow += 1;
-            break;
-          case '#32CD32':
-              this.colorSummary.lightGreen += 1;
-              break;
-          case '#FFA500':
-            this.colorSummary.orange += 1;
-            break;
-          case '#FF4C4C':
-            this.colorSummary.red += 1;
-            break;
-          default:
-            this.colorSummary.darkRed += 1;
-            break;
-        }
-    
-      });
-    }
+  this.colorSummary = { darkRed: 0, lightGreen: 0, green: 0, yellow: 0, orange: 0, red: 0 };
+
+  for (const c of raw) {
+    const k = this.getCategory(c);
+    if (k !== 'none') (this.colorSummary as any)[k] += 1;
+  }
+}
+
 
     updateChart() {
       this.data = {
@@ -387,20 +380,30 @@ safeValue(value: number | null | undefined): number {
 }
 
 // Si el color es null o undefined, usa un gris para "sin dato"
-safeColor(color: string | null | undefined): string {
-  const colorMap: { [key: string]: string } = {
-    '#00FF00': '#009E73',   // Muy Bueno → Verde fuerte azulado
-    '#32CD32': '#A6D854',   // Bueno → Verde lima claro
-    '#FFD700': '#FFD92F',   // Aceptable → Amarillo brillante
-    '#FFA500': '#FFB482',   // Regular → Durazno claro
-    '#FF4C4C': '#E41A1C',   // Malo → Rojo puro
-    '#FF0000': '#7F0000',   // Muy Malo → Rojo oscuro/marrón
-    '#d3d3d3': '#BDBDBD'    // Sin dato → Gris claro
+private safeColor(color: string | null | undefined): string {
+  const displayMap: Record<string, string> = {
+    [BACK.GREEN]: '#009E73',
+    [BACK.LIGHT_GREEN]: '#A6D854',
+    [BACK.YELLOW]: '#FFD92F',
+    [BACK.ORANGE]: '#FFB482',
+    [BACK.RED]: '#E41A1C',
+    [BACK.DARK_RED]: '#7F0000',
+    [BACK.NONE]: '#BDBDBD'
   };
-
-  return colorMap[color ?? '#d3d3d3'] ?? '#BDBDBD';
+  return displayMap[color ?? BACK.NONE] ?? '#BDBDBD';
 }
 
+private getCategory(color?: string | null): ColorCat {
+  switch (color) {
+    case BACK.GREEN: return 'green';
+    case BACK.LIGHT_GREEN: return 'lightGreen';
+    case BACK.YELLOW: return 'yellow';
+    case BACK.ORANGE: return 'orange';
+    case BACK.RED: return 'red';
+    case BACK.DARK_RED: return 'darkRed';
+    default: return 'none';
+  }
+}
 
   
   }

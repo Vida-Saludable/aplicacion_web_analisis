@@ -35,34 +35,31 @@ export class AppTopBarComponent {
     }
 
     // Método para confirmar antes de cerrar sesión
-    confirmLogout() {
-        this.confirmationService.confirm({
-            message: 'Quieres salir del sistema?',
-            accept: () => {
-                this.logout();
-            }
-        });
+confirmLogout() {
+  this.confirmationService.confirm({
+    message: '¿Quieres salir del sistema?',
+    accept: () => {
+      this.logout();
     }
+  });
+}
 
-    // Método para cerrar sesión
-    logout() {
-        // this.authService.logout().subscribe({
-        //     next: () => {
-        //         this.router.navigate(['/auth']);  // Redirige al login después de cerrar sesión
-        //     },
-        //     error: (err) => {
-        //         console.error('Error al cerrar sesión', err);
-        //     }
-        // });
+// Método para cerrar sesión
+logout() {
+  // 1. Limpia todo el localStorage
+  localStorage.clear();
+  sessionStorage.clear();  
 
-      
-                this.router.navigate(['/auth']);  // Redirige al login después de cerrar sesión
-            
-        
-    }
+  // 2. (Opcional) Si usas sessionStorage también:
+  // sessionStorage.clear();
 
-    goToProjectSelection(): void {
+  // 3. Redirige al login
+  this.router.navigate(['/auth']);  
+}
+
+goToProjectSelection(): void {
   this.router.navigate(['/select-project']);
 }
+
 
 }

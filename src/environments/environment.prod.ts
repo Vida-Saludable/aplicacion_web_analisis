@@ -1,6 +1,7 @@
 // const  baseURL='http://127.0.0.1:8000'
 // const  baseURL='http://127.0.0.1:8000'
-const  baseURL='http://127.0.0.1:8000'
+const  baseURL='https://apianalisis.vidasaludable.cloud'
+
 //https://api.vidasaludable.cloud/ apunta
 // const  baseURL = "https://api.vidasaludable.cloud"; // producion servidor
 // const  baseURL='http://145.223.27.25:8081'

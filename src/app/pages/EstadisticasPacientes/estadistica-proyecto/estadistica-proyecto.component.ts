@@ -1,7 +1,18 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { IndicatorByProject } from 'src/app/models/indicatorByProyect.model';
 import { StatisticsService } from 'src/app/services/statistics.service';
+const BACK = {
+  GREEN: '#00FF00',        // Muy Bueno
+  LIGHT_GREEN: '#32CD32',  // Bueno
+  YELLOW: '#FFD700',       // Aceptable
+  ORANGE: '#FFA500',       // Regular
+  RED: '#FF4C4C',          // Malo
+  DARK_RED: '#FF0000',     // Muy Malo
+  NONE: '#d3d3d3'          // Sin dato
+} as const;
 
+type ColorCat = 'green' | 'lightGreen' | 'yellow' | 'orange' | 'red' | 'darkRed' | 'none';
+  
 @Component({
   selector: 'app-estadistica-proyecto',
   templateUrl: './estadistica-proyecto.component.html',
@@ -17,6 +28,8 @@ export class EstadisticaProyectoComponent implements OnInit {
 
   data: any;
   options: any;
+  // Colores tal como llegan del backend (para CATEGORIZAR/CONTAR)
+
 
   ngOnInit() {
     this.getProjectFromLocalStorage();
@@ -132,6 +145,7 @@ export class EstadisticaProyectoComponent implements OnInit {
       console.error('No hay proyecto seleccionado');
     }
   }
+  
 
   getIndicatorByProject(projectId: number) {
     this.indicatorByProjectService.getProjectHealthIndicators(projectId).subscribe(
@@ -210,59 +224,42 @@ console.log('COLORES:', this.data.datasets[0].backgroundColor);  //NO llega aqui
   }
 
   // Función para contar los colores
-  countColors(indicators: IndicatorByProject) {
-    const allColors = [
-      this.safeColor(indicators.peso?.data?.color),
-      this.safeColor(indicators.imc?.data?.color),
-      this.safeColor(indicators.radio_abdominal?.M?.status?.color),
-      this.safeColor(indicators.radio_abdominal?.F?.status?.color),
-      this.safeColor(indicators.porcentaje_musculo?.M?.status?.color),
-      this.safeColor(indicators.porcentaje_musculo?.F?.status?.color),
-      this.safeColor(indicators.grasa_corporal?.M?.status?.color),
-      this.safeColor(indicators.grasa_corporal?.F?.status?.color),
-      this.safeColor(indicators.grasa_visceral?.data?.color),
-      this.safeColor(indicators.colesterol_total?.data?.color),
-      this.safeColor(indicators.colesterol_hdl?.M?.status?.color),
-      this.safeColor(indicators.colesterol_hdl?.F?.status?.color),
-      this.safeColor(indicators.colesterol_ldl?.data?.color),
-      this.safeColor(indicators.trigliceridos?.data?.color),
-      this.safeColor(indicators.glucosa?.data?.color),
-      this.safeColor(indicators.presion_sistolica?.data?.color),
-      this.safeColor(indicators.presion_diastolica?.data?.color),
-      this.safeColor(indicators.frecuencia_cardiaca?.data?.color),
-      this.safeColor(indicators.frecuencia_respiratoria?.data?.color),
-      this.safeColor(indicators.saturacion_oxigeno?.data?.color),
-      this.safeColor(indicators.glicemia_basal?.data?.color),
-      this.safeColor(indicators.temperatura?.data?.color)
-    ];
-    
+  countColors(ind: IndicatorByProject) {
+  // Toma SIEMPRE los colores crudos que vienen del backend
+  const rawColors = [
+    ind.peso?.data?.color,
+    ind.imc?.data?.color,
+    ind.radio_abdominal?.M?.status?.color,
+    ind.radio_abdominal?.F?.status?.color,
+    ind.porcentaje_musculo?.M?.status?.color,
+    ind.porcentaje_musculo?.F?.status?.color,
+    ind.grasa_corporal?.M?.status?.color,
+    ind.grasa_corporal?.F?.status?.color,
+    ind.grasa_visceral?.data?.color,
+    ind.colesterol_total?.data?.color,
+    ind.colesterol_hdl?.M?.status?.color,
+    ind.colesterol_hdl?.F?.status?.color,
+    ind.colesterol_ldl?.data?.color,
+    ind.trigliceridos?.data?.color,
+    ind.glucosa?.data?.color,
+    ind.presion_sistolica?.data?.color,
+    ind.presion_diastolica?.data?.color,
+    ind.frecuencia_cardiaca?.data?.color,
+    ind.frecuencia_respiratoria?.data?.color,
+    ind.saturacion_oxigeno?.data?.color,
+    ind.glicemia_basal?.data?.color,
+    ind.temperatura?.data?.color,
+  ];
 
- 
+  // Reinicia
+  this.colorSummary = { darkRed: 0, lightGreen: 0, green: 0, yellow: 0, orange: 0, red: 0 };
 
-  
-    this.colorSummary = { 
-      darkRed:0, lightGreen:0, green: 0,  yellow: 0, orange: 0, red: 0 };
-
-    allColors.forEach(color => {
-      switch (color) {
-        case '#00FF00':
-          this.colorSummary.green += 1;
-          break;
-        case '#FFD700':
-          this.colorSummary.yellow += 1;
-          break;
-        case '#32CD32':
-            this.colorSummary.lightGreen += 1;
-            break;
-        case '#FFA500':
-          this.colorSummary.orange += 1;
-          break;
-        case '#FF4C4C':
-          this.colorSummary.red += 1;
-          break;
-      }
-    });
+  // Cuenta por categoría
+  for (const c of rawColors) {
+    const cat = this.getCategory(c);
+    if (cat !== 'none') (this.colorSummary as any)[cat] += 1;
   }
+}
 
 
   updateChart() {
@@ -323,22 +320,45 @@ safeValue(value: number | null | undefined): number {
 
 // Si el color es null o undefined, usa un gris para "sin dato"
 // Mapear colores del backend a otros más perceptibles en el frontend
-safeColor(color: string | null | undefined): string {
-  const colorMap: { [key: string]: string } = {
-    '#00FF00': '#009E73',   // Muy Bueno → Verde fuerte azulado
-    '#32CD32': '#A6D854',   // Bueno → Verde lima claro
-    '#FFD700': '#FFD92F',   // Aceptable → Amarillo brillante
-    '#FFA500': '#FFB482',   // Regular → Durazno claro
-    '#FF4C4C': '#E41A1C',   // Malo → Rojo puro
-    '#FF0000': '#7F0000',   // Muy Malo → Rojo oscuro/marrón
-    '#d3d3d3': '#BDBDBD'    // Sin dato → Gris claro
-  };
+// safeColor(color: string | null | undefined): string {
+//   const colorMap: { [key: string]: string } = {
+//     '#00FF00': '#009E73',   // Muy Bueno → Verde fuerte azulado
+//     '#32CD32': '#A6D854',   // Bueno → Verde lima claro
+//     '#FFD700': '#FFD92F',   // Aceptable → Amarillo brillante
+//     '#FFA500': '#FFB482',   // Regular → Durazno claro
+//     '#FF4C4C': '#E41A1C',   // Malo → Rojo puro
+//     '#FF0000': '#7F0000',   // Muy Malo → Rojo oscuro/marrón
+//     '#d3d3d3': '#BDBDBD'    // Sin dato → Gris claro
+//   };
 
-  return colorMap[color ?? '#d3d3d3'] ?? '#BDBDBD';
+//   return colorMap[color ?? '#d3d3d3'] ?? '#BDBDBD';
+// }
+
+safeColor(color: string | null | undefined): string {
+  const displayMap: Record<string, string> = {
+    [BACK.GREEN]: '#009E73',
+    [BACK.LIGHT_GREEN]: '#A6D854',
+    [BACK.YELLOW]: '#FFD92F',
+    [BACK.ORANGE]: '#FFB482',
+    [BACK.RED]: '#E41A1C',
+    [BACK.DARK_RED]: '#7F0000',
+    [BACK.NONE]: '#BDBDBD'
+  };
+  return displayMap[color ?? BACK.NONE] ?? '#BDBDBD';
 }
 
 
-
+getCategory(color?: string | null): ColorCat {
+  switch (color) {
+    case BACK.GREEN: return 'green';
+    case BACK.LIGHT_GREEN: return 'lightGreen';
+    case BACK.YELLOW: return 'yellow';
+    case BACK.ORANGE: return 'orange';
+    case BACK.RED: return 'red';
+    case BACK.DARK_RED: return 'darkRed';
+    default: return 'none';
+  }
+}
 
 
 

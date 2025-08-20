@@ -14,57 +14,69 @@
         <p>Inicia sesión para continuar</p>
       </header>
 
-      <!-- Mensaje de error -->
-      <p-message
-        *ngIf="authError"
-        severity="error"
-        [text]="authError"
-        styleClass="w-full mb-3"
-      ></p-message>
+      <!-- Mensajes de error/alerta en la MISMA pantalla -->
+      <p-messages [(value)]="msgs" class="w-full mb-3"></p-messages>
 
       <!-- Formulario -->
-<form #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
-  <!-- EMAIL -->
-  <div class="field-block">
-    <label for="email" class="lbl">Correo electrónico</label>
-    <div class="ctrl">
-      <i class="pi pi-envelope"></i>
-      <input
-        pInputText
-        id="email"
-        name="email"
-        type="email"
-        required
-        email
-        autocomplete="email"
-        [(ngModel)]="email"
-        placeholder="vida-saludable@gmail.com"
-      />
-    </div>
-  </div>
+      <form #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+        <!-- EMAIL -->
+        <div class="field-block">
+          <label for="email" class="lbl">Correo electrónico</label>
+          <div class="ctrl">
+            <i class="pi pi-envelope"></i>
+            <input
+              pInputText
+              id="email"
+              name="email"
+              type="email"
+              required
+              email
+              autocomplete="email"
+              [(ngModel)]="email"
+              placeholder="vida-saludable@gmail.com"
+            />
+          </div>
+        </div>
 
-  <!-- PASSWORD -->
-  <div class="field-block">
-    <label for="password" class="lbl">Contraseña</label>
-    <div class="ctrl">
-      <i class="pi pi-lock"></i>
-      <p-password
-        id="password"
-        name="password"
-        [(ngModel)]="password"
-        required
-        [toggleMask]="true"
-        [feedback]="false"
-        inputStyleClass="ctrl-input"
-        autocomplete="current-password"
-        placeholder="••••••••"
-      ></p-password>
-    </div>
-  </div>
+        <!-- PASSWORD -->
+        <div class="field-block">
+          <label for="password" class="lbl">Contraseña</label>
+          <div class="ctrl">
+            <i class="pi pi-lock"></i>
+            <p-password
+              id="password"
+              name="password"
+              [(ngModel)]="password"
+              required
+              [toggleMask]="true"
+              [feedback]="false"
+              inputStyleClass="ctrl-input"
+              autocomplete="current-password"
+              placeholder="••••••••"
+            ></p-password>
+          </div>
+        </div>
 
-  <button pButton type="submit" class="btn-primary" label="Acceder"></button>
-</form>
+        <!-- Recordarme -->
+        <div class="field-inline">
+          <p-checkbox
+            inputId="remember"
+            [(ngModel)]="remember"
+            name="remember"
+            binary="true"
+            label="Recordarme este correo"
+          ></p-checkbox>
+        </div>
 
+        <!-- Botón -->
+        <button
+          pButton
+          type="submit"
+          class="btn-primary"
+          [disabled]="loading || f.invalid"
+          [label]="loading ? 'Accediendo…' : 'Acceder'">
+        </button>
+      </form>
     </div>
   </div>
 </section>

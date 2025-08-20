@@ -1,61 +1,60 @@
-
 <div class="paciente-info">
-    <div class="paciente-card">
-      <h4><i class="pi pi-user"></i> Paciente</h4>
-      <div class="datos-grid">
-        <div class="dato"><strong>Nombre:</strong> {{ usuario?.nombres_apellidos }}</div>
-        <div class="dato"><strong>Edad:</strong> {{ usuario?.edad }} años</div>
-        <div class="dato"><strong>Sexo:</strong> {{ usuario?.sexo === 'F' ? 'Femenino' : 'Masculino' }}</div>
-        <div class="dato"><strong>Teléfono:</strong> {{ usuario?.telefono }}</div>
-        <div class="dato"><strong>Estado Civil:</strong> {{ usuario?.estado_civil }}</div>
-        <div class="dato"><strong>Fecha Nacimiento:</strong> {{ usuario?.fecha_nacimiento | date:'mediumDate' }}</div>
-        <div class="dato"><strong>Ocupación:</strong> {{ usuario?.ocupacion }}</div>
-        <div class="dato"><strong>Procedencia:</strong> {{ usuario?.procedencia }}</div>
-        <div class="dato"><strong>Religión:</strong> {{ usuario?.religion }}</div>
-      </div>
+  <div class="paciente-card">
+    <h4><i class="pi pi-user"></i> Participante</h4>
+    <div class="datos-grid">
+      <div class="dato"><strong>Nombre:</strong> {{ usuario?.nombres_apellidos }}</div>
+      <div class="dato"><strong>Edad:</strong> {{ usuario?.edad }} años</div>
+      <div class="dato"><strong>Sexo:</strong> {{ usuario?.sexo === 'F' ? 'Femenino' : 'Masculino' }}</div>
+      <div class="dato"><strong>Teléfono:</strong> {{ usuario?.telefono }}</div>
+      <div class="dato"><strong>Estado Civil:</strong> {{ usuario?.estado_civil }}</div>
+      <div class="dato"><strong>Fecha Nacimiento:</strong> {{ usuario?.fecha_nacimiento | date:'mediumDate' }}</div>
+      <div class="dato"><strong>Ocupación:</strong> {{ usuario?.ocupacion }}</div>
+      <div class="dato"><strong>Procedencia:</strong> {{ usuario?.procedencia }}</div>
+      <div class="dato"><strong>Religión:</strong> {{ usuario?.religion }}</div>
     </div>
   </div>
-  
+</div>
 
 <!-- Spinner mientras carga -->
 <div *ngIf="cargando" class="spinner-container">
-    <p-progressSpinner styleClass="custom-spinner"></p-progressSpinner>
-  </div>
-  
-  <!-- Si no hay datos -->
-  <div *ngIf="!cargando && sinDatos" class="mensaje-vacio">
-    <p>No existen registros de hábitos para este usuario.</p>
-  </div>
-  
+  <p-progressSpinner styleClass="custom-spinner"></p-progressSpinner>
+</div>
 
-  
+<!-- Si no hay datos -->
+<div *ngIf="!cargando && sinDatos" class="mensaje-vacio">
+  <p>No existen registros de hábitos para este usuario.</p>
+</div>
+
 <div *ngFor="let habit of historyHabits; let i = index" class="card mb-4">
-    <!-- Título del hábito -->
-    <h5>{{ habit.habito | titlecase }}</h5>
+  <!-- Título del hábito -->
+  <h5>{{ habit.habito | titlecase }}</h5>
 
-    <!-- Gráfico de barras -->
-    <p-chart type="bar" [data]="chartData[i]" [options]="chartOptions"></p-chart>
+  <!-- Gráfico de barras -->
+  <p-chart type="bar" [data]="chartData[i]" [options]="chartOptions"></p-chart>
 
-    <!-- Información adicional -->
-    <div class="mt-3">
-        <p><strong>Tendencia:</strong> {{ habit.tendencia }}</p>
-        <p><strong>Promedio:</strong> {{ habit.promedio }}</p>
-        <p><strong>Comparación con normas:</strong> {{ habit.comparacion_normas }}</p>
+  <!-- Información adicional -->
+  <div class="mt-3">
+    <p><strong>Tendencia:</strong> {{ habit.tendencia }}</p>
 
-        <!-- Recomendaciones -->
-        <div *ngIf="habit.recomendaciones.length > 0">
-            <p><strong>Recomendaciones:</strong></p>
-            <ul>
-                <li *ngFor="let rec of habit.recomendaciones">{{ rec }}</li>
-            </ul>
-        </div>
+    <!-- Promedio con 2 decimales (ya viene redondeado, pero lo formateamos por si acaso) -->
+    <p><strong>Promedio:</strong> {{ habit.promedio | number:'1.2-2' }}</p>
 
-        <!-- Alertas -->
-        <div *ngIf="habit.alertas.length > 0">
-            <p><strong>Alertas:</strong></p>
-            <ul>
-                <li *ngFor="let alert of habit.alertas">{{ alert }}</li>
-            </ul>
-        </div>
+    <p><strong>Comparación con normas:</strong> {{ habit.comparacion_normas }}</p>
+
+    <!-- Recomendaciones -->
+    <div *ngIf="habit.recomendaciones.length > 0">
+      <p><strong>Recomendaciones:</strong></p>
+      <ul>
+        <li *ngFor="let rec of habit.recomendaciones">{{ rec }}</li>
+      </ul>
     </div>
+
+    <!-- Alertas -->
+    <div *ngIf="habit.alertas.length > 0">
+      <p><strong>Alertas:</strong></p>
+      <ul>
+        <li *ngFor="let alert of habit.alertas">{{ alert }}</li>
+      </ul>
+    </div>
+  </div>
 </div>

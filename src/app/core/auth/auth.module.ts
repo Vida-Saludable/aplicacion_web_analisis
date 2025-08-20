@@ -9,24 +9,29 @@ import { PasswordModule } from 'primeng/password';
 import { LoginComponent } from './login/login.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from '../auth.interceptor';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { MessagesModule } from "primeng/messages";
 
 @NgModule({
     providers: [
-        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+        MessageService
       ],
 
     declarations:[
         LoginComponent
     ],
     imports: [
-        CommonModule,
-        AuthRoutingModule,
-      
-        ButtonModule,
-        CheckboxModule,
-        InputTextModule,
-        FormsModule,
-        PasswordModule
-    ]
+    CommonModule,
+    AuthRoutingModule,
+    ButtonModule,
+    CheckboxModule,
+    InputTextModule,
+    FormsModule,
+    PasswordModule,
+    ToastModule,
+    MessagesModule
+]
 })
 export class AuthModule { }
