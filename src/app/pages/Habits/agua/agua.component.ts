@@ -37,6 +37,7 @@ export class AguaComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadUniqueData();
+    this.buscarUsuarios()
     
   }
 

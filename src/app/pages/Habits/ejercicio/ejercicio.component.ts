@@ -47,6 +47,7 @@ export class EjercicioComponent implements OnInit {
       fecha_fin: new Date(data.fecha_maxima)
     });
     });
+    this.buscarUsuarios()
   }
 
   filterTiemposEjercicio(event: any): void {

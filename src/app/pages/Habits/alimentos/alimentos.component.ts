@@ -54,6 +54,7 @@ export class AlimentosComponent implements OnInit {
 
   ngOnInit(): void {
   this.loadUniqueData()
+  this.buscarUsuarios()
   }
 
   loadUniqueData(){

@@ -22,6 +22,7 @@ export class AddEditUserComponent implements OnInit {
 
   // evita doble click en Crear/Actualizar
   submitting = false;
+  correoServerError = '';
 
   constructor(
     private fb: FormBuilder,
@@ -86,7 +87,7 @@ export class AddEditUserComponent implements OnInit {
     });
   }
 
-  onSubmit(): void {
+onSubmit(): void {
     if (this.submitting) return;
     if (this.userForm.invalid) {
       this.userForm.markAllAsTouched();
@@ -95,7 +96,6 @@ export class AddEditUserComponent implements OnInit {
 
     this.submitting = true;
 
-    // Asegurar que lo que enviamos en 'role' sea SIEMPRE un número (ID)
     const roleValue = this.userForm.value.role;
     const roleId = (roleValue && typeof roleValue === 'object') ? roleValue.id : roleValue;
 
@@ -106,7 +106,6 @@ export class AddEditUserComponent implements OnInit {
     };
 
     if (this.isEdit && this.userId) {
-      // actualizar (sin contraseña)
       this.userService.updateUser(this.userId, payload)
         .pipe(finalize(() => this.submitting = false))
         .subscribe({
@@ -114,13 +113,9 @@ export class AddEditUserComponent implements OnInit {
             this.messageService.add({ severity: 'success', summary: 'Usuario actualizado', detail: 'Usuario actualizado correctamente' });
             this.router.navigate(['/dashboard/controlUsuarios/usuarios']);
           },
-          error: (err) => {
-            console.error('Error al actualizar el usuario', err);
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el usuario' });
-          }
+          error: (err) => this.handleApiError(err, 'actualizar')
         });
     } else {
-      // crear (incluye contraseña)
       const password = this.userForm.value.contrasenia;
       this.userService.register(payload.nombre, payload.correo, password, payload.role)
         .pipe(finalize(() => this.submitting = false))
@@ -129,12 +124,53 @@ export class AddEditUserComponent implements OnInit {
             this.messageService.add({ severity: 'success', summary: 'Usuario creado', detail: 'Usuario creado correctamente' });
             this.router.navigate(['/dashboard/controlUsuarios/usuarios']);
           },
-          error: (err) => {
-            console.error('Error al crear el usuario', err);
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al crear el usuario' });
-          }
+          error: (err) => this.handleApiError(err, 'crear')
         });
     }
+  }
+
+
+  private handleApiError(err: any, accion: 'crear' | 'actualizar') {
+    console.error(`Error al ${accion} el usuario`, err);
+
+    const backend = err?.error;
+    const correoMsgs: string[] | string | undefined =
+      backend?.correo || backend?.email || backend?.errors?.correo || backend?.errors?.email;
+
+    if (correoMsgs) {
+      // Mensaje legible
+      const msg = Array.isArray(correoMsgs) ? correoMsgs[0] : String(correoMsgs);
+      this.correoServerError = this.toSpanishCorreoMsg(msg);
+
+      // Marca el control con un error “emailTaken”
+      const ctrl = this.userForm.get('correo');
+      ctrl?.setErrors({ ...(ctrl?.errors || {}), emailTaken: true });
+      ctrl?.markAsTouched();
+
+      // Toast
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Correo ya registrado',
+        detail: this.correoServerError
+      });
+      this.submitting = false;
+      return;
+    }
+
+    // Fallback genérico
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: backend?.detail || 'No se pudo completar la operación.'
+    });
+    this.submitting = false;
+  }
+
+    private toSpanishCorreoMsg(msg: string): string {
+    // Ej: "usuario with this correo already exists."
+    if (/already exists/i.test(msg)) return 'Ya existe un usuario con este correo.';
+    if (/taken|in use/i.test(msg))  return 'El correo ya está en uso.';
+    return msg;
   }
 
   onCancel(): void {

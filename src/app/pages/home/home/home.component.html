@@ -10,50 +10,39 @@
       </div>
 
       <!-- Mostrar el contenido solo cuando no se está cargando -->
-      <div *ngIf="!loading">
-        <div class="row metrics-row">
-          <div class="p-col-12 p-md-3">
-            <div class="card metric-card metric-stock">
-              <div class="metric-title">Administradores</div>
-              <div class="metric-value">{{ admin }}</div>
-            </div>
-          </div>
-          <div class="p-col-12 p-md-3">
-            <div class="card metric-card metric-sales">
-              <div class="metric-title">Supervisores de proyecto</div>
-              <div class="metric-value">{{ supervisorCount }}</div>
-            </div>
-          </div>
-  
-          <div class="p-col-12 p-md-3">
-            <div class="card metric-card metric-revenue">
-              <div class="metric-title">Responsables de seguimiento</div>
-              <div class="metric-value">{{ respSegCount }}</div>
-            </div>
-          </div>
-  
-          <div class="p-col-12 p-md-3">
-            <div class="card metric-card metric-visitors">
-              <div class="metric-title">Tomadores de datos</div>
-              <div class="metric-value">{{ tomDatosCount }}</div>
-            </div>
-          </div>
-  
-          <div class="p-col-12 p-md-3">
-            <div class="card metric-card metric-stock">
-              <div class="metric-title">Participantes</div>
-              <div class="metric-value">{{ pacienteCount }}</div>
-            </div>
-          </div>
-  
-          <div class="p-col-12 p-md-3">
-            <div class="card metric-card metric-sales">
-              <div class="metric-title">Proyectos</div>
-              <div class="metric-value">{{ projectCount }}</div>
-            </div>
-          </div>
-        </div>
-      </div>
+<!-- Métricas -->
+<div class="metrics-grid" *ngIf="!loading">
+  <div class="metric-card card metric-stock">
+    <div class="metric-title">Administradores</div>
+    <div class="metric-value">{{ admin }}</div>
+  </div>
+
+  <div class="metric-card card metric-sales">
+    <div class="metric-title">Supervisores de proyecto</div>
+    <div class="metric-value">{{ supervisorCount }}</div>
+  </div>
+
+  <div class="metric-card card metric-revenue">
+    <div class="metric-title">Responsables de seguimiento</div>
+    <div class="metric-value">{{ respSegCount }}</div>
+  </div>
+
+  <div class="metric-card card metric-visitors">
+    <div class="metric-title">Tomadores de datos</div>
+    <div class="metric-value">{{ tomDatosCount }}</div>
+  </div>
+
+  <div class="metric-card card metric-stock">
+    <div class="metric-title">Participantes</div>
+    <div class="metric-value">{{ pacienteCount }}</div>
+  </div>
+
+  <div class="metric-card card metric-sales">
+    <div class="metric-title">Proyectos</div>
+    <div class="metric-value">{{ projectCount }}</div>
+  </div>
+</div>
+
     </div>
   </div>
 </div>

@@ -44,6 +44,7 @@ export class DormirComponent implements OnInit {
       fecha_fin: new Date(data.fecha_maxima)
     });
     });
+    this.buscarUsuarios()
   }
 
   filterHorasDormir(event: any): void {

@@ -34,6 +34,7 @@ export class AireComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadUniqueData();
+    this.buscarUsuarios()
   }
 
   // Cargar datos únicos de la API

@@ -1,0 +1,76 @@
+# --- 0) Previo (una vez) ---
+sudo apt update
+sudo apt install -y nginx python3-certbot-nginx
+sudo npm i -g npm@latest
+
+# --- 1) Obtener y compilar el frontend ---
+cd ~/analisis
+git clone https://github.com/Vida-Saludable/aplicacion_web_analisis.git
+cd aplicacion_web_analisis
+# Asegura que el backend en prod use HTTPS
+sed -n '1,200p' src/environments/environment.prod.ts
+#   => debe tener: apiUrl: 'https://apianalisis.vidasaludable.cloud'
+
+npm install
+npx ng build --configuration=production --base-href=/
+
+# --- 2) Publicar el build correcto (dist/sakai-ng) ---
+sudo mkdir -p /var/www/analisis.vidasaludable.cloud
+sudo rsync -av --delete dist/sakai-ng/ /var/www/analisis.vidasaludable.cloud/
+
+# Permisos para Nginx
+sudo chown -R www-data:www-data /var/www/analisis.vidasaludable.cloud
+sudo find /var/www/analisis.vidasaludable.cloud -type d -exec chmod 755 {} \;
+sudo find /var/www/analisis.vidasaludable.cloud -type f -exec chmod 644 {} \;
+
+# --- 3) Configurar Nginx (HTTP -> HTTPS + SPA) ---
+# Bloque HTTP SOLO para redirigir a HTTPS
+sudo bash -c 'cat > /etc/nginx/sites-available/analisis << "EOF"
+server {
+    listen 80;
+    server_name analisis.vidasaludable.cloud;
+    return 301 https://$host$request_uri;
+}
+# El bloque HTTPS lo generará certbot automáticamente.
+EOF'
+
+sudo ln -sf /etc/nginx/sites-available/analisis /etc/nginx/sites-enabled/analisis
+sudo rm -f /etc/nginx/sites-enabled/default
+sudo nginx -t && sudo systemctl reload nginx
+
+# --- 4) Emitir certificado y preparar bloque HTTPS ---
+sudo certbot --nginx -d analisis.vidasaludable.cloud --redirect -m TU-CORREO@dominio.com --agree-tos -n
+
+# Certbot creó el bloque HTTPS con ssl_certificate/ssl_certificate_key.
+# Ahora añade fallback SPA, caché y (opcional) HSTS y "upgrade-insecure-requests".
+# Edita el bloque HTTPS creado por certbot:
+#   sudo nano /etc/nginx/sites-available/analisis
+# y deja el server { ... } de 443 similar a esto (ajusta sólo dentro del server:443):
+
+# --- PEGAR DENTRO DEL BLOQUE server { ... } QUE ESCUCHA 443 ---
+# root /var/www/analisis.vidasaludable.cloud;
+# index index.html;
+
+# location ~* \.(?:js|css|png|jpg|jpeg|gif|svg|webp|ico|ttf|woff2?)$ {
+#     expires 30d;
+#     add_header Cache-Control "public, max-age=2592000, immutable";
+#     try_files $uri =404;
+# }
+# location / {
+#     try_files $uri $uri/ /index.html;
+# }
+# # Opcional pero recomendable (evita contenido mixto casual):
+# add_header Content-Security-Policy "upgrade-insecure-requests" always;
+# # HSTS (actívalo cuando todo ya funcione bien en HTTPS):
+# add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+
+# Guardar y recargar:
+sudo nginx -t && sudo systemctl reload nginx
+
+# --- 5) Verificación rápida ---
+ls -la /var/www/analisis.vidasaludable.cloud | grep index.html
+curl -I https://analisis.vidasaludable.cloud
+sudo certbot certificates
+
+# --- 6) (Backend) CORS/CSRF ---
+# Asegura permitir https://analisis.vidasaludable.cloud en tu backend.

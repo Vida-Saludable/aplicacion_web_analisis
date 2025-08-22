@@ -48,6 +48,7 @@ export class DespertarComponent implements OnInit {
       fecha_fin: new Date(data.fecha_maxima)
     });
     });
+    this.buscarUsuarios()
   }
 
   // Método para capturar el valor seleccionado del dropdown

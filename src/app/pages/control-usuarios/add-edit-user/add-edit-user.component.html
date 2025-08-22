@@ -15,12 +15,27 @@
 
     <!-- Correo -->
     <div class="form-group">
-      <label for="correo">Correo Electrónico:</label>
+      <!-- <label for="correo">Correo Electrónico:</label>
       <input id="correo" type="email" pInputText formControlName="correo" placeholder="Ingrese el correo electrónico" />
       <small *ngIf="userForm.get('correo')?.invalid && userForm.get('correo')?.touched" class="p-error">
         Correo inválido
-      </small>
+      </small> -->
+      <label for="correo">Correo Electrónico:</label>
+  <input id="correo" type="email" pInputText formControlName="correo"
+         placeholder="Ingrese el correo electrónico" />
+  <!-- errores de validación del formulario -->
+  <small *ngIf="userForm.get('correo')?.hasError('required') && userForm.get('correo')?.touched" class="p-error">
+    El correo es requerido
+  </small>
+  <small *ngIf="userForm.get('correo')?.hasError('email') && userForm.get('correo')?.touched" class="p-error">
+    Correo inválido
+  </small>
+  <!-- ❗ error devuelto por el backend -->
+  <small *ngIf="userForm.get('correo')?.hasError('emailTaken')" class="p-error">
+    {{ correoServerError || 'Ya existe un usuario con este correo.' }}
+  </small>
     </div>
+    <p-toast></p-toast>
 
     <!-- Contraseña (solo al crear) -->
     <div *ngIf="!isEdit" class="form-group">

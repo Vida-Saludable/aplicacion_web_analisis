@@ -50,6 +50,7 @@ export class EsperanzaComponent implements OnInit {
       fecha_fin: new Date(data.fecha_maxima)
     });
     });
+    this.buscarUsuarios()
   }
 
   // Método para capturar el valor seleccionado en los dropdowns
