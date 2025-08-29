@@ -4,15 +4,20 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.prod';
 import { Project } from '../models/project.modet';
 import { Patient } from '../models/patient.model';
+import { ProjectUser } from '../models/projectUser.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectService {
   private apiUrl = environment.baseUsers + 'proyectos/';
+  private apiUrlProyectos = environment.baseUsers + 'usuario-proyectos/';
   private http = inject(HttpClient);
   userslist: Patient[] = [];
 
   getAllProjects(): Observable<Project[]> {
     return this.http.get<Project[]>(`${this.apiUrl}`);
+  }
+  getAllProjectsUsers(): Observable<ProjectUser[]> {
+    return this.http.get<ProjectUser[]>(`${this.apiUrlProyectos}`);
   }
 
   getProjectById(projectId: number): Observable<Project> {
